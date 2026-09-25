@@ -8,10 +8,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { z } from "zod";
-import { AxispayLogo } from "@/components/AxispayLogo";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useI18n } from "@/i18n/I18nProvider";
-import { AnimatedAuthBackground } from "@/components/AnimatedAuthBackground";
+import { AuthHeroBackground } from "@/components/AuthHeroBackground";
+
+const LAST_USER_NAME_KEY = "axispay.lastUserName";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (s: Record<string, unknown>) => ({
@@ -33,6 +34,14 @@ function AuthPage() {
   const { t } = useI18n();
   const [tab, setTab] = useState<"login" | "signup" | "reset">("login");
   const [submitting, setSubmitting] = useState(false);
+  const [rememberedName] = useState<string | null>(() => {
+    if (typeof window === "undefined") return null;
+    try {
+      return window.localStorage.getItem(LAST_USER_NAME_KEY);
+    } catch {
+      return null;
+    }
+  });
 
   const loginSchema = z.object({
     email: z.string().email(t("auth.invalidEmail")),
@@ -43,8 +52,20 @@ function AuthPage() {
   });
 
   useEffect(() => {
-    if (!loading && user) navigate({ to: search.redirect || "/" });
+    if (loading || !user) return;
+    const name = typeof user.user_metadata?.name === "string" ? user.user_metadata.name : null;
+    if (name) {
+      try {
+        window.localStorage.setItem(LAST_USER_NAME_KEY, name);
+      } catch {
+        // ignore storage errors (private mode, quota, etc.)
+      }
+    }
+    navigate({ to: search.redirect || "/" });
   }, [user, loading, navigate, search.redirect]);
+
+  const firstName = rememberedName?.trim().split(" ")[0];
+  const greeting = firstName ? t("auth.helloName", { name: firstName }) : t("auth.helloGeneric");
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -99,70 +120,65 @@ function AuthPage() {
   };
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center bg-background px-4 py-10">
-      <AnimatedAuthBackground />
-      <div className="absolute right-3 top-3 z-20">
-        <LanguageSwitcher />
-      </div>
-      <div className="relative z-10 w-full max-w-md">
-        <div className="mb-6 flex flex-col items-center text-center">
-          <AxispayLogo size={64} showWordmark={false} className="mb-3" />
-          <h1 className="text-3xl font-bold tracking-tight">
-            <span className="bg-gradient-to-r from-primary to-emerald-400 bg-clip-text text-transparent">Axis</span>
-            <span className="text-foreground">Pay</span>
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">{t("app.tagline")}</p>
-        </div>
+    <div className="relative flex min-h-screen flex-col">
+      <AuthHeroBackground />
 
-        <Card className="border-border/60 shadow-[var(--shadow-card)]">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg">
-              {tab === "login" ? t("auth.signin") : tab === "signup" ? t("auth.signupTitle") : t("auth.reset")}
+      <div className="relative z-10 flex items-center justify-end px-4 pt-5">
+        <div className="rounded-full bg-black/30 backdrop-blur-sm [&_button]:text-white [&_svg]:text-white">
+          <LanguageSwitcher />
+        </div>
+      </div>
+
+      <div className="relative z-10 mt-auto flex w-full flex-col px-4 pb-6 pt-16">
+        <Card className="w-full max-w-md self-center rounded-2xl border-white/15 bg-black/35 text-white backdrop-blur-xl shadow-2xl [&_input]:border-white/20 [&_input]:bg-white/5 [&_input]:h-8 [&_label]:text-xs">
+          <CardHeader className="gap-0.5 px-4 pb-1.5 pt-4">
+            <CardTitle className="text-sm">
+              {tab === "login" ? greeting : tab === "signup" ? t("auth.signupTitle") : t("auth.reset")}
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-xs">
               {tab === "login" ? t("auth.signinDesc") : tab === "signup" ? t("auth.signupDesc") : t("auth.resetDesc")}
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-4 pb-4 pt-0.5">
             <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="login">{t("auth.signin")}</TabsTrigger>
-                <TabsTrigger value="signup">{t("auth.signup")}</TabsTrigger>
+              <TabsList className="grid h-8 w-full grid-cols-2">
+                <TabsTrigger value="login" className="text-xs">{t("auth.signin")}</TabsTrigger>
+                <TabsTrigger value="signup" className="text-xs">{t("auth.signup")}</TabsTrigger>
               </TabsList>
-              <TabsContent value="login" className="mt-4">
+              <TabsContent value="login" className="mt-2">
                 {tab === "reset" ? (
-                  <form onSubmit={handleReset} className="space-y-3">
-                    <div className="grid gap-2">
+                  <form onSubmit={handleReset} className="space-y-2">
+                    <div className="grid gap-1">
                       <Label htmlFor="r-email">{t("auth.email")}</Label>
                       <Input id="r-email" name="email" type="email" required />
                     </div>
-                    <Button type="submit" className="w-full" disabled={submitting}>
+                    <Button type="submit" className="h-8 w-full text-xs" disabled={submitting}>
                       {submitting ? t("auth.sending") : t("auth.sendResetLink")}
                     </Button>
                     <button
                       type="button"
-                      className="block w-full text-center text-sm text-muted-foreground hover:text-foreground"
+                      className="block w-full text-center text-xs text-muted-foreground hover:text-foreground"
                       onClick={() => setTab("login")}
                     >
                       {t("auth.backToSignin")}
                     </button>
                   </form>
                 ) : (
-                  <form onSubmit={handleLogin} className="space-y-3">
-                    <div className="grid gap-2">
+                  <form onSubmit={handleLogin} className="space-y-2">
+                    <div className="grid gap-1">
                       <Label htmlFor="l-email">{t("auth.email")}</Label>
                       <Input id="l-email" name="email" type="email" autoComplete="email" required />
                     </div>
-                    <div className="grid gap-2">
+                    <div className="grid gap-1">
                       <Label htmlFor="l-pass">{t("auth.password")}</Label>
                       <Input id="l-pass" name="password" type="password" autoComplete="current-password" required />
                     </div>
-                    <Button type="submit" className="w-full" disabled={submitting}>
-                      {submitting ? t("auth.signing") : t("auth.signin")}
+                    <Button type="submit" className="h-8 w-full text-xs" disabled={submitting}>
+                      {submitting ? t("auth.signing") : t("auth.accessAccount")}
                     </Button>
                     <button
                       type="button"
-                      className="block w-full text-center text-sm text-muted-foreground hover:text-foreground"
+                      className="block w-full text-center text-xs text-muted-foreground hover:text-foreground"
                       onClick={() => setTab("reset")}
                     >
                       {t("auth.forgot")}
@@ -170,22 +186,22 @@ function AuthPage() {
                   </form>
                 )}
               </TabsContent>
-              <TabsContent value="signup" className="mt-4">
-                <form onSubmit={handleSignup} className="space-y-3">
-                  <div className="grid gap-2">
+              <TabsContent value="signup" className="mt-2">
+                <form onSubmit={handleSignup} className="space-y-2">
+                  <div className="grid gap-1">
                     <Label htmlFor="s-name">{t("auth.name")}</Label>
                     <Input id="s-name" name="name" required />
                   </div>
-                  <div className="grid gap-2">
+                  <div className="grid gap-1">
                     <Label htmlFor="s-email">{t("auth.email")}</Label>
                     <Input id="s-email" name="email" type="email" autoComplete="email" required />
                   </div>
-                  <div className="grid gap-2">
+                  <div className="grid gap-1">
                     <Label htmlFor="s-pass">{t("auth.password")}</Label>
                     <Input id="s-pass" name="password" type="password" autoComplete="new-password" minLength={6} required />
-                    <p className="text-xs text-muted-foreground">{t("auth.minChars")}</p>
+                    <p className="text-[11px] text-muted-foreground">{t("auth.minChars")}</p>
                   </div>
-                  <Button type="submit" className="w-full" disabled={submitting}>
+                  <Button type="submit" className="h-8 w-full text-xs" disabled={submitting}>
                     {submitting ? t("auth.creating") : t("auth.create")}
                   </Button>
                 </form>
@@ -194,8 +210,8 @@ function AuthPage() {
           </CardContent>
         </Card>
 
-        <p className="mt-6 text-center text-xs text-muted-foreground">
-          <Link to="/" className="hover:text-foreground">{t("auth.backHome")}</Link>
+        <p className="mt-2.5 text-center text-xs text-white/80 drop-shadow">
+          <Link to="/" className="hover:text-white">{t("auth.backHome")}</Link>
         </p>
       </div>
     </div>
