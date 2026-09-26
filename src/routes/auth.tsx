@@ -99,7 +99,8 @@ function AuthPage() {
 
   const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const fd = new FormData(e.currentTarget);
+    const form = e.currentTarget;
+    const fd = new FormData(form);
     const parsed = signupSchema.safeParse({
       name: fd.get("name"),
       email: fd.get("email"),
@@ -115,6 +116,8 @@ function AuthPage() {
     if (error) {
       toast.error(error.message.includes("already") ? t("auth.exists") : error.message);
     } else {
+      form.reset();
+      setTab("login");
       toast.success(t("auth.created"));
     }
   };
