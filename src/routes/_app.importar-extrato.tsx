@@ -490,59 +490,61 @@ function ImportStatementPage() {
                   Nenhuma importação ainda.
                 </div>
               ) : (
-                <div className="hidden overflow-x-auto md:block"><Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Data</TableHead>
-                      <TableHead>Arquivo</TableHead>
-                      <TableHead>Banco</TableHead>
-                      <TableHead>Formato</TableHead>
-                      <TableHead className="text-right">Linhas</TableHead>
-                      <TableHead className="w-12"></TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {imports.map((imp) => (
-                      <TableRow key={imp.id}>
-                        <TableCell className="text-xs text-muted-foreground">
-                          {new Date(imp.created_at).toLocaleString("pt-BR")}
-                        </TableCell>
-                        <TableCell className="text-sm font-medium">{imp.filename}</TableCell>
-                        <TableCell className="text-sm">{imp.bank_name || "—"}</TableCell>
-                        <TableCell><Badge variant="outline">{imp.format.toUpperCase()}</Badge></TableCell>
-                        <TableCell className="text-right text-sm tabular-nums">
-                          <span className="text-success">{imp.imported_rows}</span>
-                          {imp.duplicate_rows > 0 && (
-                            <span className="text-muted-foreground"> / {imp.duplicate_rows} dup.</span>
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          <Button size="icon" variant="ghost" onClick={() => deleteImport(imp.id)}>
-                            <Trash2 className="h-4 w-4 text-destructive" />
-                          </Button>
-                        </TableCell>
+                <>
+                  <div className="hidden overflow-x-auto md:block"><Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Data</TableHead>
+                        <TableHead>Arquivo</TableHead>
+                        <TableHead>Banco</TableHead>
+                        <TableHead>Formato</TableHead>
+                        <TableHead className="text-right">Linhas</TableHead>
+                        <TableHead className="w-12"></TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table></div>
-                <div className="divide-y divide-border md:hidden">
-                  {imports.map((imp) => (
-                    <div key={imp.id} className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 p-4">
-                      <div className="min-w-0">
-                        <p className="truncate text-sm font-medium">{imp.filename}</p>
-                        <p className="mt-1 text-xs text-muted-foreground">{imp.bank_name || "—"} · {new Date(imp.created_at).toLocaleDateString("pt-BR")}</p>
-                        <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
-                          <Badge variant="outline">{imp.format.toUpperCase()}</Badge>
-                          <span className="text-success">{imp.imported_rows} importadas</span>
-                          {imp.duplicate_rows > 0 && <span className="text-muted-foreground">{imp.duplicate_rows} duplicadas</span>}
+                    </TableHeader>
+                    <TableBody>
+                      {imports.map((imp) => (
+                        <TableRow key={imp.id}>
+                          <TableCell className="text-xs text-muted-foreground">
+                            {new Date(imp.created_at).toLocaleString("pt-BR")}
+                          </TableCell>
+                          <TableCell className="text-sm font-medium">{imp.filename}</TableCell>
+                          <TableCell className="text-sm">{imp.bank_name || "—"}</TableCell>
+                          <TableCell><Badge variant="outline">{imp.format.toUpperCase()}</Badge></TableCell>
+                          <TableCell className="text-right text-sm tabular-nums">
+                            <span className="text-success">{imp.imported_rows}</span>
+                            {imp.duplicate_rows > 0 && (
+                              <span className="text-muted-foreground"> / {imp.duplicate_rows} dup.</span>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            <Button size="icon" variant="ghost" onClick={() => deleteImport(imp.id)}>
+                              <Trash2 className="h-4 w-4 text-destructive" />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table></div>
+                  <div className="divide-y divide-border md:hidden">
+                    {imports.map((imp) => (
+                      <div key={imp.id} className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 p-4">
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-medium">{imp.filename}</p>
+                          <p className="mt-1 text-xs text-muted-foreground">{imp.bank_name || "—"} · {new Date(imp.created_at).toLocaleDateString("pt-BR")}</p>
+                          <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
+                            <Badge variant="outline">{imp.format.toUpperCase()}</Badge>
+                            <span className="text-success">{imp.imported_rows} importadas</span>
+                            {imp.duplicate_rows > 0 && <span className="text-muted-foreground">{imp.duplicate_rows} duplicadas</span>}
+                          </div>
                         </div>
+                        <Button size="icon" variant="ghost" aria-label="Excluir importação" onClick={() => deleteImport(imp.id)}>
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
                       </div>
-                      <Button size="icon" variant="ghost" aria-label="Excluir importação" onClick={() => deleteImport(imp.id)}>
-                        <Trash2 className="h-4 w-4 text-destructive" />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                </>
               )}
             </CardContent>
           </Card>

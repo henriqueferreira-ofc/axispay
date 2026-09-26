@@ -124,17 +124,17 @@ function AuthPage() {
   };
 
   return (
-    <div className="relative isolate flex min-h-screen flex-col overflow-x-hidden bg-background lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(24rem,38rem)]">
+    <div className="relative isolate flex min-h-screen flex-col overflow-x-hidden bg-background">
       <AuthHeroBackground />
 
-      <div className="relative z-10 flex items-center justify-end px-4 pt-5 lg:col-start-2 lg:px-8 lg:pt-8">
-        <div className="rounded-full bg-background/45 backdrop-blur-md [&_button]:text-foreground [&_svg]:text-foreground">
+      <div className="relative z-10 flex items-center justify-end px-4 pt-5">
+        <div className="rounded-full bg-black/30 backdrop-blur-sm [&_button]:text-white [&_svg]:text-white">
           <LanguageSwitcher />
         </div>
       </div>
 
-      <div className="relative z-10 mt-auto flex w-full flex-col px-4 pb-6 pt-16 lg:col-start-2 lg:row-start-1 lg:row-end-3 lg:my-auto lg:px-12 lg:py-24">
-        <Card className="w-full max-w-md self-center rounded-xl border-border/70 bg-background/88 text-foreground shadow-2xl backdrop-blur-xl [&_input]:h-8 [&_input]:border-border/80 [&_input]:bg-background/60 [&_label]:text-xs">
+      <div className="relative z-10 mt-auto flex w-full flex-col px-4 pb-6 pt-16">
+        <Card className="w-full max-w-md self-center rounded-2xl border-white/15 bg-black/35 text-white backdrop-blur-xl shadow-2xl [&_input]:border-white/20 [&_input]:bg-white/5 [&_input]:h-8 [&_label]:text-xs">
           <CardHeader className="gap-0.5 px-4 pb-1.5 pt-4">
             <CardTitle className="text-sm">
               {tab === "login" ? greeting : tab === "signup" ? t("auth.signupTitle") : t("auth.reset")}
@@ -214,8 +214,8 @@ function AuthPage() {
           </CardContent>
         </Card>
 
-        <p className="mt-2.5 text-center text-xs text-foreground/80 drop-shadow">
-          <Link to="/" className="hover:text-foreground">{t("auth.backHome")}</Link>
+        <p className="mt-2.5 text-center text-xs text-white/80 drop-shadow">
+          <Link to="/" className="hover:text-white">{t("auth.backHome")}</Link>
         </p>
       </div>
     </div>
