@@ -6,6 +6,7 @@ type AuthContextValue = {
   session: Session | null;
   user: User | null;
   loading: boolean;
+  lockRevision: number;
   signUp: (email: string, password: string, name: string) => Promise<{ error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
@@ -18,16 +19,47 @@ const AuthContext = React.createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = React.useState<Session | null>(null);
   const [loading, setLoading] = React.useState(true);
+  const [unlocked, setUnlocked] = React.useState(false);
+  const [lockRevision, setLockRevision] = React.useState(0);
+  const accessVersion = React.useRef(0);
+
+  const lock = React.useCallback(() => {
+    document.documentElement.dataset.appLocked = "true";
+    accessVersion.current += 1;
+    setUnlocked(false);
+    setLockRevision(accessVersion.current);
+  }, []);
+
+  React.useEffect(() => {
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "hidden") lock();
+    };
+    const onPageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) lock();
+    };
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    window.addEventListener("pagehide", lock);
+    window.addEventListener("pageshow", onPageShow);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      window.removeEventListener("pagehide", lock);
+      window.removeEventListener("pageshow", onPageShow);
+    };
+  }, [lock]);
 
   React.useEffect(() => {
     // CRITICAL: subscribe BEFORE getSession
     const { data: subscription } = supabase.auth.onAuthStateChange((_event, newSession) => {
       setSession(newSession);
+      if (!newSession) setUnlocked(false);
       setLoading(false);
     });
 
     supabase.auth.getSession().then(({ data }) => {
       setSession(data.session);
+      setLoading(false);
+    }).catch(() => {
+      setSession(null);
       setLoading(false);
     });
 
@@ -47,13 +79,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signIn = React.useCallback(async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const version = accessVersion.current;
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    // A login that finishes after the app was hidden must not reopen private data.
+    if (!error && data.session && version === accessVersion.current && !document.hidden) {
+      delete document.documentElement.dataset.appLocked;
+      setSession(data.session);
+      setUnlocked(true);
+      const name = data.user?.user_metadata?.name || data.user?.user_metadata?.full_name;
+      try {
+        if (typeof name === "string") localStorage.setItem("axispay.lastUserName", name);
+      } catch { /* The greeting is optional when browser storage is unavailable. */ }
+    }
     return { error };
   }, []);
 
   const signOut = React.useCallback(async () => {
+    lock();
     await supabase.auth.signOut();
-  }, []);
+  }, [lock]);
 
   const resetPassword = React.useCallback(async (email: string) => {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -68,9 +112,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const value: AuthContextValue = {
-    session,
-    user: session?.user ?? null,
+    session: unlocked ? session : null,
+    user: unlocked ? session?.user ?? null : null,
     loading,
+    lockRevision,
     signUp,
     signIn,
     signOut,

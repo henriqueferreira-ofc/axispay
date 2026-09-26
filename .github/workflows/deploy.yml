@@ -17,6 +17,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Check types and authentication lifecycle
+        run: |
+          npm run typecheck
+          npm test
+
       - name: Build
         run: |
           # Empty GitHub secrets must not override the public settings in .env.

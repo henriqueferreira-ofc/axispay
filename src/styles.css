@@ -169,3 +169,7 @@
 @media (prefers-reduced-motion: reduce) {
   .auth-background-pulse { animation: none; }
 }
+/* Hide financial content synchronously when the app leaves the foreground. */
+html[data-app-locked] [data-private-content] {
+  visibility: hidden;
+}

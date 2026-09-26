@@ -105,7 +105,7 @@ function AppShell({
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background transition-colors duration-300">
+      <div data-private-content className="min-h-screen flex w-full bg-background transition-colors duration-300">
         <AppSidebar />
         <div className="flex-1 flex flex-col min-w-0">
           <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-2 border-b border-border/60 bg-background/80 px-3 backdrop-blur sm:px-4">

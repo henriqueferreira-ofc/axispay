@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/auth/AuthProvider";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -38,11 +38,17 @@ export const Route = createFileRoute("/auth")({
 });
 
 function AuthPage() {
+  const { lockRevision } = useAuth();
+  return <AuthScreen key={lockRevision} />;
+}
+
+function AuthScreen() {
   const navigate = useNavigate();
   const search = Route.useSearch();
   const { user, loading, signIn, signUp, resetPassword } = useAuth();
   const { t } = useI18n();
   const [tab, setTab] = useState<"login" | "signup" | "reset">("login");
+  const [showForm, setShowForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [rememberedName, setRememberedName] = useState<string | null>(null);
 
@@ -148,14 +154,24 @@ function AuthPage() {
         <Card className="w-full max-w-md self-center rounded-2xl border-white/15 bg-black/35 text-white backdrop-blur-xl shadow-2xl [&_input]:border-white/20 [&_input]:bg-white/5 [&_input]:h-8 [&_label]:text-xs">
           <CardHeader className="gap-0.5 px-4 pb-1.5 pt-4">
             <CardTitle className="text-sm">
-              {tab === "login" ? greeting : tab === "signup" ? t("auth.signupTitle") : t("auth.reset")}
+              {!showForm || tab === "login" ? greeting : tab === "signup" ? t("auth.signupTitle") : t("auth.reset")}
             </CardTitle>
             <CardDescription className="text-xs">
-              {tab === "login" ? t("auth.signinDesc") : tab === "signup" ? t("auth.signupDesc") : t("auth.resetDesc")}
+              {!showForm || tab === "login" ? t("auth.signinDesc") : tab === "signup" ? t("auth.signupDesc") : t("auth.resetDesc")}
             </CardDescription>
           </CardHeader>
           <CardContent className="px-4 pb-4 pt-0.5">
-            <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
+            {!showForm ? (
+              <div className="space-y-3 pt-4">
+                <Button className="h-12 w-full text-base" onClick={() => { setTab("login"); setShowForm(true); }}>
+                  {t("auth.accessAccount")}
+                </Button>
+                <Button variant="outline" className="h-12 w-full border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white" onClick={() => { setTab("signup"); setShowForm(true); }}>
+                  {t("auth.create")}
+                </Button>
+              </div>
+            ) : (
+            <Tabs value={tab === "reset" ? "login" : tab} onValueChange={(v) => setTab(v as typeof tab)}>
               <TabsList className="grid h-8 w-full grid-cols-2">
                 <TabsTrigger value="login" className="text-xs">{t("auth.signin")}</TabsTrigger>
                 <TabsTrigger value="signup" className="text-xs">{t("auth.signup")}</TabsTrigger>
@@ -222,12 +238,15 @@ function AuthPage() {
                 </form>
               </TabsContent>
             </Tabs>
+            )}
           </CardContent>
         </Card>
 
-        <p className="mt-2.5 text-center text-xs text-white/80 drop-shadow">
-          <Link to="/" className="hover:text-white">{t("auth.backHome")}</Link>
-        </p>
+        {showForm && (
+          <button type="button" className="mt-2.5 self-center p-2 text-xs text-white/80 drop-shadow hover:text-white" onClick={() => setShowForm(false)}>
+            {t("auth.backHome")}
+          </button>
+        )}
       </div>
     </div>
   );
