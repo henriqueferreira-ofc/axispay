@@ -1,6 +1,5 @@
 @import "tailwindcss" source(none);
 @import "tw-animate-css";
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
 
 @source "../src";
 
@@ -156,4 +155,17 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
   }
+}
+
+@keyframes auth-background-pulse {
+  0%, 100% { opacity: 0.78; }
+  50% { opacity: 1; }
+}
+
+.auth-background-pulse {
+  animation: auth-background-pulse 8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-background-pulse { animation: none; }
 }

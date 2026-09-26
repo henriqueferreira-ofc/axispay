@@ -23,6 +23,10 @@ export const Route = createFileRoute("/_app/importar-extrato")({
     meta: [
       { title: "Importar Extrato Bancário — AxisPay" },
       { name: "description", content: "Importe extratos OFX, CSV ou XLSX e concilie automaticamente seus lançamentos." },
+      { property: "og:title", content: "Importar Extrato Bancário — AxisPay" },
+      { property: "og:description", content: "Importe extratos OFX, CSV ou XLSX e concilie automaticamente seus lançamentos." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: ImportStatementPage,
@@ -277,9 +281,9 @@ function ImportStatementPage() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-6xl space-y-6 px-4 py-6 md:px-8 md:py-8">
+    <div className="mx-auto w-full max-w-6xl space-y-6 overflow-x-hidden px-3 py-4 sm:px-4 sm:py-6 md:px-8 md:py-8">
       <div>
-        <h1 className="text-3xl font-semibold tracking-tight">Importar Extrato Bancário</h1>
+        <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Importar Extrato Bancário</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Envie um extrato (OFX, CSV ou XLSX) para conciliar receitas, despesas, PIX e contas pagas.
         </p>
@@ -295,14 +299,16 @@ function ImportStatementPage() {
         </div>
       </div>
 
-      <Tabs defaultValue="conciliation">
-        <TabsList>
+      <Tabs defaultValue="conciliation" className="min-w-0">
+        <div className="overflow-x-auto pb-1">
+        <TabsList className="min-w-max">
           <TabsTrigger value="conciliation">
             Conciliação {pendingImports.length > 0 && <Badge variant="secondary" className="ml-2 bg-primary/20 text-primary">{pendingImports.length}</Badge>}
           </TabsTrigger>
           <TabsTrigger value="upload">Nova importação</TabsTrigger>
           <TabsTrigger value="history">Histórico ({imports.length})</TabsTrigger>
         </TabsList>
+        </div>
 
         <TabsContent value="upload" className="space-y-4 mt-4">
           <Card>
@@ -385,7 +391,7 @@ function ImportStatementPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="rounded-md border max-h-[400px] overflow-auto">
+                <div className="hidden max-h-[400px] overflow-auto rounded-md border md:block">
                   <Table>
                     <TableHeader>
                       <TableRow>
@@ -419,6 +425,25 @@ function ImportStatementPage() {
                       ))}
                     </TableBody>
                   </Table>
+                </div>
+                <div className="grid gap-2 md:hidden">
+                  {parsed.txns.slice(0, 100).map((txn, index) => (
+                    <div key={`${txn.dedupHash}-${index}`} className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 rounded-md border p-3">
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-medium">{txn.description}</p>
+                        <div className="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
+                          <span>{txn.date}</span>
+                          {txn.isPix && <Badge variant="outline" className="text-[9px]">PIX</Badge>}
+                          <Badge variant="secondary" className="max-w-full truncate font-normal">
+                            {txn.categorySuggestion || "Pendente"}
+                          </Badge>
+                        </div>
+                      </div>
+                      <p className={`shrink-0 text-right text-sm font-semibold tabular-nums ${txn.type === "entrada" ? "text-success" : "text-destructive"}`}>
+                        {txn.type === "entrada" ? "+" : "-"} {brl(txn.amount)}
+                      </p>
+                    </div>
+                  ))}
                 </div>
                 {parsed.txns.length > 100 && (
                   <p className="text-xs text-muted-foreground mt-2">Exibindo as 100 primeiras de {parsed.txns.length} transações.</p>
@@ -465,7 +490,7 @@ function ImportStatementPage() {
                   Nenhuma importação ainda.
                 </div>
               ) : (
-                <Table>
+                <div className="hidden overflow-x-auto md:block"><Table>
                   <TableHeader>
                     <TableRow>
                       <TableHead>Data</TableHead>
@@ -499,7 +524,25 @@ function ImportStatementPage() {
                       </TableRow>
                     ))}
                   </TableBody>
-                </Table>
+                </Table></div>
+                <div className="divide-y divide-border md:hidden">
+                  {imports.map((imp) => (
+                    <div key={imp.id} className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 p-4">
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-medium">{imp.filename}</p>
+                        <p className="mt-1 text-xs text-muted-foreground">{imp.bank_name || "—"} · {new Date(imp.created_at).toLocaleDateString("pt-BR")}</p>
+                        <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
+                          <Badge variant="outline">{imp.format.toUpperCase()}</Badge>
+                          <span className="text-success">{imp.imported_rows} importadas</span>
+                          {imp.duplicate_rows > 0 && <span className="text-muted-foreground">{imp.duplicate_rows} duplicadas</span>}
+                        </div>
+                      </div>
+                      <Button size="icon" variant="ghost" aria-label="Excluir importação" onClick={() => deleteImport(imp.id)}>
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
               )}
             </CardContent>
           </Card>
@@ -526,7 +569,7 @@ function ImportStatementPage() {
                   <p className="text-sm text-muted-foreground">
                     Verifique as transações importadas e adicione-as ao sistema ou faça o match com lançamentos manuais já existentes.
                   </p>
-                  <div className="rounded-md border">
+                  <div className="hidden overflow-x-auto rounded-md border md:block">
                     <Table>
                       <TableHeader>
                         <TableRow>
@@ -589,6 +632,39 @@ function ImportStatementPage() {
                         })}
                       </TableBody>
                     </Table>
+                  </div>
+                  <div className="grid gap-3 md:hidden">
+                    {pendingImports.map((imp) => {
+                      const possibleMatches = transactions.filter((txn) => txn.date === imp.date && Math.abs(txn.amount) === Math.abs(imp.amount) && txn.type === imp.type);
+                      const isIncome = imp.type === "entrada";
+                      return (
+                        <div key={imp.id} className="rounded-md border p-3">
+                          <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-3">
+                            <div className="min-w-0">
+                              <p className="break-words text-sm font-medium">{imp.description}</p>
+                              <p className="mt-1 text-xs text-muted-foreground">{imp.date}{imp.is_pix ? " · PIX" : ""}</p>
+                            </div>
+                            <p className={`shrink-0 text-right text-sm font-semibold tabular-nums ${isIncome ? "text-success" : "text-destructive"}`}>
+                              {isIncome ? "+" : "-"} {brl(Math.abs(imp.amount))}
+                            </p>
+                          </div>
+                          {possibleMatches.length > 0 && (
+                            <div className="mt-3 grid gap-1.5">
+                              {possibleMatches.map((match) => (
+                                <div key={match.id} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 rounded-md border bg-muted/50 p-2 text-xs">
+                                  <span className="truncate">{match.description}</span>
+                                  <Button size="sm" variant="secondary" className="h-7" onClick={() => handleConciliate(imp, match.id)}>Match</Button>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                          <div className="mt-3 grid grid-cols-2 gap-2">
+                            <Button size="sm" variant="outline" onClick={() => handleIgnore(imp.id)}>Ignorar</Button>
+                            <Button size="sm" onClick={() => handleConciliate(imp)}>Adicionar</Button>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}
