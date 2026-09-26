@@ -38,14 +38,16 @@ function AuthPage() {
   const { t } = useI18n();
   const [tab, setTab] = useState<"login" | "signup" | "reset">("login");
   const [submitting, setSubmitting] = useState(false);
-  const [rememberedName] = useState<string | null>(() => {
-    if (typeof window === "undefined") return null;
+  const [rememberedName, setRememberedName] = useState<string | null>(null);
+
+  // Keep the server and initial client render identical before reading browser storage.
+  useEffect(() => {
     try {
-      return window.localStorage.getItem(LAST_USER_NAME_KEY);
+      setRememberedName(window.localStorage.getItem(LAST_USER_NAME_KEY));
     } catch {
-      return null;
+      // Keep the generic greeting when browser storage is unavailable.
     }
-  });
+  }, []);
 
   const loginSchema = z.object({
     email: z.string().email(t("auth.invalidEmail")),
