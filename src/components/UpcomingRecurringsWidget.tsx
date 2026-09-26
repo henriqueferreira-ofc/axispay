@@ -21,13 +21,13 @@ export function UpcomingRecurringsWidget({
 
   return (
     <Card className="border-border/60 shadow-[var(--shadow-card)]">
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-base">
-          <CalendarRange className="h-4 w-4 text-primary" />
+      <CardHeader className="px-4 pb-3 sm:px-6">
+        <CardTitle className="flex min-w-0 items-center gap-2 text-base">
+          <CalendarRange className="h-4 w-4 shrink-0 text-primary" />
           {t("upcoming.title", { n: weeks })}
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-4 sm:px-6">
         {items.length === 0 ? (
           <p className="py-6 text-center text-sm text-muted-foreground">
             {t("upcoming.empty")}
@@ -38,7 +38,10 @@ export function UpcomingRecurringsWidget({
               const cat = categories.find((c) => c.id === item.categoryId);
               const isIncome = item.type === "entrada";
               return (
-                <li key={`${item.recurringId}-${item.date}-${i}`} className="flex items-center gap-3 py-2.5">
+                <li
+                  key={`${item.recurringId}-${item.date}-${i}`}
+                  className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 py-2.5 sm:gap-3"
+                >
                   <div
                     className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-md ${
                       isIncome ? "bg-success/15 text-success" : "bg-destructive/15 text-destructive"
@@ -48,10 +51,10 @@ export function UpcomingRecurringsWidget({
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium">{item.description}</p>
-                    <div className="mt-0.5 flex items-center gap-2 text-[11px] text-muted-foreground">
-                      <span>{formatDateBR(item.date)}</span>
+                    <div className="mt-0.5 flex min-w-0 items-center gap-1.5 text-[11px] text-muted-foreground sm:gap-2">
+                      <span className="shrink-0">{formatDateBR(item.date)}</span>
                       {cat && (
-                        <Badge variant="outline" className="gap-1 px-1.5 py-0 text-[10px]">
+                        <Badge variant="outline" className="min-w-0 gap-1 px-1.5 py-0 text-[10px]">
                           <span className="h-1.5 w-1.5 rounded-full" style={{ background: cat.color }} />
                           <span className="max-w-[100px] truncate">{cat.name}</span>
                         </Badge>
@@ -59,7 +62,7 @@ export function UpcomingRecurringsWidget({
                     </div>
                   </div>
                   <p
-                    className={`shrink-0 text-sm font-semibold tabular-nums ${
+                    className={`max-w-[7.5rem] shrink-0 text-right text-xs font-semibold tabular-nums sm:max-w-none sm:text-sm ${
                       isIncome ? "text-success" : "text-destructive"
                     }`}
                   >
