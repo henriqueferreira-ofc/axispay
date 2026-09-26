@@ -24,8 +24,8 @@ function AppLayout() {
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    if (!loading && !user) {
-      navigate({ to: "/auth", search: { redirect: location.pathname } });
+    if (!loading && !user && location.pathname !== "/auth" && location.pathname !== "/reset-password") {
+      navigate({ to: "/auth", search: { redirect: location.pathname }, replace: true });
     }
   }, [loading, user, navigate, location.pathname]);
 

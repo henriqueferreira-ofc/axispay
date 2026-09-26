@@ -16,7 +16,13 @@ const LAST_USER_NAME_KEY = "axispay.lastUserName";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (s: Record<string, unknown>) => ({
-    redirect: typeof s.redirect === "string" ? s.redirect : "/",
+    redirect:
+      typeof s.redirect === "string" &&
+      s.redirect.startsWith("/") &&
+      !s.redirect.startsWith("//") &&
+      !["/auth", "/reset-password"].includes(s.redirect.split(/[?#]/)[0].replace(/\/$/, ""))
+        ? s.redirect
+        : "/",
   }),
   head: () => ({
     meta: [
@@ -67,7 +73,7 @@ function AuthPage() {
         // ignore storage errors (private mode, quota, etc.)
       }
     }
-    navigate({ to: search.redirect || "/" });
+    navigate({ to: search.redirect || "/", replace: true });
   }, [user, loading, navigate, search.redirect]);
 
   const firstName = rememberedName?.trim().split(" ")[0];
