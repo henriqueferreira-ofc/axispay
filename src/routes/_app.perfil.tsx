@@ -1,3 +1,4 @@
+import { PasskeySettings } from "@/components/PasskeySetup";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useFinwise } from "@/store/finwise-store";
@@ -233,6 +234,8 @@ function PerfilPage() {
           </Button>
         </CardContent>
       </Card>
+
+      <PasskeySettings />
 
       <Card className="border-destructive/30 bg-destructive/5">
         <CardContent className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">

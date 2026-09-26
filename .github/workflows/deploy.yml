@@ -33,6 +33,7 @@ jobs:
           node --env-file=.env -e 'for (const name of ["VITE_SUPABASE_URL", "VITE_SUPABASE_PUBLISHABLE_KEY"]) { if (!process.env[name]) throw new Error(`Missing ${name}`); }'
           npm run build
         env:
+          VITE_PASSKEYS_ENABLED: ${{ vars.VITE_PASSKEYS_ENABLED }}
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
           VITE_SUPABASE_PROJECT_ID: ${{ secrets.VITE_SUPABASE_PROJECT_ID }}

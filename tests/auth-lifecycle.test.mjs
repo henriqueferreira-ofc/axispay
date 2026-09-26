@@ -6,7 +6,7 @@ import ts from "typescript";
 
 // Exercise the provider with controlled lifecycle events and delayed auth responses.
 // No real accounts or credentials are used.
-function harness(file, supabase = {}) {
+function harness(file, supabase = {}, enabled = true) {
   const state = [];
   const effects = [];
   const cleanups = [];
@@ -17,6 +17,7 @@ function harness(file, supabase = {}) {
   document.visibilityState = "visible";
   document.documentElement = { dataset: {} };
   const window = new EventTarget();
+  window.isSecureContext = true;
   const storage = new Map();
   const localStorage = {
     getItem: (key) => storage.get(key) ?? null,
@@ -42,8 +43,17 @@ function harness(file, supabase = {}) {
   const jsx = (type, props) => ({ type, props });
   const exports = {};
   const context = vm.createContext({
-    exports, document, window, localStorage, console,
+    exports, document, window, localStorage, console, AbortController, setTimeout, clearTimeout,
+    PublicKeyCredential: class {}, navigator: { credentials: {} },
     require(name) {
+      if (name === "./passkeyConfig") return { passkeysEnabled: enabled };
+      if (name === "./passkeys") {
+        const helperContext = vm.createContext({ exports: {}, window, localStorage, navigator: { credentials: {} }, PublicKeyCredential: class {} });
+        vm.runInContext(ts.transpileModule(readFileSync(new URL("../src/auth/passkeys.ts", import.meta.url), "utf8"), {
+          compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
+        }).outputText, helperContext);
+        return helperContext.exports;
+      }
       if (name === "react") return React;
       if (name === "react/jsx-runtime") return { jsx, jsxs: jsx };
       if (name === "@/integrations/supabase/client") return { supabase };
@@ -79,9 +89,11 @@ function harness(file, supabase = {}) {
 
 const user = { id: "test-user", user_metadata: { name: "Henrique" } };
 const session = { user };
-function authHarness() {
+function authHarness(enabled = true) {
   let onAuthChange;
   let resolveLogin;
+  let resolvePasskey;
+  let passkeySignal;
   const auth = {
     onAuthStateChange(callback) {
       onAuthChange = callback;
@@ -89,13 +101,15 @@ function authHarness() {
     },
     getSession: async () => ({ data: { session } }),
     signInWithPassword: () => new Promise((resolve) => { resolveLogin = resolve; }),
+    signInWithPasskey: ({ options }) => new Promise(resolve => { passkeySignal = options.signal; resolvePasskey = resolve; }),
+    registerPasskey: ({ options }) => new Promise(resolve => { passkeySignal = options.signal; resolvePasskey = resolve; }),
     signOut: async () => onAuthChange("SIGNED_OUT", null),
   };
-  const h = harness("../src/auth/AuthProvider.tsx", { auth });
+  const h = harness("../src/auth/AuthProvider.tsx", { auth }, enabled);
   const value = () => h.render("AuthProvider").props.value;
   value();
   h.mount();
-  return { ...h, value, emit: (...args) => onAuthChange(...args), finishLogin: () => resolveLogin({ data: { session, user }, error: null }) };
+  return { ...h, value, getSignal: () => passkeySignal, finishPasskey: (result = { data: { session, user }, error: null }) => resolvePasskey(result), emit: (...args) => onAuthChange(...args), finishLogin: () => resolveLogin({ data: { session, user }, error: null }) };
 }
 
 test("restored sessions and auth events never unlock the app without explicit login", async () => {
@@ -162,5 +176,79 @@ test("photo selection waits for visibility, avoids the previous photo, and stays
   h.hide();
   h.show();
   assert.equal(h.render("AuthHeroBackground").props.children[0].props.src, photo);
+  h.unmount();
+});
+
+
+test("passkey needs a verified server session and tolerates the native prompt visibility cycle", async () => {
+  const h = authHarness();
+  const login = h.value().signInWithPasskey();
+  assert.equal(h.value().user, null);
+  h.hide();
+  assert.equal(h.document.documentElement.dataset.appLocked, "true");
+  assert.equal(h.getSignal().aborted, false);
+  h.show();
+  h.finishPasskey();
+  assert.equal((await login).error, null);
+  assert.equal(h.value().user.id, user.id);
+  assert.equal(h.localStorage.getItem("axispay.passkeyUser"), user.id);
+  h.hide();
+  assert.equal(h.value().user, null);
+  h.unmount();
+});
+
+test("cancelled or invalid passkey responses never unlock", async () => {
+  for (const result of [{ data: null, error: { name: "NotAllowedError" } }, { data: { session: null }, error: null }]) {
+    const h = authHarness();
+    const login = h.value().signInWithPasskey();
+    h.hide(); h.show();
+    h.finishPasskey(result);
+    assert.ok((await login).error);
+    assert.equal(h.value().user, null);
+    assert.equal(h.localStorage.getItem("axispay.passkeyUser"), null);
+    h.unmount();
+  }
+});
+
+test("pagehide aborts passkeys and rejects a late successful response", async () => {
+  const h = authHarness();
+  const login = h.value().signInWithPasskey();
+  h.window.dispatchEvent(new Event("pagehide"));
+  assert.equal(h.getSignal().aborted, true);
+  h.finishPasskey();
+  assert.ok((await login).error);
+  assert.equal(h.value().user, null);
+  h.unmount();
+});
+
+test("enrollment requires an unlocked account and only remembers verified credentials", async () => {
+  const h = authHarness();
+  assert.ok((await h.value().registerPasskey()).error);
+  const login = h.value().signIn("test@example.com", "test-only");
+  h.finishLogin(); await login;
+  assert.equal(h.value().passkeySetupSuggested, true);
+  const failed = h.value().registerPasskey();
+  h.finishPasskey({ data: null, error: { code: "passkey_disabled" } });
+  assert.ok((await failed).error);
+  assert.equal(h.localStorage.getItem("axispay.passkeyUser"), null);
+  const enrollment = h.value().registerPasskey();
+  h.hide(); h.show();
+  h.finishPasskey({ data: { id: "credential-test" }, error: null });
+  assert.equal((await enrollment).error, null);
+  assert.equal(h.value().passkeySetupSuggested, false);
+  assert.equal(h.value().user.id, user.id);
+  assert.equal(h.localStorage.getItem("axispay.passkeyUser"), user.id);
+  h.unmount();
+});
+
+
+test("disabled rollout keeps password login and never offers passkey enrollment", async () => {
+  const h = authHarness(false);
+  assert.equal(h.value().passkeySupported, false);
+  assert.ok((await h.value().signInWithPasskey()).error);
+  const login = h.value().signIn("test@example.com", "test-only");
+  h.finishLogin(); await login;
+  assert.equal(h.value().user.id, user.id);
+  assert.equal(h.value().passkeySetupSuggested, false);
   h.unmount();
 });

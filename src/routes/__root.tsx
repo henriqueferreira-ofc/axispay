@@ -1,4 +1,5 @@
 import { Outlet, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import { PasskeySetup } from "@/components/PasskeySetup";
 import { AuthProvider } from "@/auth/AuthProvider";
 import { I18nProvider } from "@/i18n/I18nProvider";
 import { Toaster } from "@/components/ui/sonner";
@@ -76,6 +77,7 @@ function RootComponent() {
     <I18nProvider>
       <AuthProvider>
         <Outlet />
+        <PasskeySetup />
         <Toaster richColors position="top-right" />
       </AuthProvider>
     </I18nProvider>

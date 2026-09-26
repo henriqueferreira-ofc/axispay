@@ -12,6 +12,8 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useI18n } from "@/i18n/I18nProvider";
 import { AuthHeroBackground } from "@/components/AuthHeroBackground";
 
+import { passkeyErrorKey } from "@/auth/passkeys";
+
 const LAST_USER_NAME_KEY = "axispay.lastUserName";
 
 export const Route = createFileRoute("/auth")({
@@ -45,7 +47,7 @@ function AuthPage() {
 function AuthScreen() {
   const navigate = useNavigate();
   const search = Route.useSearch();
-  const { user, loading, signIn, signUp, resetPassword } = useAuth();
+  const { user, loading, signIn, signUp, resetPassword, passkeySupported, signInWithPasskey } = useAuth();
   const { t } = useI18n();
   const [tab, setTab] = useState<"login" | "signup" | "reset">("login");
   const [showForm, setShowForm] = useState(false);
@@ -85,6 +87,14 @@ function AuthScreen() {
   const firstName = rememberedName?.trim().split(" ")[0];
   const greeting = firstName ? t("auth.helloName", { name: firstName }) : t("auth.helloGeneric");
 
+  const accessAccount = async () => {
+    if (!passkeySupported) { setTab("login"); setShowForm(true); return; }
+    setSubmitting(true);
+    const { error } = await signInWithPasskey();
+    setSubmitting(false);
+    if (error) toast.error(t(passkeyErrorKey(error)));
+  };
+
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
@@ -97,7 +107,8 @@ function AuthScreen() {
     const { error } = await signIn(parsed.data.email, parsed.data.password);
     setSubmitting(false);
     if (error) {
-      toast.error(error.message === "Invalid login credentials" ? t("auth.invalid") : error.message);
+      toast.error(error.message === "Invalid login credentials" ? t("auth.invalid") :
+        "code" in error && error.code === "passkey_interrupted" ? t("passkey.interrupted") : error.message);
     } else {
       toast.success(t("auth.welcomeBack"));
     }
@@ -163,10 +174,15 @@ function AuthScreen() {
           <CardContent className="px-4 pb-4 pt-0.5">
             {!showForm ? (
               <div className="space-y-3 pt-4">
-                <Button className="h-12 w-full text-base" onClick={() => { setTab("login"); setShowForm(true); }}>
-                  {t("auth.accessAccount")}
+                <Button className="h-12 w-full text-base" disabled={submitting || loading} onClick={accessAccount}>
+                  {submitting ? t("auth.signing") : t("auth.accessAccount")}
                 </Button>
-                <Button variant="outline" className="h-12 w-full border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white" onClick={() => { setTab("signup"); setShowForm(true); }}>
+                {passkeySupported && (
+                  <button type="button" disabled={submitting} className="block w-full p-2 text-sm text-white/80" onClick={() => { setTab("login"); setShowForm(true); }}>
+                    {t("passkey.passwordAlternative")}
+                  </button>
+                )}
+                <Button disabled={submitting} variant="outline" className="h-12 w-full border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white" onClick={() => { setTab("signup"); setShowForm(true); }}>
                   {t("auth.create")}
                 </Button>
               </div>

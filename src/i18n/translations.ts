@@ -10,6 +10,20 @@ type Dict = Record<string, string>;
 
 export const translations: Record<Locale, Dict> = {
   pt: {
+    "passkey.title": "Acesso rápido",
+    "passkey.description": "Ative uma chave de acesso uma vez. Depois, toque em Acessar conta e confirme com Face ID, digital ou o desbloqueio do seu aparelho, sem preencher e-mail e senha.",
+    "passkey.enable": "Ativar acesso rápido",
+    "passkey.later": "Agora não",
+    "passkey.working": "Aguardando confirmação…",
+    "passkey.success": "Chave de acesso ativada",
+    "passkey.passwordAlternative": "Entrar com e-mail e senha",
+    "passkey.cancelled": "Confirmação cancelada. Tente novamente ou entre com e-mail e senha.",
+    "passkey.unavailable": "O acesso por biometria ainda não está disponível. Entre com e-mail e senha.",
+    "passkey.confirmEmail": "Confirme seu e-mail antes de ativar o acesso rápido.",
+    "passkey.exists": "Esta chave já está cadastrada. Você pode usá-la para entrar.",
+    "passkey.interrupted": "Acesso interrompido. Toque em Acessar conta novamente.",
+    "passkey.failed": "Não foi possível usar a chave de acesso. Tente novamente ou entre com e-mail e senha.",
+
     // App + nav
     "app.tagline": "Financial Axis",
     "nav.dashboard": "Dashboard",
@@ -583,6 +597,20 @@ export const translations: Record<Locale, Dict> = {
   },
 
   en: {
+    "passkey.title": "Quick access",
+    "passkey.description": "Set up a passkey once. Then tap Access account and confirm with Face ID, fingerprint or your device unlock, without entering email and password.",
+    "passkey.enable": "Enable quick access",
+    "passkey.later": "Not now",
+    "passkey.working": "Waiting for confirmation…",
+    "passkey.success": "Passkey enabled",
+    "passkey.passwordAlternative": "Sign in with email and password",
+    "passkey.cancelled": "Confirmation cancelled. Try again or sign in with email and password.",
+    "passkey.unavailable": "Biometric access is not available yet. Sign in with email and password.",
+    "passkey.confirmEmail": "Confirm your email before enabling quick access.",
+    "passkey.exists": "This passkey is already registered. You can use it to sign in.",
+    "passkey.interrupted": "Access interrupted. Tap Access account again.",
+    "passkey.failed": "Unable to use the passkey. Try again or sign in with email and password.",
+
     "app.tagline": "Financial Axis",
     "nav.dashboard": "Dashboard",
     "nav.records": "My Records",
@@ -1132,6 +1160,20 @@ export const translations: Record<Locale, Dict> = {
   },
 
   es: {
+    "passkey.title": "Acceso rápido",
+    "passkey.description": "Configura una clave de acceso una vez. Después, toca Acceder a la cuenta y confirma con Face ID, huella o el desbloqueo del dispositivo, sin introducir correo y contraseña.",
+    "passkey.enable": "Activar acceso rápido",
+    "passkey.later": "Ahora no",
+    "passkey.working": "Esperando confirmación…",
+    "passkey.success": "Clave de acceso activada",
+    "passkey.passwordAlternative": "Entrar con correo y contraseña",
+    "passkey.cancelled": "Confirmación cancelada. Inténtalo de nuevo o entra con correo y contraseña.",
+    "passkey.unavailable": "El acceso biométrico aún no está disponible. Entra con correo y contraseña.",
+    "passkey.confirmEmail": "Confirma tu correo antes de activar el acceso rápido.",
+    "passkey.exists": "Esta clave ya está registrada. Puedes usarla para entrar.",
+    "passkey.interrupted": "Acceso interrumpido. Toca Acceder a la cuenta de nuevo.",
+    "passkey.failed": "No se pudo usar la clave de acceso. Inténtalo de nuevo o entra con correo y contraseña.",
+
     "app.tagline": "Financial Axis",
     "nav.dashboard": "Panel",
     "nav.records": "Mis Registros",

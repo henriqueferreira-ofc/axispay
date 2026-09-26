@@ -19,6 +19,7 @@ function createSupabaseClient() {
       // A new app launch always requires authentication; only the greeting is remembered.
       persistSession: false,
       autoRefreshToken: true,
+      experimental: { passkey: true },
     }
   });
 }
