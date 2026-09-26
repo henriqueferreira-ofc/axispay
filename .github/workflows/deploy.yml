@@ -18,7 +18,15 @@ jobs:
         run: npm ci
 
       - name: Build
-        run: npm run build
+        run: |
+          # Empty GitHub secrets must not override the public settings in .env.
+          for name in VITE_SUPABASE_URL VITE_SUPABASE_PUBLISHABLE_KEY VITE_SUPABASE_PROJECT_ID; do
+            if [ -z "${!name}" ]; then
+              unset "$name"
+            fi
+          done
+          node --env-file=.env -e 'for (const name of ["VITE_SUPABASE_URL", "VITE_SUPABASE_PUBLISHABLE_KEY"]) { if (!process.env[name]) throw new Error(`Missing ${name}`); }'
+          npm run build
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
