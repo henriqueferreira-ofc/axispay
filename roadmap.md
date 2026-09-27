@@ -5,3 +5,4 @@
 - [ ] Adaptar importação, histórico e conciliação de extratos para telas estreitas.
 - [ ] Corrigir e validar o workflow de publicação pelo GitHub.
 - [ ] Validar build, console e visual nos três formatos.
+- [ ] Adicionar acesso rápido por passkey para contas já reconhecidas, usando digital, Face ID ou código do dispositivo.
