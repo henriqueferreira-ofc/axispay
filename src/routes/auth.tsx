@@ -141,7 +141,7 @@ function AuthPage() {
       </div>
 
       <div className="relative z-10 mt-auto flex w-full flex-col items-center px-4 pb-3 pt-20 sm:px-6 sm:pb-8">
-        <Card className="w-full max-w-[40rem] rounded-[20px] sm:rounded-[28px] border-white/15 bg-black/45 text-white shadow-none backdrop-blur-xl [&_input]:h-11 [&_input]:border-white/20 [&_input]:bg-black/30 [&_label]:text-sm">
+        <Card className="w-full max-w-[40rem] rounded-[20px] sm:rounded-[28px] border-white/15 bg-black/40 text-white shadow-none backdrop-blur-xl [&_input]:h-11 [&_input]:border-white/20 [&_input]:bg-black/30 [&_label]:text-sm">
           <CardHeader className="gap-2 space-y-0 px-4 pb-6 pt-4 sm:px-6 sm:pb-8 sm:pt-6">
             <CardTitle className="text-sm leading-5 sm:text-xl sm:leading-7">
               {tab === "login"
@@ -162,7 +162,7 @@ function AuthPage() {
             {!showForm ? (
               <div className="grid gap-3 sm:gap-4">
                 <Button
-                  className="h-12 w-full rounded-[10px] bg-[#12cfa0] text-base sm:h-[68px] sm:rounded-2xl font-medium text-black hover:bg-[#10bb91] sm:text-2xl"
+                  className="h-12 w-full rounded-[10px] bg-[#12cfa0] text-base sm:h-[68px] sm:rounded-2xl font-medium text-[#123a7a] hover:bg-[#10bb91] sm:text-2xl"
                   onClick={() => {
                     setTab("login");
                     setShowForm(true);
@@ -237,7 +237,7 @@ function AuthPage() {
                       </div>
                       <Button
                         type="submit"
-                        className="h-11 w-full bg-[#12cfa0] text-sm text-black hover:bg-[#10bb91]"
+                        className="h-11 w-full bg-[#12cfa0] text-sm text-[#123a7a] hover:bg-[#10bb91]"
                         disabled={submitting}
                       >
                         {submitting ? t("auth.signing") : t("auth.accessAccount")}
