@@ -170,3 +170,8 @@
 @media (prefers-reduced-motion: reduce) {
   .auth-background-pulse { animation: none; }
 }
+
+/* Mask private content immediately, including browser back/forward snapshots. */
+html[data-app-locked] [data-private-content] {
+  visibility: hidden;
+}

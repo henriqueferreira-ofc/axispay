@@ -21,6 +21,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Check authentication lifecycle
+        run: npm test
+
       - name: Build
         shell: bash
         run: |
