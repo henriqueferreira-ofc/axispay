@@ -13,7 +13,7 @@ export function AuthHeroBackground() {
           className="h-full w-full object-cover object-[52%_top] sm:object-center lg:object-[center_21%]"
         />
       </picture>
-      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent lg:bg-black/5" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/25 to-black/30 lg:bg-none lg:bg-black/5" />
     </div>
   );
 }

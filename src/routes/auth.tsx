@@ -42,6 +42,15 @@ function AuthPage() {
   const [tab, setTab] = useState<"login" | "signup" | "reset">("login");
   const [showForm, setShowForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [rememberedName, setRememberedName] = useState<string | null>(null);
+
+  useEffect(() => {
+    try {
+      setRememberedName(window.localStorage.getItem(LAST_USER_NAME_KEY));
+    } catch {
+      // The greeting is optional when browser storage is unavailable.
+    }
+  }, []);
 
   const loginSchema = z.object({
     email: z.string().email(t("auth.invalidEmail")),
@@ -64,7 +73,8 @@ function AuthPage() {
     navigate({ to: search.redirect || "/" });
   }, [user, loading, navigate, search.redirect]);
 
-  const greeting = t("auth.helloGeneric");
+  const firstName = rememberedName?.trim().split(/\s+/)[0];
+  const greeting = firstName ? t("auth.helloName", { name: firstName }) : t("auth.helloGeneric");
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -124,23 +134,23 @@ function AuthPage() {
     <div className="dark relative isolate flex min-h-svh flex-col overflow-x-hidden bg-black text-white">
       <AuthHeroBackground />
 
-      <div className="absolute right-3 top-3 z-20 flex items-center justify-end sm:right-5 sm:top-4">
-        <div className="[&_button]:text-white [&_svg]:text-white">
+      <div className="absolute right-4 top-5 z-20 flex items-center justify-end sm:right-5 sm:top-4">
+        <div className="rounded-full bg-black/30 backdrop-blur-md sm:rounded-none sm:bg-transparent sm:backdrop-blur-none [&_button]:text-white [&_svg]:text-white">
           <LanguageSwitcher />
         </div>
       </div>
 
       <div className="relative z-10 mt-auto flex w-full flex-col items-center px-4 pb-6 pt-20 sm:px-6 sm:pb-8">
-        <Card className="w-full max-w-[40rem] rounded-[28px] border-white/15 bg-black/45 text-white shadow-none backdrop-blur-xl [&_input]:h-11 [&_input]:border-white/20 [&_input]:bg-black/30 [&_label]:text-sm">
-          <CardHeader className="gap-2 space-y-0 px-6 pb-8 pt-6">
-            <CardTitle className="text-xl leading-7">
+        <Card className="w-full max-w-[40rem] rounded-[20px] sm:rounded-[28px] border-white/15 bg-black/45 text-white shadow-none backdrop-blur-xl [&_input]:h-11 [&_input]:border-white/20 [&_input]:bg-black/30 [&_label]:text-sm">
+          <CardHeader className="gap-2 space-y-0 px-4 pb-6 pt-4 sm:px-6 sm:pb-8 sm:pt-6">
+            <CardTitle className="text-sm leading-5 sm:text-xl sm:leading-7">
               {tab === "login"
                 ? greeting
                 : tab === "signup"
                   ? t("auth.signupTitle")
                   : t("auth.reset")}
             </CardTitle>
-            <CardDescription className="text-base leading-6 text-gray-400">
+            <CardDescription className="text-xs leading-[18px] text-gray-400 sm:text-base sm:leading-6">
               {tab === "login"
                 ? t("auth.signinDesc")
                 : tab === "signup"
@@ -148,11 +158,11 @@ function AuthPage() {
                   : t("auth.resetDesc")}
             </CardDescription>
           </CardHeader>
-          <CardContent className="px-6 pb-6 pt-0">
+          <CardContent className="px-4 pb-4 pt-0 sm:px-6 sm:pb-6">
             {!showForm ? (
-              <div className="grid gap-4">
+              <div className="grid gap-3 sm:gap-4">
                 <Button
-                  className="h-[68px] w-full rounded-2xl bg-[#12cfa0] text-xl font-medium text-black hover:bg-[#10bb91] sm:text-2xl"
+                  className="h-12 w-full rounded-[10px] bg-[#12cfa0] text-base sm:h-[68px] sm:rounded-2xl font-medium text-black hover:bg-[#10bb91] sm:text-2xl"
                   onClick={() => {
                     setTab("login");
                     setShowForm(true);
@@ -162,7 +172,7 @@ function AuthPage() {
                 </Button>
                 <Button
                   variant="outline"
-                  className="h-[68px] w-full rounded-2xl border-white/25 bg-white/5 text-xl font-medium text-white hover:bg-white/10 hover:text-white"
+                  className="h-12 w-full rounded-[10px] border-white/25 bg-white/5 text-sm sm:h-[68px] sm:rounded-2xl sm:text-xl font-medium text-white hover:bg-white/10 hover:text-white"
                   onClick={() => {
                     setTab("signup");
                     setShowForm(true);
