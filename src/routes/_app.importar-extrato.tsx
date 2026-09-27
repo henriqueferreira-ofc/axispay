@@ -490,6 +490,7 @@ function ImportStatementPage() {
                   Nenhuma importação ainda.
                 </div>
               ) : (
+                <>
                 <div className="hidden overflow-x-auto md:block"><Table>
                   <TableHeader>
                     <TableRow>
@@ -543,6 +544,7 @@ function ImportStatementPage() {
                     </div>
                   ))}
                 </div>
+                </>
               )}
             </CardContent>
           </Card>
