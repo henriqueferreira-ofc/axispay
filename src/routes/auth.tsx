@@ -140,7 +140,7 @@ function AuthPage() {
         </div>
       </div>
 
-      <div className="relative z-10 mt-auto flex w-full flex-col items-center px-4 pb-6 pt-20 sm:px-6 sm:pb-8">
+      <div className="relative z-10 mt-auto flex w-full flex-col items-center px-4 pb-3 pt-20 sm:px-6 sm:pb-8">
         <Card className="w-full max-w-[40rem] rounded-[20px] sm:rounded-[28px] border-white/15 bg-black/45 text-white shadow-none backdrop-blur-xl [&_input]:h-11 [&_input]:border-white/20 [&_input]:bg-black/30 [&_label]:text-sm">
           <CardHeader className="gap-2 space-y-0 px-4 pb-6 pt-4 sm:px-6 sm:pb-8 sm:pt-6">
             <CardTitle className="text-sm leading-5 sm:text-xl sm:leading-7">
