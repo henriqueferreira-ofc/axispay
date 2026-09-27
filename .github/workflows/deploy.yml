@@ -28,10 +28,10 @@ jobs:
             fi
           done
           npm run build
-          test -f dist/server/wrangler.json
-          test -f dist/server/index.js
+          test -f .output/server/wrangler.json
+          test -f .output/server/index.mjs
           # The GitHub Pages redirect must never replace the application.
-          test ! -f dist/client/index.html
+          test ! -f .output/public/index.html
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
@@ -41,4 +41,4 @@ jobs:
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          command: deploy --config dist/server/wrangler.json
+          command: deploy --config .output/server/wrangler.json
