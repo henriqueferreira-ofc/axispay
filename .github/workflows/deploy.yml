@@ -13,15 +13,25 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
+          cache: npm
 
       - name: Install dependencies
-        run: bun install --frozen-lockfile
+        run: npm ci
 
       - name: Build
-        run: bun run build
+        shell: bash
+        run: |
+          # Empty secrets must not override the public configuration in .env.
+          for name in VITE_SUPABASE_URL VITE_SUPABASE_PUBLISHABLE_KEY VITE_SUPABASE_PROJECT_ID; do
+            if [ -z "${!name}" ]; then
+              unset "$name"
+            fi
+          done
+          npm run build
+          test -f dist/server/wrangler.json
+          test -f dist/server/index.js
+          # The GitHub Pages redirect must never replace the application.
+          test ! -f dist/client/index.html
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
@@ -31,4 +41,4 @@ jobs:
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          command: deploy
+          command: deploy --config dist/server/wrangler.json
