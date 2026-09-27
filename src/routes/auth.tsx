@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/auth/AuthProvider";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,19 +12,11 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useI18n } from "@/i18n/I18nProvider";
 import { AuthHeroBackground } from "@/components/AuthHeroBackground";
 
-import { passkeyErrorKey } from "@/auth/passkeys";
-
 const LAST_USER_NAME_KEY = "axispay.lastUserName";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (s: Record<string, unknown>) => ({
-    redirect:
-      typeof s.redirect === "string" &&
-      s.redirect.startsWith("/") &&
-      !s.redirect.startsWith("//") &&
-      !["/auth", "/reset-password"].includes(s.redirect.split(/[?#]/)[0].replace(/\/$/, ""))
-        ? s.redirect
-        : "/",
+    redirect: typeof s.redirect === "string" ? s.redirect : "/",
   }),
   head: () => ({
     meta: [
@@ -40,28 +32,20 @@ export const Route = createFileRoute("/auth")({
 });
 
 function AuthPage() {
-  const { lockRevision } = useAuth();
-  return <AuthScreen key={lockRevision} />;
-}
-
-function AuthScreen() {
   const navigate = useNavigate();
   const search = Route.useSearch();
-  const { user, loading, signIn, signUp, resetPassword, passkeySupported, signInWithPasskey } = useAuth();
+  const { user, loading, signIn, signUp, resetPassword } = useAuth();
   const { t } = useI18n();
   const [tab, setTab] = useState<"login" | "signup" | "reset">("login");
-  const [showForm, setShowForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [rememberedName, setRememberedName] = useState<string | null>(null);
-
-  // Keep the server and initial client render identical before reading browser storage.
-  useEffect(() => {
+  const [rememberedName] = useState<string | null>(() => {
+    if (typeof window === "undefined") return null;
     try {
-      setRememberedName(window.localStorage.getItem(LAST_USER_NAME_KEY));
+      return window.localStorage.getItem(LAST_USER_NAME_KEY);
     } catch {
-      // Keep the generic greeting when browser storage is unavailable.
+      return null;
     }
-  }, []);
+  });
 
   const loginSchema = z.object({
     email: z.string().email(t("auth.invalidEmail")),
@@ -81,19 +65,11 @@ function AuthScreen() {
         // ignore storage errors (private mode, quota, etc.)
       }
     }
-    navigate({ to: search.redirect || "/", replace: true });
+    navigate({ to: search.redirect || "/" });
   }, [user, loading, navigate, search.redirect]);
 
   const firstName = rememberedName?.trim().split(" ")[0];
   const greeting = firstName ? t("auth.helloName", { name: firstName }) : t("auth.helloGeneric");
-
-  const accessAccount = async () => {
-    if (!passkeySupported) { setTab("login"); setShowForm(true); return; }
-    setSubmitting(true);
-    const { error } = await signInWithPasskey();
-    setSubmitting(false);
-    if (error) toast.error(t(passkeyErrorKey(error)));
-  };
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -107,8 +83,7 @@ function AuthScreen() {
     const { error } = await signIn(parsed.data.email, parsed.data.password);
     setSubmitting(false);
     if (error) {
-      toast.error(error.message === "Invalid login credentials" ? t("auth.invalid") :
-        "code" in error && error.code === "passkey_interrupted" ? t("passkey.interrupted") : error.message);
+      toast.error(error.message === "Invalid login credentials" ? t("auth.invalid") : error.message);
     } else {
       toast.success(t("auth.welcomeBack"));
     }
@@ -116,8 +91,7 @@ function AuthScreen() {
 
   const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const form = e.currentTarget;
-    const fd = new FormData(form);
+    const fd = new FormData(e.currentTarget);
     const parsed = signupSchema.safeParse({
       name: fd.get("name"),
       email: fd.get("email"),
@@ -133,8 +107,6 @@ function AuthScreen() {
     if (error) {
       toast.error(error.message.includes("already") ? t("auth.exists") : error.message);
     } else {
-      form.reset();
-      setTab("login");
       toast.success(t("auth.created"));
     }
   };
@@ -152,42 +124,27 @@ function AuthScreen() {
   };
 
   return (
-    <div className="relative isolate flex min-h-screen flex-col overflow-x-hidden bg-background">
+    <div className="relative isolate flex min-h-screen flex-col overflow-x-hidden bg-background lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(24rem,38rem)]">
       <AuthHeroBackground />
 
-      <div className="relative z-10 flex items-center justify-end px-4 pt-5">
-        <div className="rounded-full bg-black/30 backdrop-blur-sm [&_button]:text-white [&_svg]:text-white">
+      <div className="absolute right-4 top-5 z-20 flex items-center justify-end lg:right-8 lg:top-8">
+        <div className="rounded-full bg-background/45 backdrop-blur-md [&_button]:text-foreground [&_svg]:text-foreground">
           <LanguageSwitcher />
         </div>
       </div>
 
-      <div className="relative z-10 mt-auto flex w-full flex-col px-4 pb-6 pt-16">
-        <Card className="w-full max-w-md self-center rounded-2xl border-white/15 bg-black/35 text-white backdrop-blur-xl shadow-2xl [&_input]:border-white/20 [&_input]:bg-white/5 [&_input]:h-8 [&_label]:text-xs">
+      <div className="relative z-10 mt-auto flex w-full flex-col px-4 pb-6 pt-16 lg:col-start-2 lg:row-start-1 lg:row-end-3 lg:my-auto lg:px-12 lg:py-24">
+        <Card className="w-full max-w-md self-center rounded-xl border-border/70 bg-background/88 text-foreground shadow-2xl backdrop-blur-xl [&_input]:h-8 [&_input]:border-border/80 [&_input]:bg-background/60 [&_label]:text-xs">
           <CardHeader className="gap-0.5 px-4 pb-1.5 pt-4">
             <CardTitle className="text-sm">
-              {!showForm || tab === "login" ? greeting : tab === "signup" ? t("auth.signupTitle") : t("auth.reset")}
+              {tab === "login" ? greeting : tab === "signup" ? t("auth.signupTitle") : t("auth.reset")}
             </CardTitle>
             <CardDescription className="text-xs">
-              {!showForm || tab === "login" ? t("auth.signinDesc") : tab === "signup" ? t("auth.signupDesc") : t("auth.resetDesc")}
+              {tab === "login" ? t("auth.signinDesc") : tab === "signup" ? t("auth.signupDesc") : t("auth.resetDesc")}
             </CardDescription>
           </CardHeader>
           <CardContent className="px-4 pb-4 pt-0.5">
-            {!showForm ? (
-              <div className="space-y-3 pt-4">
-                <Button className="h-12 w-full text-base" disabled={submitting || loading} onClick={accessAccount}>
-                  {submitting ? t("auth.signing") : t("auth.accessAccount")}
-                </Button>
-                {passkeySupported && (
-                  <button type="button" disabled={submitting} className="block w-full p-2 text-sm text-white/80" onClick={() => { setTab("login"); setShowForm(true); }}>
-                    {t("passkey.passwordAlternative")}
-                  </button>
-                )}
-                <Button disabled={submitting} variant="outline" className="h-12 w-full border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white" onClick={() => { setTab("signup"); setShowForm(true); }}>
-                  {t("auth.create")}
-                </Button>
-              </div>
-            ) : (
-            <Tabs value={tab === "reset" ? "login" : tab} onValueChange={(v) => setTab(v as typeof tab)}>
+            <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
               <TabsList className="grid h-8 w-full grid-cols-2">
                 <TabsTrigger value="login" className="text-xs">{t("auth.signin")}</TabsTrigger>
                 <TabsTrigger value="signup" className="text-xs">{t("auth.signup")}</TabsTrigger>
@@ -254,15 +211,12 @@ function AuthScreen() {
                 </form>
               </TabsContent>
             </Tabs>
-            )}
           </CardContent>
         </Card>
 
-        {showForm && (
-          <button type="button" className="mt-2.5 self-center p-2 text-xs text-white/80 drop-shadow hover:text-white" onClick={() => setShowForm(false)}>
-            {t("auth.backHome")}
-          </button>
-        )}
+        <p className="mt-2.5 text-center text-xs text-foreground/80 drop-shadow">
+          <Link to="/" className="hover:text-foreground">{t("auth.backHome")}</Link>
+        </p>
       </div>
     </div>
   );
