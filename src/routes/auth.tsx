@@ -127,7 +127,7 @@ function AuthPage() {
     <div className="relative isolate flex min-h-screen flex-col overflow-x-hidden bg-background lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(24rem,38rem)]">
       <AuthHeroBackground />
 
-      <div className="relative z-10 flex items-center justify-end px-4 pt-5 lg:col-start-2 lg:px-8 lg:pt-8">
+      <div className="absolute right-4 top-5 z-20 flex items-center justify-end lg:right-8 lg:top-8">
         <div className="rounded-full bg-background/45 backdrop-blur-md [&_button]:text-foreground [&_svg]:text-foreground">
           <LanguageSwitcher />
         </div>
