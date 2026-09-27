@@ -19,6 +19,12 @@ export const Route = createFileRoute("/auth")({
     redirect: typeof s.redirect === "string" ? s.redirect : "/",
   }),
   head: () => ({
+    links: [
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap",
+      },
+    ],
     meta: [
       { title: "AxisPay" },
       { name: "description", content: "Acesse sua conta AxisPay para gerenciar suas finanças." },
@@ -131,7 +137,7 @@ function AuthPage() {
   };
 
   return (
-    <div className="dark relative isolate flex min-h-svh flex-col overflow-x-hidden bg-black text-white">
+    <div className="font-auth dark relative isolate flex min-h-svh flex-col overflow-x-hidden bg-black text-white">
       <AuthHeroBackground />
 
       <div className="absolute right-4 top-5 z-20 flex items-center justify-end sm:right-5 sm:top-4">
@@ -143,7 +149,7 @@ function AuthPage() {
       <div className="relative z-10 mt-auto flex w-full flex-col items-center px-4 pb-3 pt-20 sm:px-6 sm:pb-8">
         <Card className="w-full max-w-[40rem] rounded-[20px] sm:rounded-[28px] border-white/15 bg-black/40 text-white shadow-none backdrop-blur-xl [&_input]:h-11 [&_input]:border-white/20 [&_input]:bg-black/30 [&_label]:text-sm">
           <CardHeader className="gap-2 space-y-0 px-4 pb-6 pt-4 sm:px-6 sm:pb-8 sm:pt-6">
-            <CardTitle className="text-sm leading-5 sm:text-xl sm:leading-7">
+            <CardTitle className="text-base font-normal leading-5 tracking-normal sm:text-xl sm:leading-7">
               {tab === "login"
                 ? greeting
                 : tab === "signup"
@@ -162,7 +168,7 @@ function AuthPage() {
             {!showForm ? (
               <div className="grid gap-3 sm:gap-4">
                 <Button
-                  className="h-12 w-full rounded-[10px] bg-[#12cfa0] text-base sm:h-[68px] sm:rounded-2xl font-medium text-[#123a7a] hover:bg-[#10bb91] sm:text-2xl"
+                  className="h-12 w-full rounded-[10px] bg-[#12cfa0] text-[17px] sm:h-[68px] sm:rounded-2xl font-normal tracking-normal text-[#123a7a] hover:bg-[#10bb91] sm:text-2xl"
                   onClick={() => {
                     setTab("login");
                     setShowForm(true);
@@ -172,7 +178,7 @@ function AuthPage() {
                 </Button>
                 <Button
                   variant="outline"
-                  className="h-12 w-full rounded-[10px] border-white/25 bg-white/5 text-sm sm:h-[68px] sm:rounded-2xl sm:text-xl font-medium text-white hover:bg-white/10 hover:text-white"
+                  className="h-12 w-full rounded-[10px] border-white/25 bg-white/5 text-[17px] sm:h-[68px] sm:rounded-2xl sm:text-xl font-normal tracking-normal text-white hover:bg-white/10 hover:text-white"
                   onClick={() => {
                     setTab("signup");
                     setShowForm(true);
