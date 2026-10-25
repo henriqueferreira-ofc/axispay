@@ -141,18 +141,18 @@ function AuthPage() {
 
       <div className="relative z-10 mt-auto flex w-full flex-col items-center px-4 pb-[max(12px,env(safe-area-inset-bottom))] pt-28 md:px-8 md:pb-10">
         {!showForm ? (
-          <Card className="w-full max-w-4xl rounded-[20px] border-white/20 bg-black/45 p-4 text-white shadow-2xl backdrop-blur-2xl md:rounded-[36px] md:p-8">
+          <Card className="w-full max-w-4xl rounded-[24px] border-white/20 bg-black/45 p-5 text-white shadow-2xl backdrop-blur-2xl md:rounded-[36px] md:p-8">
             <CardHeader className="space-y-2 p-0">
-              <CardTitle className="text-lg font-normal leading-tight md:text-[28px]">
+              <CardTitle className="text-xl font-normal leading-tight md:text-[28px]">
                 {greeting}
               </CardTitle>
               <CardDescription className="text-sm leading-relaxed text-slate-400 md:text-[22px]">
                 {t("auth.signinDesc")}
               </CardDescription>
             </CardHeader>
-            <CardContent className="flex flex-col gap-3 p-0 pt-6 md:gap-5 md:pt-10">
+            <CardContent className="flex flex-col gap-3.5 p-0 pt-7 md:gap-5 md:pt-10">
               <Button
-                className="h-12 w-full rounded-xl bg-[#0cc6a0] text-lg font-normal text-[#064c72] hover:bg-[#0bb590] md:h-24 md:rounded-[28px] md:text-[34px]"
+                className="h-14 w-full rounded-[14px] bg-[#0cc6a0] text-xl font-normal text-[#064c72] hover:bg-[#0bb590] md:h-24 md:rounded-[28px] md:text-[34px]"
                 onClick={() => {
                   setTab("login");
                   setShowForm(true);
@@ -162,7 +162,7 @@ function AuthPage() {
               </Button>
               <Button
                 variant="outline"
-                className="h-12 w-full rounded-xl border-white/35 bg-white/5 text-lg font-normal text-white hover:bg-white/15 hover:text-white md:h-24 md:rounded-[28px] md:text-[28px]"
+                className="h-14 w-full rounded-[14px] border-white/35 bg-white/5 text-xl font-normal text-white hover:bg-white/15 hover:text-white md:h-24 md:rounded-[28px] md:text-[28px]"
                 onClick={() => {
                   setTab("signup");
                   setShowForm(true);
