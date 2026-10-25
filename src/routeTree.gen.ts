@@ -9,27 +9,26 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AppRouteImport } from './routes/_app'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
-import { Route as AppRelatoriosRouteImport } from './routes/_app.relatorios'
-import { Route as AppRegistrosRouteImport } from './routes/_app.registros'
-import { Route as AppRecorrentesRouteImport } from './routes/_app.recorrentes'
-import { Route as AppReceitasRouteImport } from './routes/_app.receitas'
-import { Route as AppPerfilRouteImport } from './routes/_app.perfil'
-import { Route as AppOrcamentosRouteImport } from './routes/_app.orcamentos'
-import { Route as AppMetasRouteImport } from './routes/_app.metas'
-import { Route as AppInteligenciaRouteImport } from './routes/_app.inteligencia'
-import { Route as AppImportarExtratoRouteImport } from './routes/_app.importar-extrato'
-import { Route as AppImportarRouteImport } from './routes/_app.importar'
-import { Route as AppDespesasRouteImport } from './routes/_app.despesas'
-import { Route as AppContasRouteImport } from './routes/_app.contas'
 import { Route as AppCategoriasRouteImport } from './routes/_app.categorias'
+import { Route as AppContasRouteImport } from './routes/_app.contas'
+import { Route as AppDespesasRouteImport } from './routes/_app.despesas'
+import { Route as AppImportarRouteImport } from './routes/_app.importar'
+import { Route as AppImportarExtratoRouteImport } from './routes/_app.importar-extrato'
+import { Route as AppInteligenciaRouteImport } from './routes/_app.inteligencia'
+import { Route as AppMetasRouteImport } from './routes/_app.metas'
+import { Route as AppOrcamentosRouteImport } from './routes/_app.orcamentos'
+import { Route as AppPerfilRouteImport } from './routes/_app.perfil'
+import { Route as AppReceitasRouteImport } from './routes/_app.receitas'
+import { Route as AppRecorrentesRouteImport } from './routes/_app.recorrentes'
+import { Route as AppRegistrosRouteImport } from './routes/_app.registros'
+import { Route as AppRelatoriosRouteImport } from './routes/_app.relatorios'
 
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -37,8 +36,9 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppRoute = AppRouteImport.update({
-  id: '/_app',
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppIndexRoute = AppIndexRouteImport.update({
@@ -46,59 +46,9 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppRoute,
 } as any)
-const AppRelatoriosRoute = AppRelatoriosRouteImport.update({
-  id: '/relatorios',
-  path: '/relatorios',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppRegistrosRoute = AppRegistrosRouteImport.update({
-  id: '/registros',
-  path: '/registros',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppRecorrentesRoute = AppRecorrentesRouteImport.update({
-  id: '/recorrentes',
-  path: '/recorrentes',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppReceitasRoute = AppReceitasRouteImport.update({
-  id: '/receitas',
-  path: '/receitas',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppPerfilRoute = AppPerfilRouteImport.update({
-  id: '/perfil',
-  path: '/perfil',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppOrcamentosRoute = AppOrcamentosRouteImport.update({
-  id: '/orcamentos',
-  path: '/orcamentos',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppMetasRoute = AppMetasRouteImport.update({
-  id: '/metas',
-  path: '/metas',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppInteligenciaRoute = AppInteligenciaRouteImport.update({
-  id: '/inteligencia',
-  path: '/inteligencia',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppImportarExtratoRoute = AppImportarExtratoRouteImport.update({
-  id: '/importar-extrato',
-  path: '/importar-extrato',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppImportarRoute = AppImportarRouteImport.update({
-  id: '/importar',
-  path: '/importar',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppDespesasRoute = AppDespesasRouteImport.update({
-  id: '/despesas',
-  path: '/despesas',
+const AppCategoriasRoute = AppCategoriasRouteImport.update({
+  id: '/categorias',
+  path: '/categorias',
   getParentRoute: () => AppRoute,
 } as any)
 const AppContasRoute = AppContasRouteImport.update({
@@ -106,9 +56,59 @@ const AppContasRoute = AppContasRouteImport.update({
   path: '/contas',
   getParentRoute: () => AppRoute,
 } as any)
-const AppCategoriasRoute = AppCategoriasRouteImport.update({
-  id: '/categorias',
-  path: '/categorias',
+const AppDespesasRoute = AppDespesasRouteImport.update({
+  id: '/despesas',
+  path: '/despesas',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppImportarRoute = AppImportarRouteImport.update({
+  id: '/importar',
+  path: '/importar',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppImportarExtratoRoute = AppImportarExtratoRouteImport.update({
+  id: '/importar-extrato',
+  path: '/importar-extrato',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppInteligenciaRoute = AppInteligenciaRouteImport.update({
+  id: '/inteligencia',
+  path: '/inteligencia',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMetasRoute = AppMetasRouteImport.update({
+  id: '/metas',
+  path: '/metas',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppOrcamentosRoute = AppOrcamentosRouteImport.update({
+  id: '/orcamentos',
+  path: '/orcamentos',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPerfilRoute = AppPerfilRouteImport.update({
+  id: '/perfil',
+  path: '/perfil',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppReceitasRoute = AppReceitasRouteImport.update({
+  id: '/receitas',
+  path: '/receitas',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppRecorrentesRoute = AppRecorrentesRouteImport.update({
+  id: '/recorrentes',
+  path: '/recorrentes',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppRegistrosRoute = AppRegistrosRouteImport.update({
+  id: '/registros',
+  path: '/registros',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppRelatoriosRoute = AppRelatoriosRouteImport.update({
+  id: '/relatorios',
+  path: '/relatorios',
   getParentRoute: () => AppRoute,
 } as any)
 
@@ -234,11 +234,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -248,11 +248,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_app': {
-      id: '/_app'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AppRouteImport
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app/': {
@@ -262,81 +262,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/relatorios': {
-      id: '/_app/relatorios'
-      path: '/relatorios'
-      fullPath: '/relatorios'
-      preLoaderRoute: typeof AppRelatoriosRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/registros': {
-      id: '/_app/registros'
-      path: '/registros'
-      fullPath: '/registros'
-      preLoaderRoute: typeof AppRegistrosRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/recorrentes': {
-      id: '/_app/recorrentes'
-      path: '/recorrentes'
-      fullPath: '/recorrentes'
-      preLoaderRoute: typeof AppRecorrentesRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/receitas': {
-      id: '/_app/receitas'
-      path: '/receitas'
-      fullPath: '/receitas'
-      preLoaderRoute: typeof AppReceitasRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/perfil': {
-      id: '/_app/perfil'
-      path: '/perfil'
-      fullPath: '/perfil'
-      preLoaderRoute: typeof AppPerfilRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/orcamentos': {
-      id: '/_app/orcamentos'
-      path: '/orcamentos'
-      fullPath: '/orcamentos'
-      preLoaderRoute: typeof AppOrcamentosRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/metas': {
-      id: '/_app/metas'
-      path: '/metas'
-      fullPath: '/metas'
-      preLoaderRoute: typeof AppMetasRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/inteligencia': {
-      id: '/_app/inteligencia'
-      path: '/inteligencia'
-      fullPath: '/inteligencia'
-      preLoaderRoute: typeof AppInteligenciaRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/importar-extrato': {
-      id: '/_app/importar-extrato'
-      path: '/importar-extrato'
-      fullPath: '/importar-extrato'
-      preLoaderRoute: typeof AppImportarExtratoRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/importar': {
-      id: '/_app/importar'
-      path: '/importar'
-      fullPath: '/importar'
-      preLoaderRoute: typeof AppImportarRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/despesas': {
-      id: '/_app/despesas'
-      path: '/despesas'
-      fullPath: '/despesas'
-      preLoaderRoute: typeof AppDespesasRouteImport
+    '/_app/categorias': {
+      id: '/_app/categorias'
+      path: '/categorias'
+      fullPath: '/categorias'
+      preLoaderRoute: typeof AppCategoriasRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/contas': {
@@ -346,11 +276,81 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppContasRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/categorias': {
-      id: '/_app/categorias'
-      path: '/categorias'
-      fullPath: '/categorias'
-      preLoaderRoute: typeof AppCategoriasRouteImport
+    '/_app/despesas': {
+      id: '/_app/despesas'
+      path: '/despesas'
+      fullPath: '/despesas'
+      preLoaderRoute: typeof AppDespesasRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/importar': {
+      id: '/_app/importar'
+      path: '/importar'
+      fullPath: '/importar'
+      preLoaderRoute: typeof AppImportarRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/importar-extrato': {
+      id: '/_app/importar-extrato'
+      path: '/importar-extrato'
+      fullPath: '/importar-extrato'
+      preLoaderRoute: typeof AppImportarExtratoRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/inteligencia': {
+      id: '/_app/inteligencia'
+      path: '/inteligencia'
+      fullPath: '/inteligencia'
+      preLoaderRoute: typeof AppInteligenciaRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/metas': {
+      id: '/_app/metas'
+      path: '/metas'
+      fullPath: '/metas'
+      preLoaderRoute: typeof AppMetasRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/orcamentos': {
+      id: '/_app/orcamentos'
+      path: '/orcamentos'
+      fullPath: '/orcamentos'
+      preLoaderRoute: typeof AppOrcamentosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/perfil': {
+      id: '/_app/perfil'
+      path: '/perfil'
+      fullPath: '/perfil'
+      preLoaderRoute: typeof AppPerfilRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/receitas': {
+      id: '/_app/receitas'
+      path: '/receitas'
+      fullPath: '/receitas'
+      preLoaderRoute: typeof AppReceitasRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/recorrentes': {
+      id: '/_app/recorrentes'
+      path: '/recorrentes'
+      fullPath: '/recorrentes'
+      preLoaderRoute: typeof AppRecorrentesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/registros': {
+      id: '/_app/registros'
+      path: '/registros'
+      fullPath: '/registros'
+      preLoaderRoute: typeof AppRegistrosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/relatorios': {
+      id: '/_app/relatorios'
+      path: '/relatorios'
+      fullPath: '/relatorios'
+      preLoaderRoute: typeof AppRelatoriosRouteImport
       parentRoute: typeof AppRoute
     }
   }
