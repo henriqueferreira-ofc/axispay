@@ -1,0 +1,201 @@
+import { createServerFn } from "@tanstack/react-start";
+import { getRequest } from "@tanstack/react-start/server";
+import { z } from "zod";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+
+/**
+ * Real WebAuthn (passkey) authentication.
+ * - Registration requires an existing signed-in session (first login is always email + password).
+ * - Login verifies the device signature on the server, then issues a one-time sign-in token
+ *   for that user. No biometric data ever leaves the device.
+ */
+
+function resolveOrigin() {
+  const req = getRequest();
+  const originHeader = req?.headers.get("origin");
+  const origin = originHeader || (req ? new URL(req.url).origin : "");
+  if (!origin) throw new Error("Origem inválida");
+  const { hostname, protocol } = new URL(origin);
+  if (protocol !== "https:" && hostname !== "localhost") throw new Error("Origem inválida");
+  return { origin, rpID: hostname };
+}
+
+const responseSchema = z.record(z.string(), z.any());
+
+export const startPasskeyRegistration = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { generateRegistrationOptions } = await import("@simplewebauthn/server");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { origin, rpID } = resolveOrigin();
+    const email = typeof context.claims.email === "string" ? context.claims.email : "usuario";
+
+    const { data: existing } = await supabaseAdmin
+      .from("passkey_credentials")
+      .select("credential_id, transports")
+      .eq("user_id", context.userId)
+      .eq("rp_id", rpID);
+
+    const options = await generateRegistrationOptions({
+      rpName: "AxisPay",
+      rpID,
+      userName: email,
+      userID: new TextEncoder().encode(context.userId),
+      attestationType: "none",
+      excludeCredentials: (existing ?? []).map((c) => ({
+        id: c.credential_id,
+        transports: c.transports as AuthenticatorTransport[] as never,
+      })),
+      authenticatorSelection: {
+        authenticatorAttachment: "platform",
+        residentKey: "preferred",
+        userVerification: "required",
+      },
+    });
+
+    await supabaseAdmin.from("passkey_challenges").delete().lt("expires_at", new Date().toISOString());
+    const { data: ch, error } = await supabaseAdmin
+      .from("passkey_challenges")
+      .insert({ user_id: context.userId, challenge: options.challenge, kind: "register", rp_id: rpID, origin })
+      .select("id")
+      .single();
+    if (error || !ch) throw new Error("Não foi possível iniciar o cadastro");
+    return { challengeId: ch.id, options: JSON.parse(JSON.stringify(options)) as Record<string, unknown> };
+  });
+
+export const finishPasskeyRegistration = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) =>
+    z.object({ challengeId: z.string().uuid(), response: responseSchema, deviceLabel: z.string().max(80).optional() }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { verifyRegistrationResponse } = await import("@simplewebauthn/server");
+    const { isoBase64URL } = await import("@simplewebauthn/server/helpers");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const { data: ch } = await supabaseAdmin
+      .from("passkey_challenges")
+      .select("*")
+      .eq("id", data.challengeId)
+      .eq("kind", "register")
+      .eq("user_id", context.userId)
+      .maybeSingle();
+    await supabaseAdmin.from("passkey_challenges").delete().eq("id", data.challengeId);
+    if (!ch || new Date(ch.expires_at).getTime() < Date.now()) throw new Error("Tempo esgotado, tente novamente");
+
+    const verification = await verifyRegistrationResponse({
+      response: data.response as never,
+      expectedChallenge: ch.challenge,
+      expectedOrigin: ch.origin,
+      expectedRPID: ch.rp_id,
+      requireUserVerification: true,
+    });
+    if (!verification.verified || !verification.registrationInfo) throw new Error("Biometria não confirmada");
+
+    const cred = verification.registrationInfo.credential;
+    const { error } = await supabaseAdmin.from("passkey_credentials").upsert(
+      {
+        user_id: context.userId,
+        credential_id: cred.id,
+        public_key: isoBase64URL.fromBuffer(cred.publicKey),
+        counter: cred.counter,
+        transports: (cred.transports ?? []) as string[],
+        rp_id: ch.rp_id,
+        device_label: data.deviceLabel ?? null,
+      },
+      { onConflict: "credential_id" },
+    );
+    if (error) throw new Error("Não foi possível salvar a biometria");
+    return { credentialId: cred.id };
+  });
+
+export const startPasskeyLogin = createServerFn({ method: "POST" })
+  .inputValidator((d) => z.object({ credentialId: z.string().min(1).max(512).optional() }).parse(d))
+  .handler(async ({ data }) => {
+    const { generateAuthenticationOptions } = await import("@simplewebauthn/server");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { origin, rpID } = resolveOrigin();
+
+    let allowCredentials: { id: string; transports?: never }[] | undefined;
+    if (data.credentialId) {
+      const { data: c } = await supabaseAdmin
+        .from("passkey_credentials")
+        .select("credential_id, transports")
+        .eq("credential_id", data.credentialId)
+        .eq("rp_id", rpID)
+        .maybeSingle();
+      if (!c) return { missing: true as const };
+      allowCredentials = [{ id: c.credential_id, transports: c.transports as never }];
+    }
+
+    const options = await generateAuthenticationOptions({ rpID, allowCredentials, userVerification: "required" });
+
+    await supabaseAdmin.from("passkey_challenges").delete().lt("expires_at", new Date().toISOString());
+    const { data: ch, error } = await supabaseAdmin
+      .from("passkey_challenges")
+      .insert({ challenge: options.challenge, kind: "login", rp_id: rpID, origin })
+      .select("id")
+      .single();
+    if (error || !ch) throw new Error("Não foi possível iniciar o acesso");
+    return {
+      missing: false as const,
+      challengeId: ch.id,
+      options: JSON.parse(JSON.stringify(options)) as Record<string, unknown>,
+    };
+  });
+
+export const finishPasskeyLogin = createServerFn({ method: "POST" })
+  .inputValidator((d) => z.object({ challengeId: z.string().uuid(), response: responseSchema }).parse(d))
+  .handler(async ({ data }) => {
+    const { verifyAuthenticationResponse } = await import("@simplewebauthn/server");
+    const { isoBase64URL } = await import("@simplewebauthn/server/helpers");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const { data: ch } = await supabaseAdmin
+      .from("passkey_challenges")
+      .select("*")
+      .eq("id", data.challengeId)
+      .eq("kind", "login")
+      .maybeSingle();
+    // Single-use challenge
+    await supabaseAdmin.from("passkey_challenges").delete().eq("id", data.challengeId);
+    if (!ch || new Date(ch.expires_at).getTime() < Date.now()) throw new Error("Tempo esgotado, tente novamente");
+
+    const credentialId = typeof data.response.id === "string" ? data.response.id : "";
+    const { data: cred } = await supabaseAdmin
+      .from("passkey_credentials")
+      .select("*")
+      .eq("credential_id", credentialId)
+      .eq("rp_id", ch.rp_id)
+      .maybeSingle();
+    if (!cred) throw new Error("Biometria não cadastrada neste aparelho");
+
+    const verification = await verifyAuthenticationResponse({
+      response: data.response as never,
+      expectedChallenge: ch.challenge,
+      expectedOrigin: ch.origin,
+      expectedRPID: ch.rp_id,
+      requireUserVerification: true,
+      credential: {
+        id: cred.credential_id,
+        publicKey: isoBase64URL.toBuffer(cred.public_key),
+        counter: Number(cred.counter),
+        transports: cred.transports as never,
+      },
+    });
+    if (!verification.verified) throw new Error("Biometria não confirmada");
+
+    await supabaseAdmin
+      .from("passkey_credentials")
+      .update({ counter: verification.authenticationInfo.newCounter, last_used_at: new Date().toISOString() })
+      .eq("id", cred.id);
+
+    const { data: userRes, error: userErr } = await supabaseAdmin.auth.admin.getUserById(cred.user_id);
+    const email = userRes?.user?.email;
+    if (userErr || !email) throw new Error("Conta não encontrada");
+
+    const { data: link, error: linkErr } = await supabaseAdmin.auth.admin.generateLink({ type: "magiclink", email });
+    const tokenHash = link?.properties?.hashed_token;
+    if (linkErr || !tokenHash) throw new Error("Não foi possível concluir o acesso");
+    return { tokenHash };
+  });
