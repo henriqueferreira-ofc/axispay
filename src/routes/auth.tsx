@@ -11,6 +11,9 @@ import { z } from "zod";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useI18n } from "@/i18n/I18nProvider";
 import { AuthHeroBackground } from "@/components/AuthHeroBackground";
+import { enrollPasskey, getLocalPasskey, isBiometricAvailable, loginWithPasskey } from "@/lib/passkey";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { accessDestination } from "@/lib/passkey-policy";
 
 const LAST_USER_NAME_KEY = "axispay.lastUserName";
 
@@ -42,14 +45,19 @@ function AuthPage() {
   const [tab, setTab] = useState<"login" | "signup" | "reset">("login");
   const [showForm, setShowForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [rememberedName] = useState<string | null>(() => {
-    if (typeof window === "undefined") return null;
+  const [rememberedName, setRememberedName] = useState<string | null>(null);
+  const [enrollment, setEnrollment] = useState(false);
+  const [holdLogin, setHoldLogin] = useState(false);
+  const [accessConfirmed, setAccessConfirmed] = useState(false);
+  const [biometricError, setBiometricError] = useState(false);
+  const destination = accessDestination(search.redirect);
+  useEffect(() => {
     try {
-      return window.localStorage.getItem(LAST_USER_NAME_KEY);
+      setRememberedName(window.localStorage.getItem(LAST_USER_NAME_KEY));
     } catch {
-      return null;
+      // Storage can be unavailable in private browsing.
     }
-  });
+  }, []);
 
   const loginSchema = z.object({
     email: z.string().email(t("auth.invalidEmail")),
@@ -60,7 +68,7 @@ function AuthPage() {
   });
 
   useEffect(() => {
-    if (loading || !user) return;
+    if (loading || !user || holdLogin || enrollment) return;
     const name = typeof user.user_metadata?.name === "string" ? user.user_metadata.name : null;
     if (name) {
       try {
@@ -69,8 +77,44 @@ function AuthPage() {
         // ignore storage errors (private mode, quota, etc.)
       }
     }
-    navigate({ to: search.redirect || "/" });
-  }, [user, loading, navigate, search.redirect]);
+    // A returning visitor explicitly confirms access with their registered key.
+    if (getLocalPasskey() && !accessConfirmed) return;
+    navigate({ to: destination });
+  }, [user, loading, navigate, destination, holdLogin, enrollment, accessConfirmed]);
+
+  const handleAccess = async () => {
+    setBiometricError(false);
+    if (!getLocalPasskey()) {
+      if (user) { navigate({ to: destination }); return; }
+      setTab("login");
+      setShowForm(true);
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const result = await loginWithPasskey();
+      if (result !== "ok") throw new Error("Missing credential");
+      setAccessConfirmed(true);
+      navigate({ to: destination });
+    } catch {
+      setBiometricError(true);
+      toast.error(t("auth.biometricFailed"));
+    } finally { setSubmitting(false); }
+  };
+
+  const handleEnroll = async () => {
+    if (!user) return;
+    setSubmitting(true);
+    try {
+      await enrollPasskey(user.id);
+      toast.success(t("auth.enrolled"));
+      setAccessConfirmed(true);
+      setEnrollment(false);
+      setHoldLogin(false);
+      navigate({ to: destination });
+    } catch { toast.error(t("auth.enrollFailed")); }
+    finally { setSubmitting(false); }
+  };
 
   const firstName = rememberedName?.trim().split(" ")[0];
   const greeting = firstName ? t("auth.helloName", { name: firstName }) : t("auth.helloGeneric");
@@ -84,14 +128,18 @@ function AuthPage() {
       return;
     }
     setSubmitting(true);
+    setHoldLogin(true);
     const { error } = await signIn(parsed.data.email, parsed.data.password);
     setSubmitting(false);
     if (error) {
+      setHoldLogin(false);
       toast.error(
         error.message === "Invalid login credentials" ? t("auth.invalid") : error.message,
       );
     } else {
       toast.success(t("auth.welcomeBack"));
+      if (!getLocalPasskey() && await isBiometricAvailable()) setEnrollment(true);
+      else { setAccessConfirmed(true); setHoldLogin(false); }
     }
   };
 
@@ -153,12 +201,10 @@ function AuthPage() {
             <CardContent className="flex flex-col gap-[2.8vw] p-0 pt-[5.9vw] md:gap-5 md:pt-10">
               <Button
                 className="h-[11.2vw] w-full rounded-[2.4vw] bg-[#0cc6a0] text-[4vw] font-normal text-[#064c72] hover:bg-[#0bb590] md:h-24 md:rounded-[28px] md:text-[34px]"
-                onClick={() => {
-                  setTab("login");
-                  setShowForm(true);
-                }}
+                onClick={handleAccess}
+                disabled={submitting || loading}
               >
-                {t("auth.accessAccount")}
+                {submitting ? t("auth.verifying") : t("auth.accessAccount")}
               </Button>
               <Button
                 variant="outline"
@@ -171,6 +217,7 @@ function AuthPage() {
                 {t("auth.create")}
               </Button>
             </CardContent>
+            {biometricError && <Button variant="ghost" className="mt-3 w-full" onClick={() => { setTab("login"); setShowForm(true); }}>{t("auth.usePassword")}</Button>}
           </Card>
         ) : (
           <Card className="w-full max-w-md self-center rounded-xl border-border/70 bg-background/88 text-foreground shadow-2xl backdrop-blur-xl [&_input]:h-8 [&_input]:border-border/80 [&_input]:bg-background/60 [&_label]:text-xs">
@@ -293,6 +340,15 @@ function AuthPage() {
           </p>
         )}
       </div>
+      <Dialog open={enrollment} onOpenChange={(open) => { if (!open && !submitting) { setEnrollment(false); setHoldLogin(false); } }}>
+        <DialogContent onInteractOutside={(event) => event.preventDefault()}>
+          <DialogHeader><DialogTitle>{t("auth.enrollTitle")}</DialogTitle><DialogDescription>{t("auth.enrollDesc")}</DialogDescription></DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" disabled={submitting} onClick={() => { setEnrollment(false); setHoldLogin(false); }}>{t("auth.enrollLater")}</Button>
+            <Button disabled={submitting} onClick={handleEnroll}>{submitting ? t("auth.verifying") : t("auth.enrollNow")}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
