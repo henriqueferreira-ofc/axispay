@@ -13,8 +13,9 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 function resolveOrigin() {
   const req = getRequest();
   const originHeader = req?.headers.get("origin");
-  const origin = originHeader || (req ? new URL(req.url).origin : "");
+  const origin = req ? new URL(req.url).origin : "";
   if (!origin) throw new Error("Origem inválida");
+  if (originHeader && originHeader !== origin) throw new Error("Origem inválida");
   const { hostname, protocol } = new URL(origin);
   if (protocol !== "https:" && hostname !== "localhost") throw new Error("Origem inválida");
   return { origin, rpID: hostname };
@@ -73,15 +74,16 @@ export const finishPasskeyRegistration = createServerFn({ method: "POST" })
     const { isoBase64URL } = await import("@simplewebauthn/server/helpers");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    const { data: ch } = await supabaseAdmin
+    const { data: ch, error: consumeError } = await supabaseAdmin
       .from("passkey_challenges")
-      .select("*")
+      .delete()
       .eq("id", data.challengeId)
       .eq("kind", "register")
       .eq("user_id", context.userId)
+      .select("*")
       .maybeSingle();
-    await supabaseAdmin.from("passkey_challenges").delete().eq("id", data.challengeId);
-    if (!ch || new Date(ch.expires_at).getTime() < Date.now()) throw new Error("Tempo esgotado, tente novamente");
+    const expected = resolveOrigin();
+    if (consumeError || !ch || ch.origin !== expected.origin || ch.rp_id !== expected.rpID || new Date(ch.expires_at).getTime() < Date.now()) throw new Error("Tempo esgotado, tente novamente");
 
     const verification = await verifyRegistrationResponse({
       response: data.response as never,
@@ -93,7 +95,7 @@ export const finishPasskeyRegistration = createServerFn({ method: "POST" })
     if (!verification.verified || !verification.registrationInfo) throw new Error("Biometria não confirmada");
 
     const cred = verification.registrationInfo.credential;
-    const { error } = await supabaseAdmin.from("passkey_credentials").upsert(
+    const { error } = await supabaseAdmin.from("passkey_credentials").insert(
       {
         user_id: context.userId,
         credential_id: cred.id,
@@ -103,7 +105,6 @@ export const finishPasskeyRegistration = createServerFn({ method: "POST" })
         rp_id: ch.rp_id,
         device_label: data.deviceLabel ?? null,
       },
-      { onConflict: "credential_id" },
     );
     if (error) throw new Error("Não foi possível salvar a biometria");
     return { credentialId: cred.id };
@@ -117,14 +118,16 @@ export const startPasskeyLogin = createServerFn({ method: "POST" })
     const { origin, rpID } = resolveOrigin();
 
     let allowCredentials: { id: string; transports?: never }[] | undefined;
+    let challengeUserId: string | undefined;
     if (data.credentialId) {
       const { data: c } = await supabaseAdmin
         .from("passkey_credentials")
-        .select("credential_id, transports")
+        .select("credential_id, transports, user_id")
         .eq("credential_id", data.credentialId)
         .eq("rp_id", rpID)
         .maybeSingle();
       if (!c) return { missing: true as const };
+      challengeUserId = c.user_id;
       allowCredentials = [{ id: c.credential_id, transports: c.transports as never }];
     }
 
@@ -133,7 +136,7 @@ export const startPasskeyLogin = createServerFn({ method: "POST" })
     await supabaseAdmin.from("passkey_challenges").delete().lt("expires_at", new Date().toISOString());
     const { data: ch, error } = await supabaseAdmin
       .from("passkey_challenges")
-      .insert({ challenge: options.challenge, kind: "login", rp_id: rpID, origin })
+      .insert({ user_id: challengeUserId, challenge: options.challenge, kind: "login", rp_id: rpID, origin })
       .select("id")
       .single();
     if (error || !ch) throw new Error("Não foi possível iniciar o acesso");
@@ -151,15 +154,15 @@ export const finishPasskeyLogin = createServerFn({ method: "POST" })
     const { isoBase64URL } = await import("@simplewebauthn/server/helpers");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    const { data: ch } = await supabaseAdmin
+    const { data: ch, error: consumeError } = await supabaseAdmin
       .from("passkey_challenges")
-      .select("*")
+      .delete()
       .eq("id", data.challengeId)
       .eq("kind", "login")
+      .select("*")
       .maybeSingle();
-    // Single-use challenge
-    await supabaseAdmin.from("passkey_challenges").delete().eq("id", data.challengeId);
-    if (!ch || new Date(ch.expires_at).getTime() < Date.now()) throw new Error("Tempo esgotado, tente novamente");
+    const expected = resolveOrigin();
+    if (consumeError || !ch || ch.origin !== expected.origin || ch.rp_id !== expected.rpID || new Date(ch.expires_at).getTime() < Date.now()) throw new Error("Tempo esgotado, tente novamente");
 
     const credentialId = typeof data.response.id === "string" ? data.response.id : "";
     const { data: cred } = await supabaseAdmin
@@ -168,7 +171,7 @@ export const finishPasskeyLogin = createServerFn({ method: "POST" })
       .eq("credential_id", credentialId)
       .eq("rp_id", ch.rp_id)
       .maybeSingle();
-    if (!cred) throw new Error("Biometria não cadastrada neste aparelho");
+    if (!cred || (ch.user_id && ch.user_id !== cred.user_id)) throw new Error("Biometria não cadastrada neste aparelho");
 
     const verification = await verifyAuthenticationResponse({
       response: data.response as never,
@@ -185,10 +188,14 @@ export const finishPasskeyLogin = createServerFn({ method: "POST" })
     });
     if (!verification.verified) throw new Error("Biometria não confirmada");
 
-    await supabaseAdmin
+    const { data: updated, error: updateError } = await supabaseAdmin
       .from("passkey_credentials")
       .update({ counter: verification.authenticationInfo.newCounter, last_used_at: new Date().toISOString() })
-      .eq("id", cred.id);
+      .eq("id", cred.id)
+      .eq("counter", cred.counter)
+      .select("id")
+      .maybeSingle();
+    if (updateError || !updated) throw new Error("Biometria não confirmada");
 
     const { data: userRes, error: userErr } = await supabaseAdmin.auth.admin.getUserById(cred.user_id);
     const email = userRes?.user?.email;
