@@ -11,6 +11,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Camera, Database, Download, Globe, Loader2, LogOut, RefreshCw, Upload, Wallet } from "lucide-react";
 import { toast } from "sonner";
 import { useI18n } from "@/i18n/I18nProvider";
+import { enrollPasskey, getLocalPasskey, isBiometricAvailable } from "@/lib/passkey";
 
 export const Route = createFileRoute("/_app/perfil")({
   head: () => ({
@@ -31,6 +32,20 @@ function PerfilPage() {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [reseeding, setReseeding] = useState(false);
+  const [biometricAvailable, setBiometricAvailable] = useState(false);
+  const [biometricEnabled, setBiometricEnabled] = useState(false);
+  const [enrolling, setEnrolling] = useState(false);
+  useEffect(() => {
+    void isBiometricAvailable().then(setBiometricAvailable);
+    setBiometricEnabled(getLocalPasskey()?.userId === user?.id);
+  }, [user?.id]);
+  const activateBiometrics = async () => {
+    if (!user) return;
+    setEnrolling(true);
+    try { await enrollPasskey(user.id); setBiometricEnabled(true); toast.success(t("auth.enrolled")); }
+    catch { toast.error(t("auth.enrollFailed")); }
+    finally { setEnrolling(false); }
+  };
   const fileRef = useRef<HTMLInputElement>(null);
   const avatarFileRef = useRef<HTMLInputElement>(null);
 
@@ -205,6 +220,7 @@ function PerfilPage() {
           <CardTitle className="text-base">{t("prof.data")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          {biometricAvailable && <Action icon={<Wallet className="h-4 w-4" />} title={t("auth.enrollTitle")} description={biometricEnabled ? t("auth.enrolled") : t("auth.enrollDesc")} action={<Button disabled={enrolling || biometricEnabled} onClick={activateBiometrics}>{enrolling ? t("auth.verifying") : t("auth.enrollNow")}</Button>} />}
           <Action
             icon={<Database className="h-4 w-4" />}
             title={t("prof.demo.title")}
