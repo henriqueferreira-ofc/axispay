@@ -1,5 +1,8 @@
 # Roadmap atual
 
+- [x] Corrigir os erros de compilação atuais e verificar a entrada no aplicativo atual.
+- [ ] Confirmar a sincronização Git e a atualização do endereço externo: bloqueado pelo status/configurações do repositório e da hospedagem externa, não disponíveis neste projeto.
+
 - [x] Padronizar a tela de entrada em celular, iPad e computador.
 - [x] Corrigir corte do widget “Próximas 4 semanas” no celular.
 - [x] Adaptar importação, histórico e conciliação de extratos para telas estreitas.

@@ -60,7 +60,7 @@ export const startPasskeyRegistration = createServerFn({ method: "POST" })
       .select("id")
       .single();
     if (error || !ch) throw new Error("Não foi possível iniciar o cadastro");
-    return { challengeId: ch.id, options: JSON.parse(JSON.stringify(options)) as Record<string, unknown> };
+    return { challengeId: ch.id, options };
   });
 
 export const finishPasskeyRegistration = createServerFn({ method: "POST" })
@@ -140,7 +140,7 @@ export const startPasskeyLogin = createServerFn({ method: "POST" })
     return {
       missing: false as const,
       challengeId: ch.id,
-      options: JSON.parse(JSON.stringify(options)) as Record<string, unknown>,
+      options,
     };
   });
 
