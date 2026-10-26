@@ -1,0 +1,48 @@
+const { test } = require('node:test');
+const assert = require('node:assert/strict');
+const { readFileSync } = require('node:fs');
+const vm = require('node:vm');
+const ts = require('typescript');
+
+function setup(session, finishError) {
+  const calls = [];
+  const stored = new Map();
+  const modules = {
+    '@simplewebauthn/browser': { startRegistration: async () => ({ id: 'credential' }) },
+    '@/integrations/supabase/client': { supabase: { auth: { getSession: async () => ({ data: { session } }) } } },
+    '@/lib/passkey.functions': {
+      startPasskeyRegistration: async (args) => { calls.push(args); return { challengeId: 'challenge', options: {} }; },
+      finishPasskeyRegistration: async (args) => { calls.push(args); if (finishError) throw finishError; return { credentialId: 'credential' }; },
+    },
+  };
+  const exports = {};
+  const code = ts.transpileModule(readFileSync('src/lib/passkey.ts', 'utf8'), {
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
+  }).outputText;
+  vm.runInNewContext(code, {
+    exports, require: (id) => modules[id], navigator: { userAgent: 'iPhone' },
+    window: { localStorage: { setItem: (k, v) => stored.set(k, v) } },
+  });
+  return { enroll: exports.enrollPasskey, calls, stored };
+}
+
+test('registration authenticates both server calls and remembers only verified credentials', async () => {
+  const s = setup({ access_token: 'session-token' });
+  await s.enroll('user');
+  assert.equal(s.calls.length, 2);
+  for (const call of s.calls) assert.equal(call.headers.Authorization, 'Bearer session-token');
+  assert.deepEqual(JSON.parse(s.stored.get('axispay.passkey')), { credentialId: 'credential', userId: 'user' });
+});
+
+test('registration without a session never contacts the registration endpoints', async () => {
+  const s = setup(null);
+  await assert.rejects(s.enroll('user'), /Entre com e-mail/);
+  assert.equal(s.calls.length, 0);
+  assert.equal(s.stored.size, 0);
+});
+
+test('failed server verification never enables biometric access locally', async () => {
+  const s = setup({ access_token: 'session-token' }, new Error('verification failed'));
+  await assert.rejects(s.enroll('user'), /verification failed/);
+  assert.equal(s.stored.size, 0);
+});

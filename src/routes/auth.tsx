@@ -11,8 +11,20 @@ import { z } from "zod";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useI18n } from "@/i18n/I18nProvider";
 import { AuthHeroBackground } from "@/components/AuthHeroBackground";
-import { enrollPasskey, getLocalPasskey, isBiometricAvailable, loginWithPasskey } from "@/lib/passkey";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  enrollPasskey,
+  getLocalPasskey,
+  isBiometricAvailable,
+  loginWithPasskey,
+} from "@/lib/passkey";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { accessDestination } from "@/lib/passkey-policy";
 
 const LAST_USER_NAME_KEY = "axispay.lastUserName";
@@ -40,7 +52,8 @@ export const Route = createFileRoute("/auth")({
 function AuthPage() {
   const navigate = useNavigate();
   const search = Route.useSearch();
-  const { user, loading, signIn, signUp, resetPassword } = useAuth();
+  const { user, loading, signIn, signUp, resetPassword, accessConfirmed, setAccessConfirmed } =
+    useAuth();
   const { t } = useI18n();
   const [tab, setTab] = useState<"login" | "signup" | "reset">("login");
   const [showForm, setShowForm] = useState(false);
@@ -48,7 +61,6 @@ function AuthPage() {
   const [rememberedName, setRememberedName] = useState<string | null>(null);
   const [enrollment, setEnrollment] = useState(false);
   const [holdLogin, setHoldLogin] = useState(false);
-  const [accessConfirmed, setAccessConfirmed] = useState(false);
   const [biometricError, setBiometricError] = useState(false);
   const destination = accessDestination(search.redirect);
   useEffect(() => {
@@ -78,14 +90,22 @@ function AuthPage() {
       }
     }
     // A returning visitor explicitly confirms access with their registered key.
-    if (getLocalPasskey() && !accessConfirmed) return;
+    if (!accessConfirmed) return;
     navigate({ to: destination });
   }, [user, loading, navigate, destination, holdLogin, enrollment, accessConfirmed]);
 
   const handleAccess = async () => {
     setBiometricError(false);
     if (!getLocalPasskey()) {
-      if (user) { navigate({ to: destination }); return; }
+      if (user) {
+        if (await isBiometricAvailable()) {
+          setEnrollment(true);
+          return;
+        }
+        setAccessConfirmed(true);
+        navigate({ to: destination });
+        return;
+      }
       setTab("login");
       setShowForm(true);
       return;
@@ -99,7 +119,9 @@ function AuthPage() {
     } catch {
       setBiometricError(true);
       toast.error(t("auth.biometricFailed"));
-    } finally { setSubmitting(false); }
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleEnroll = async () => {
@@ -112,8 +134,12 @@ function AuthPage() {
       setEnrollment(false);
       setHoldLogin(false);
       navigate({ to: destination });
-    } catch { toast.error(t("auth.enrollFailed")); }
-    finally { setSubmitting(false); }
+    } catch (error) {
+      console.error("Passkey registration failed", error);
+      toast.error(t("auth.enrollFailed"));
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const firstName = rememberedName?.trim().split(" ")[0];
@@ -138,8 +164,11 @@ function AuthPage() {
       );
     } else {
       toast.success(t("auth.welcomeBack"));
-      if (!getLocalPasskey() && await isBiometricAvailable()) setEnrollment(true);
-      else { setAccessConfirmed(true); setHoldLogin(false); }
+      if (!getLocalPasskey() && (await isBiometricAvailable())) setEnrollment(true);
+      else {
+        setAccessConfirmed(true);
+        setHoldLogin(false);
+      }
     }
   };
 
@@ -217,7 +246,18 @@ function AuthPage() {
                 {t("auth.create")}
               </Button>
             </CardContent>
-            {biometricError && <Button variant="ghost" className="mt-3 w-full" onClick={() => { setTab("login"); setShowForm(true); }}>{t("auth.usePassword")}</Button>}
+            {biometricError && (
+              <Button
+                variant="ghost"
+                className="mt-3 w-full"
+                onClick={() => {
+                  setTab("login");
+                  setShowForm(true);
+                }}
+              >
+                {t("auth.usePassword")}
+              </Button>
+            )}
           </Card>
         ) : (
           <Card className="w-full max-w-md self-center rounded-xl border-border/70 bg-background/88 text-foreground shadow-2xl backdrop-blur-xl [&_input]:h-8 [&_input]:border-border/80 [&_input]:bg-background/60 [&_label]:text-xs">
@@ -340,12 +380,36 @@ function AuthPage() {
           </p>
         )}
       </div>
-      <Dialog open={enrollment} onOpenChange={(open) => { if (!open && !submitting) { setEnrollment(false); setHoldLogin(false); } }}>
+      <Dialog
+        open={enrollment}
+        onOpenChange={(open) => {
+          if (!open && !submitting) {
+            setEnrollment(false);
+            setHoldLogin(false);
+            setAccessConfirmed(true);
+          }
+        }}
+      >
         <DialogContent onInteractOutside={(event) => event.preventDefault()}>
-          <DialogHeader><DialogTitle>{t("auth.enrollTitle")}</DialogTitle><DialogDescription>{t("auth.enrollDesc")}</DialogDescription></DialogHeader>
+          <DialogHeader>
+            <DialogTitle>{t("auth.enrollTitle")}</DialogTitle>
+            <DialogDescription>{t("auth.enrollDesc")}</DialogDescription>
+          </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" disabled={submitting} onClick={() => { setEnrollment(false); setHoldLogin(false); }}>{t("auth.enrollLater")}</Button>
-            <Button disabled={submitting} onClick={handleEnroll}>{submitting ? t("auth.verifying") : t("auth.enrollNow")}</Button>
+            <Button
+              variant="outline"
+              disabled={submitting}
+              onClick={() => {
+                setEnrollment(false);
+                setHoldLogin(false);
+                setAccessConfirmed(true);
+              }}
+            >
+              {t("auth.enrollLater")}
+            </Button>
+            <Button disabled={submitting} onClick={handleEnroll}>
+              {submitting ? t("auth.verifying") : t("auth.enrollNow")}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -41,11 +41,23 @@ export async function isBiometricAvailable(): Promise<boolean> {
 }
 
 export async function enrollPasskey(userId: string) {
-  const { challengeId, options } = await startPasskeyRegistration();
-  const response = await startRegistration({ optionsJSON: options as never });
+  const {
+    data: { session },
+    error,
+  } = await supabase.auth.getSession();
+  if (error || !session)
+    throw new Error("Entre com e-mail e senha novamente para ativar a biometria.");
+  const headers = { Authorization: `Bearer ${session.access_token}` };
+  const { challengeId, options } = await startPasskeyRegistration({ headers });
+  const response = await startRegistration({ optionsJSON: options });
   const label = typeof navigator !== "undefined" ? navigator.userAgent.slice(0, 80) : undefined;
   const { credentialId } = await finishPasskeyRegistration({
-    data: { challengeId, response: response as unknown as Record<string, unknown>, deviceLabel: label },
+    headers,
+    data: {
+      challengeId,
+      response: response as unknown as Record<string, unknown>,
+      deviceLabel: label,
+    },
   });
   window.localStorage.setItem(KEY, JSON.stringify({ credentialId, userId } satisfies LocalPasskey));
 }
@@ -59,9 +71,12 @@ export async function loginWithPasskey(): Promise<"ok" | "missing"> {
     clearLocalPasskey();
     return "missing";
   }
-  const response = await startAuthentication({ optionsJSON: start.options as never });
+  const response = await startAuthentication({ optionsJSON: start.options });
   const { tokenHash } = await finishPasskeyLogin({
-    data: { challengeId: start.challengeId, response: response as unknown as Record<string, unknown> },
+    data: {
+      challengeId: start.challengeId,
+      response: response as unknown as Record<string, unknown>,
+    },
   });
   const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: "email" });
   if (error) throw error;

@@ -18,18 +18,19 @@ export const Route = createFileRoute("/_app")({
 });
 
 function AppLayout() {
-  const { user, loading, signOut } = useAuth();
+  const { user, loading, signOut, accessConfirmed } = useAuth();
+  const needsAccessConfirmation = !loading && !!user && !accessConfirmed;
   const { t } = useI18n();
   const location = useLocation();
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    if (!loading && !user) {
+    if (!loading && (!user || needsAccessConfirmation)) {
       navigate({ to: "/auth", search: { redirect: location.pathname } });
     }
-  }, [loading, user, navigate, location.pathname]);
+  }, [loading, user, navigate, location.pathname, needsAccessConfirmation]);
 
-  if (loading || !user) {
+  if (loading || !user || needsAccessConfirmation) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
@@ -37,7 +38,8 @@ function AppLayout() {
     );
   }
 
-  const name = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split("@")[0];
+  const name =
+    user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split("@")[0];
   const initials = (name || "U").slice(0, 2).toUpperCase();
 
   return (
@@ -95,7 +97,7 @@ function AppShell({
       .maybeSingle()
       .then(({ data }) => {
         if (!alive) return;
-        const url = (data as any)?.avatar_url;
+        const url = data?.avatar_url;
         if (url) setAvatarUrl(url);
       });
     return () => {
@@ -120,14 +122,21 @@ function AppShell({
               <div className="flex items-center gap-2 mr-1 sm:mr-2">
                 <Avatar className="h-8 w-8 border border-border/50">
                   <AvatarImage src={avatarUrl} className="object-cover" />
-                  <AvatarFallback className="text-[10px] bg-primary/10 text-primary font-bold">{initials}</AvatarFallback>
+                  <AvatarFallback className="text-[10px] bg-primary/10 text-primary font-bold">
+                    {initials}
+                  </AvatarFallback>
                 </Avatar>
                 <span className="hidden max-w-[150px] truncate text-sm font-medium sm:inline">
                   {name}
                 </span>
               </div>
               <LanguageSwitcher compact />
-              <Button size="sm" variant="ghost" className="h-9 px-2 sm:px-3 text-muted-foreground hover:text-destructive" onClick={() => signOut()}>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-9 px-2 sm:px-3 text-muted-foreground hover:text-destructive"
+                onClick={() => signOut()}
+              >
                 <LogOut className="h-4 w-4 sm:mr-2" />
                 <span className="hidden sm:inline">{t("common.signout")}</span>
               </Button>

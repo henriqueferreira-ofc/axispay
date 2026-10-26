@@ -1,11 +1,14 @@
 import * as React from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { getLocalPasskey } from "@/lib/passkey";
 import type { Session, User } from "@supabase/supabase-js";
 
 type AuthContextValue = {
   session: Session | null;
   user: User | null;
   loading: boolean;
+  accessConfirmed: boolean;
+  setAccessConfirmed: (confirmed: boolean) => void;
   signUp: (email: string, password: string, name: string) => Promise<{ error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
@@ -18,6 +21,19 @@ const AuthContext = React.createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = React.useState<Session | null>(null);
   const [loading, setLoading] = React.useState(true);
+  const [accessConfirmed, setAccessConfirmed] = React.useState(false);
+
+  React.useEffect(() => {
+    const lock = () => {
+      if (document.visibilityState === "hidden" && getLocalPasskey()) setAccessConfirmed(false);
+    };
+    document.addEventListener("visibilitychange", lock);
+    window.addEventListener("pagehide", lock);
+    return () => {
+      document.removeEventListener("visibilitychange", lock);
+      window.removeEventListener("pagehide", lock);
+    };
+  }, []);
 
   React.useEffect(() => {
     // CRITICAL: subscribe BEFORE getSession
@@ -52,6 +68,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signOut = React.useCallback(async () => {
+    setAccessConfirmed(false);
     await supabase.auth.signOut();
   }, []);
 
@@ -71,6 +88,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     session,
     user: session?.user ?? null,
     loading,
+    accessConfirmed,
+    setAccessConfirmed,
     signUp,
     signIn,
     signOut,
