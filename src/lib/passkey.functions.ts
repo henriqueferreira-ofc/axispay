@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { validPasskeyChallenge } from "@/lib/passkey-policy";
 
 /**
  * Real WebAuthn (passkey) authentication.
@@ -83,7 +84,7 @@ export const finishPasskeyRegistration = createServerFn({ method: "POST" })
       .select("*")
       .maybeSingle();
     const expected = resolveOrigin();
-    if (consumeError || !ch || ch.origin !== expected.origin || ch.rp_id !== expected.rpID || new Date(ch.expires_at).getTime() < Date.now()) throw new Error("Tempo esgotado, tente novamente");
+    if (consumeError || !ch || !validPasskeyChallenge(ch, expected, Date.now())) throw new Error("Tempo esgotado, tente novamente");
 
     const verification = await verifyRegistrationResponse({
       response: data.response as never,
@@ -162,7 +163,7 @@ export const finishPasskeyLogin = createServerFn({ method: "POST" })
       .select("*")
       .maybeSingle();
     const expected = resolveOrigin();
-    if (consumeError || !ch || ch.origin !== expected.origin || ch.rp_id !== expected.rpID || new Date(ch.expires_at).getTime() < Date.now()) throw new Error("Tempo esgotado, tente novamente");
+    if (consumeError || !ch || !validPasskeyChallenge(ch, expected, Date.now())) throw new Error("Tempo esgotado, tente novamente");
 
     const credentialId = typeof data.response.id === "string" ? data.response.id : "";
     const { data: cred } = await supabaseAdmin

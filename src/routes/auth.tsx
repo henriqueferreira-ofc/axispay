@@ -13,6 +13,7 @@ import { useI18n } from "@/i18n/I18nProvider";
 import { AuthHeroBackground } from "@/components/AuthHeroBackground";
 import { enrollPasskey, getLocalPasskey, isBiometricAvailable, loginWithPasskey } from "@/lib/passkey";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { accessDestination } from "@/lib/passkey-policy";
 
 const LAST_USER_NAME_KEY = "axispay.lastUserName";
 
@@ -49,7 +50,7 @@ function AuthPage() {
   const [holdLogin, setHoldLogin] = useState(false);
   const [accessConfirmed, setAccessConfirmed] = useState(false);
   const [biometricError, setBiometricError] = useState(false);
-  const destination = search.redirect.startsWith("/") && !search.redirect.startsWith("//") && !search.redirect.startsWith("/auth") ? search.redirect : "/";
+  const destination = accessDestination(search.redirect);
   useEffect(() => {
     try {
       setRememberedName(window.localStorage.getItem(LAST_USER_NAME_KEY));
