@@ -81,12 +81,19 @@ export async function enrollPasskey(userId: string, prepared?: PreparedPasskeyRe
   window.localStorage.setItem(KEY, JSON.stringify({ credentialId, userId } satisfies LocalPasskey));
 }
 
+export function isEmbeddedAuthContext(): boolean {
+  return typeof window !== "undefined" && window.self !== window.top;
+}
+
 export function registrationErrorMessage(error: unknown): string {
   const name = error instanceof Error ? error.name : "";
-  if (name === "NotAllowedError")
-    return "A criação da chave de acesso foi cancelada ou não foi autorizada pelo iPhone. Tente novamente e confirme no Face ID ou com o código do aparelho.";
+  if (name === "NotAllowedError") {
+    if (isEmbeddedAuthContext())
+      return "O navegador não concluiu a criação da chave nesta prévia. Abra o aplicativo fora do editor e tente ativar novamente.";
+    return "A criação da chave de acesso foi cancelada, expirou ou não foi permitida pelo navegador. Tente novamente e confirme com a biometria ou o código do aparelho.";
+  }
   if (name === "InvalidStateError")
-    return "Já existe uma chave de acesso para esta conta no aparelho. Entre com a chave existente ou gerencie-a nos ajustes de Senhas do iPhone.";
+    return "Já existe uma chave de acesso para esta conta no aparelho. Entre com a chave existente ou gerencie-a nas configurações de senhas do aparelho.";
   return "Não foi possível concluir a ativação. Tente novamente ou entre com e-mail e senha.";
 }
 

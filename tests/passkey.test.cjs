@@ -4,7 +4,7 @@ const { readFileSync } = require('node:fs');
 const vm = require('node:vm');
 const ts = require('typescript');
 
-function setup(session, finishError, preparationError) {
+function setup(session, finishError, preparationError, embedded = false) {
   const calls = [];
   const stored = new Map();
   const events = [];
@@ -21,10 +21,10 @@ function setup(session, finishError, preparationError) {
     compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
   }).outputText;
   vm.runInNewContext(code, {
-    exports, require: (id) => modules[id], navigator: { userAgent: 'iPhone' },
-    window: { localStorage: { setItem: (k, v) => stored.set(k, v) } },
+    Error, exports, require: (id) => modules[id], navigator: { userAgent: 'iPhone' },
+    window: { self: 1, top: embedded ? 2 : 1, localStorage: { setItem: (k, v) => stored.set(k, v) } },
   });
-  return { enroll: exports.enrollPasskey, prepare: exports.preparePasskeyRegistration, calls, stored, events };
+  return { registrationErrorMessage: exports.registrationErrorMessage, enroll: exports.enrollPasskey, prepare: exports.preparePasskeyRegistration, calls, stored, events };
 }
 
 test('registration authenticates both server calls and remembers only verified credentials', async () => {
@@ -75,4 +75,22 @@ test('server setup failure is displayed before invoking Face ID', async () => {
   await assert.rejects(s.prepare(), { message });
   assert.equal(s.events.includes('webauthn'), false);
   assert.equal(s.stored.size, 0);
+});
+
+
+test('cancellation messages do not assume a desktop user has an iPhone', () => {
+  const s = setup(null);
+  const error = new Error('not allowed');
+  error.name = 'NotAllowedError';
+  const message = s.registrationErrorMessage(error);
+  assert.match(message, /navegador/);
+  assert.doesNotMatch(message, /iPhone|Face ID/);
+});
+
+
+test('embedded preview failure explains how to activate outside the editor', () => {
+  const s = setup(null, null, null, true);
+  const error = new Error('not allowed');
+  error.name = 'NotAllowedError';
+  assert.match(s.registrationErrorMessage(error), /fora do editor/);
 });

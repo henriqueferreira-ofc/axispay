@@ -15,6 +15,7 @@ import {
   enrollPasskey,
   preparePasskeyRegistration,
   registrationErrorMessage,
+  isEmbeddedAuthContext,
   type PreparedPasskeyRegistration,
   getLocalPasskey,
   isBiometricAvailable,
@@ -63,6 +64,10 @@ function AuthPage() {
   const [submitting, setSubmitting] = useState(false);
   const [rememberedName, setRememberedName] = useState<string | null>(null);
   const [enrollment, setEnrollment] = useState(false);
+  const [embeddedPreview, setEmbeddedPreview] = useState(false);
+  useEffect(() => {
+    setEmbeddedPreview(isEmbeddedAuthContext());
+  }, []);
   const [preparedRegistration, setPreparedRegistration] =
     useState<PreparedPasskeyRegistration | null>(null);
   const [preparingRegistration, setPreparingRegistration] = useState(false);
@@ -439,6 +444,19 @@ function AuthPage() {
             <DialogTitle>{t("auth.enrollTitle")}</DialogTitle>
             <DialogDescription>{t("auth.enrollDesc")}</DialogDescription>
           </DialogHeader>
+          {embeddedPreview && (
+            <p className="text-sm text-muted-foreground">
+              Para ativar a biometria, abra o aplicativo fora da prévia do editor.{" "}
+              <a
+                className="font-medium text-primary underline"
+                href={`https://cash-craft-vista.lovable.app/auth?redirect=${encodeURIComponent(destination)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Abrir aplicativo
+              </a>
+            </p>
+          )}
           {registrationError && (
             <p role="alert" className="text-sm text-destructive">
               {registrationError}
