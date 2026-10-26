@@ -4,14 +4,15 @@ const { readFileSync } = require('node:fs');
 const vm = require('node:vm');
 const ts = require('typescript');
 
-function setup(session, finishError) {
+function setup(session, finishError, preparationError) {
   const calls = [];
   const stored = new Map();
+  const events = [];
   const modules = {
-    '@simplewebauthn/browser': { startRegistration: async () => ({ id: 'credential' }) },
-    '@/integrations/supabase/client': { supabase: { auth: { getSession: async () => ({ data: { session } }) } } },
+    '@simplewebauthn/browser': { startRegistration: async () => { events.push('webauthn'); return { id: 'credential' }; } },
+    '@/integrations/supabase/client': { supabase: { auth: { getSession: async () => { events.push("session"); return { data: { session } }; } } } },
     '@/lib/passkey.functions': {
-      startPasskeyRegistration: async (args) => { calls.push(args); return { challengeId: 'challenge', options: {} }; },
+      startPasskeyRegistration: async (args) => { calls.push(args); return preparationError ? { error: preparationError } : { challengeId: 'challenge', options: {} }; },
       finishPasskeyRegistration: async (args) => { calls.push(args); if (finishError) throw finishError; return { credentialId: 'credential' }; },
     },
   };
@@ -23,7 +24,7 @@ function setup(session, finishError) {
     exports, require: (id) => modules[id], navigator: { userAgent: 'iPhone' },
     window: { localStorage: { setItem: (k, v) => stored.set(k, v) } },
   });
-  return { enroll: exports.enrollPasskey, calls, stored };
+  return { enroll: exports.enrollPasskey, prepare: exports.preparePasskeyRegistration, calls, stored, events };
 }
 
 test('registration authenticates both server calls and remembers only verified credentials', async () => {
@@ -44,5 +45,34 @@ test('registration without a session never contacts the registration endpoints',
 test('failed server verification never enables biometric access locally', async () => {
   const s = setup({ access_token: 'session-token' }, new Error('verification failed'));
   await assert.rejects(s.enroll('user'), /verification failed/);
+  assert.equal(s.stored.size, 0);
+});
+
+
+test('prepared enrollment invokes WebAuthn immediately without session/network awaits', async () => {
+  const s = setup({ access_token: 'session-token' });
+  const prepared = await s.prepare();
+  s.events.length = 0;
+  const completion = s.enroll('user', prepared);
+  assert.deepEqual(s.events, ['webauthn']);
+  await completion;
+});
+
+test('expired prepared challenges do not invoke WebAuthn or store credentials', async () => {
+  const s = setup({ access_token: 'session-token' });
+  const prepared = await s.prepare();
+  prepared.preparedAt = Date.now() - 5 * 60 * 1000;
+  s.events.length = 0;
+  await assert.rejects(s.enroll('user', prepared), /expirou/);
+  assert.equal(s.events.length, 0);
+  assert.equal(s.stored.size, 0);
+});
+
+
+test('server setup failure is displayed before invoking Face ID', async () => {
+  const message = 'A biometria ainda não está configurada no servidor.';
+  const s = setup({ access_token: 'session-token' }, null, message);
+  await assert.rejects(s.prepare(), { message });
+  assert.equal(s.events.includes('webauthn'), false);
   assert.equal(s.stored.size, 0);
 });

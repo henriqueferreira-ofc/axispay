@@ -13,6 +13,9 @@ import { useI18n } from "@/i18n/I18nProvider";
 import { AuthHeroBackground } from "@/components/AuthHeroBackground";
 import {
   enrollPasskey,
+  preparePasskeyRegistration,
+  registrationErrorMessage,
+  type PreparedPasskeyRegistration,
   getLocalPasskey,
   isBiometricAvailable,
   loginWithPasskey,
@@ -60,6 +63,39 @@ function AuthPage() {
   const [submitting, setSubmitting] = useState(false);
   const [rememberedName, setRememberedName] = useState<string | null>(null);
   const [enrollment, setEnrollment] = useState(false);
+  const [preparedRegistration, setPreparedRegistration] =
+    useState<PreparedPasskeyRegistration | null>(null);
+  const [preparingRegistration, setPreparingRegistration] = useState(false);
+  const [registrationError, setRegistrationError] = useState<string | null>(null);
+  const [registrationAttempt, setRegistrationAttempt] = useState(0);
+  const enrollmentUserId = user?.id;
+
+  useEffect(() => {
+    if (!enrollment || !enrollmentUserId) return;
+    let active = true;
+    setPreparedRegistration(null);
+    setPreparingRegistration(true);
+    setRegistrationError(null);
+    preparePasskeyRegistration()
+      .then((prepared) => {
+        if (active) setPreparedRegistration(prepared);
+      })
+      .catch((error) => {
+        if (active)
+          setRegistrationError(
+            error instanceof Error
+              ? error.message
+              : "Não foi possível preparar a biometria. Tente novamente.",
+          );
+      })
+      .finally(() => {
+        if (active) setPreparingRegistration(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [enrollment, enrollmentUserId, registrationAttempt]);
+
   const [holdLogin, setHoldLogin] = useState(false);
   const [biometricError, setBiometricError] = useState(false);
   const destination = accessDestination(search.redirect);
@@ -126,9 +162,14 @@ function AuthPage() {
 
   const handleEnroll = async () => {
     if (!user) return;
+    if (!preparedRegistration) {
+      setRegistrationAttempt((attempt) => attempt + 1);
+      return;
+    }
     setSubmitting(true);
+    setRegistrationError(null);
     try {
-      await enrollPasskey(user.id);
+      await enrollPasskey(user.id, preparedRegistration);
       toast.success(t("auth.enrolled"));
       setAccessConfirmed(true);
       setEnrollment(false);
@@ -136,7 +177,10 @@ function AuthPage() {
       navigate({ to: destination });
     } catch (error) {
       console.error("Passkey registration failed", error);
-      toast.error(t("auth.enrollFailed"));
+      setPreparedRegistration(null);
+      const message = registrationErrorMessage(error);
+      setRegistrationError(message);
+      toast.error(message);
     } finally {
       setSubmitting(false);
     }
@@ -395,6 +439,11 @@ function AuthPage() {
             <DialogTitle>{t("auth.enrollTitle")}</DialogTitle>
             <DialogDescription>{t("auth.enrollDesc")}</DialogDescription>
           </DialogHeader>
+          {registrationError && (
+            <p role="alert" className="text-sm text-destructive">
+              {registrationError}
+            </p>
+          )}
           <DialogFooter>
             <Button
               variant="outline"
@@ -407,8 +456,12 @@ function AuthPage() {
             >
               {t("auth.enrollLater")}
             </Button>
-            <Button disabled={submitting} onClick={handleEnroll}>
-              {submitting ? t("auth.verifying") : t("auth.enrollNow")}
+            <Button disabled={submitting || preparingRegistration} onClick={handleEnroll}>
+              {submitting || preparingRegistration
+                ? t("auth.verifying")
+                : preparedRegistration
+                  ? t("auth.enrollNow")
+                  : "Tentar novamente"}
             </Button>
           </DialogFooter>
         </DialogContent>
