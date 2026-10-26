@@ -5,10 +5,23 @@
 //     error logger plugins, and sandbox detection (port/host/strictPort).
 // You can pass additional config via defineConfig({ vite: { ... } }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+import { loadEnv } from "vite";
 
 export default defineConfig({
   vite: {
     // Definindo como '/' para funcionar no Cloudflare
     base: "/",
+    plugins: [{
+      name: "validate-supabase-browser-config",
+      config(_config, { command, mode }) {
+        if (command !== "build") return;
+        const env = loadEnv(mode, process.cwd(), "VITE_");
+        const missing = ["VITE_SUPABASE_URL", "VITE_SUPABASE_PUBLISHABLE_KEY"]
+          .filter((key) => !env[key]?.trim());
+        if (missing.length) {
+          throw new Error(`Missing public Supabase build configuration: ${missing.join(", ")}. Check .env and remove empty CI overrides.`);
+        }
+      },
+    }],
   },
 });

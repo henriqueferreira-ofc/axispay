@@ -21,11 +21,9 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Build
+        # The tracked .env contains the public Supabase browser configuration.
+        # Empty GitHub secrets override those values and break authentication.
         run: bun run build
-        env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
-          VITE_SUPABASE_PROJECT_ID: ${{ secrets.VITE_SUPABASE_PROJECT_ID }}
 
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
