@@ -1,5 +1,7 @@
 # Roadmap atual
 
+- [ ] Corrigir os erros de compilação atuais e verificar a falha mostrada no endereço externo; sincronização e publicação externas dependem das configurações do proprietário.
+
 - [x] Padronizar a tela de entrada em celular, iPad e computador.
 - [x] Corrigir corte do widget “Próximas 4 semanas” no celular.
 - [x] Adaptar importação, histórico e conciliação de extratos para telas estreitas.
