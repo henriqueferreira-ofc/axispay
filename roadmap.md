@@ -1,5 +1,7 @@
 # Roadmap atual
 
+- [ ] Corrigir e testar a falha de inicialização do desafio biométrico identificada nos registros de 27/10.
+
 - [x] Corrigir os erros de compilação atuais e verificar a entrada no aplicativo atual.
 - [ ] Confirmar a sincronização Git e a atualização do endereço externo: bloqueado pelo status/configurações do repositório e da hospedagem externa, não disponíveis neste projeto.
 
