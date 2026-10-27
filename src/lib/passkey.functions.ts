@@ -3,6 +3,7 @@ import { getRequest } from "@tanstack/react-start/server";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { validPasskeyChallenge } from "@/lib/passkey-policy";
+import { base64UrlToBytes, bytesToBase64Url } from "@/lib/base64url";
 
 /**
  * Real WebAuthn (passkey) authentication.
@@ -112,7 +113,6 @@ export const finishPasskeyRegistration = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { verifyRegistrationResponse } = await import("@simplewebauthn/server");
-    const { isoBase64URL } = await import("@simplewebauthn/server/helpers");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     const { data: ch, error: consumeError } = await supabaseAdmin
@@ -141,7 +141,7 @@ export const finishPasskeyRegistration = createServerFn({ method: "POST" })
     const { error } = await supabaseAdmin.from("passkey_credentials").insert({
       user_id: context.userId,
       credential_id: cred.id,
-      public_key: isoBase64URL.fromBuffer(cred.publicKey),
+      public_key: bytesToBase64Url(cred.publicKey),
       counter: cred.counter,
       transports: (cred.transports ?? []) as string[],
       rp_id: ch.rp_id,
@@ -208,7 +208,6 @@ export const finishPasskeyLogin = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     const { verifyAuthenticationResponse } = await import("@simplewebauthn/server");
-    const { isoBase64URL } = await import("@simplewebauthn/server/helpers");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     const { data: ch, error: consumeError } = await supabaseAdmin
@@ -240,7 +239,7 @@ export const finishPasskeyLogin = createServerFn({ method: "POST" })
       requireUserVerification: true,
       credential: {
         id: cred.credential_id,
-        publicKey: isoBase64URL.toBuffer(cred.public_key),
+        publicKey: base64UrlToBytes(cred.public_key),
         counter: Number(cred.counter),
         transports: cred.transports as never,
       },
