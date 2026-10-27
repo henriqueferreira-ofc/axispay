@@ -14,6 +14,16 @@ export default defineConfig({
     plugins: [{
       name: "validate-supabase-browser-config",
       config(_config, { command, mode }) {
+        // Vite only exposes VITE_* values by default. Load private server values
+        // for the local Node server without defining them in browser bundles.
+        if (command === "serve") {
+          const serverEnv = loadEnv(mode, process.cwd(), "SUPABASE_");
+          for (const key of ["SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY"]) {
+            if (!process.env[key] && serverEnv[key]?.trim()) {
+              process.env[key] = serverEnv[key];
+            }
+          }
+        }
         if (command !== "build") return;
         const env = loadEnv(mode, process.cwd(), "VITE_");
         const missing = ["VITE_SUPABASE_URL", "VITE_SUPABASE_PUBLISHABLE_KEY"]

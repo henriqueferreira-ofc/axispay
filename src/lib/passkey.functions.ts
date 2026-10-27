@@ -1,6 +1,35 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 import { z } from "zod";
+import type { PublicKeyCredentialCreationOptionsJSON, PublicKeyCredentialRequestOptionsJSON } from "@simplewebauthn/server";
+
+type RegistrationStart = { challengeId: string; options: PublicKeyCredentialCreationOptionsJSON; error: null } | { error: string; challengeId?: undefined; options?: undefined };
+type LoginStart = { missing: true } | { missing: false; challengeId: string; options: PublicKeyCredentialRequestOptionsJSON };
+
+async function callPasskeyBackend<T>(action: string, data?: unknown): Promise<T> {
+  const { origin } = resolveOrigin();
+  const request = getRequest();
+  const url = process.env.SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL;
+  const key = process.env.SUPABASE_PUBLISHABLE_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+  const response = await fetch(`${url}/functions/v1/passkey`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      apikey: key,
+      Origin: origin,
+      ...(request.headers.get("authorization") ? { Authorization: request.headers.get("authorization")! } : {}),
+    },
+    body: JSON.stringify({ action, data }),
+    signal: AbortSignal.timeout(20_000),
+  });
+  if (response.status === 404) {
+    throw new Error("O serviço de biometria precisa ser publicado no backend do aplicativo.");
+  }
+  if (!response.ok) throw new Error("Não foi possível concluir a biometria. Entre novamente ou tente mais tarde.");
+  const result = await response.json() as T & { error?: string };
+  if (result.error) throw new Error(result.error);
+  return result;
+}
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { validPasskeyChallenge } from "@/lib/passkey-policy";
 import { base64UrlToBytes, bytesToBase64Url } from "@/lib/base64url";
@@ -29,10 +58,7 @@ export const startPasskeyRegistration = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-      return {
-        error:
-          "A biometria ainda não está configurada no servidor. Configure SUPABASE_SERVICE_ROLE_KEY no Cloudflare e tente novamente.",
-      };
+      return callPasskeyBackend<RegistrationStart>("startPasskeyRegistration");
     }
     try {
       const { generateRegistrationOptions } = await import("@simplewebauthn/server");
@@ -112,6 +138,8 @@ export const finishPasskeyRegistration = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
+    if (!process.env.SUPABASE_SERVICE_ROLE_KEY)
+      return callPasskeyBackend<{ credentialId: string }>("finishPasskeyRegistration", data);
     const { verifyRegistrationResponse } = await import("@simplewebauthn/server");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -154,6 +182,8 @@ export const finishPasskeyRegistration = createServerFn({ method: "POST" })
 export const startPasskeyLogin = createServerFn({ method: "POST" })
   .inputValidator((d) => z.object({ credentialId: z.string().min(1).max(512).optional() }).parse(d))
   .handler(async ({ data }) => {
+    if (!process.env.SUPABASE_SERVICE_ROLE_KEY)
+      return callPasskeyBackend<LoginStart>("startPasskeyLogin", data);
     const { generateAuthenticationOptions } = await import("@simplewebauthn/server");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { origin, rpID } = resolveOrigin();
@@ -207,6 +237,8 @@ export const finishPasskeyLogin = createServerFn({ method: "POST" })
     z.object({ challengeId: z.string().uuid(), response: responseSchema }).parse(d),
   )
   .handler(async ({ data }) => {
+    if (!process.env.SUPABASE_SERVICE_ROLE_KEY)
+      return callPasskeyBackend<{ tokenHash: string }>("finishPasskeyLogin", data);
     const { verifyAuthenticationResponse } = await import("@simplewebauthn/server");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 

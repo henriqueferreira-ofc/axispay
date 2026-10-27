@@ -1,1 +1,4 @@
 project_id = "pjqykkpewhrbljuaeztt"
+# Login has no existing session; registration validates its Bearer token internally.
+[functions.passkey]
+verify_jwt = false

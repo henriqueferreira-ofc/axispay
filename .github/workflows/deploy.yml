@@ -27,6 +27,10 @@ jobs:
 
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
+        env:
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          # Preserve an existing Worker secret when GitHub has no copy.
+          secrets: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY != '' && 'SUPABASE_SERVICE_ROLE_KEY' || '' }}
           command: deploy
