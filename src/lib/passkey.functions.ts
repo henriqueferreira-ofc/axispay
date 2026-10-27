@@ -54,6 +54,9 @@ export const startPasskeyRegistration = createServerFn({ method: "POST" })
       }
 
       const options = await generateRegistrationOptions({
+        // Generate inside the handler using the runtime's native Web Crypto.
+        // Avoid the library's challenge helper initialization in split Worker bundles.
+        challenge: crypto.getRandomValues(new Uint8Array(32)),
         rpName: "AxisPay",
         rpID,
         userName: email,
@@ -170,6 +173,7 @@ export const startPasskeyLogin = createServerFn({ method: "POST" })
     }
 
     const options = await generateAuthenticationOptions({
+      challenge: crypto.getRandomValues(new Uint8Array(32)),
       rpID,
       allowCredentials,
       userVerification: "required",
