@@ -5,6 +5,7 @@ const backgrounds = [
   "/auth-racing.png",
   "/auth-ski.png",
   "/auth-surf.png",
+  "/auth-card.png",
 ];
 
 export function AuthHeroBackground() {
