@@ -15,7 +15,7 @@ async function callPasskeyBackend<T>(action: string, data?: unknown): Promise<T>
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      apikey: key,
+      apikey: key ?? "",
       Origin: origin,
       ...(request.headers.get("authorization") ? { Authorization: request.headers.get("authorization")! } : {}),
     },
