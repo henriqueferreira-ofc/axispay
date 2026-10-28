@@ -97,19 +97,42 @@ export function registrationErrorMessage(error: unknown): string {
   return "Não foi possível concluir a ativação. Tente novamente ou entre com e-mail e senha.";
 }
 
-/** Returns "ok" on success, "missing" when this device has no valid biometric registered. */
-export async function loginWithPasskey(): Promise<"ok" | "missing"> {
+export type PreparedPasskeyLogin =
+  | { missing: true }
+  | {
+      missing: false;
+      challengeId: string;
+      options: Extract<Awaited<ReturnType<typeof startPasskeyLogin>>, { missing: false }>["options"];
+      preparedAt: number;
+    };
+
+/** Fetch login options ahead of the tap so iOS keeps the user gesture and opens Face ID directly. */
+export async function preparePasskeyLogin(): Promise<PreparedPasskeyLogin | null> {
   const local = getLocalPasskey();
-  if (!local) return "missing";
+  if (!local) return null;
   const start = await startPasskeyLogin({ data: { credentialId: local.credentialId } });
   if (start.missing) {
     clearLocalPasskey();
-    return "missing";
+    return { missing: true };
   }
-  const response = await startAuthentication({ optionsJSON: start.options });
+  return {
+    missing: false,
+    challengeId: start.challengeId,
+    options: start.options,
+    preparedAt: Date.now(),
+  };
+}
+
+/** Returns "ok" on success, "missing" when this device has no valid biometric registered. */
+export async function loginWithPasskey(prepared?: PreparedPasskeyLogin | null): Promise<"ok" | "missing"> {
+  if (!prepared || (!prepared.missing && Date.now() - prepared.preparedAt > 4 * 60 * 1000)) {
+    prepared = await preparePasskeyLogin();
+  }
+  if (!prepared || prepared.missing) return "missing";
+  const response = await startAuthentication({ optionsJSON: prepared.options });
   const { tokenHash } = await finishPasskeyLogin({
     data: {
-      challengeId: start.challengeId,
+      challengeId: prepared.challengeId,
       response: response as unknown as Record<string, unknown>,
     },
   });
