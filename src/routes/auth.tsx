@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/auth/AuthProvider";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -17,9 +17,11 @@ import {
   registrationErrorMessage,
   isEmbeddedAuthContext,
   type PreparedPasskeyRegistration,
+  type PreparedPasskeyLogin,
   getLocalPasskey,
   isBiometricAvailable,
   loginWithPasskey,
+  preparePasskeyLogin,
 } from "@/lib/passkey";
 import {
   Dialog,
@@ -104,6 +106,26 @@ function AuthPage() {
   const [holdLogin, setHoldLogin] = useState(false);
   const [biometricError, setBiometricError] = useState(false);
   const destination = accessDestination(search.redirect);
+  const preparedLoginRef = useRef<PreparedPasskeyLogin | null>(null);
+  const [loginPrepKey, setLoginPrepKey] = useState(0);
+  useEffect(() => {
+    let active = true;
+    const prepare = () => {
+      preparePasskeyLogin()
+        .then((p) => {
+          if (active) preparedLoginRef.current = p;
+        })
+        .catch(() => {
+          if (active) preparedLoginRef.current = null;
+        });
+    };
+    prepare();
+    const id = window.setInterval(prepare, 3 * 60 * 1000);
+    return () => {
+      active = false;
+      window.clearInterval(id);
+    };
+  }, [loginPrepKey]);
   useEffect(() => {
     try {
       setRememberedName(window.localStorage.getItem(LAST_USER_NAME_KEY));
@@ -151,15 +173,18 @@ function AuthPage() {
       setShowForm(true);
       return;
     }
+    const prepared = preparedLoginRef.current;
+    preparedLoginRef.current = null;
     setSubmitting(true);
     try {
-      const result = await loginWithPasskey();
+      const result = await loginWithPasskey(prepared);
       if (result !== "ok") throw new Error("Missing credential");
       setAccessConfirmed(true);
       navigate({ to: destination });
     } catch {
       setBiometricError(true);
       toast.error(t("auth.biometricFailed"));
+      setLoginPrepKey((k) => k + 1);
     } finally {
       setSubmitting(false);
     }
