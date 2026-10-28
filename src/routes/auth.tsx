@@ -11,6 +11,7 @@ import { z } from "zod";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useI18n } from "@/i18n/I18nProvider";
 import { AuthHeroBackground } from "@/components/AuthHeroBackground";
+import { AuthWordmark } from "@/components/AuthWordmark";
 import {
   enrollPasskey,
   preparePasskeyRegistration,
@@ -258,6 +259,7 @@ function AuthPage() {
   return (
     <div className="relative isolate flex min-h-svh flex-col overflow-x-hidden bg-background">
       <AuthHeroBackground />
+      <AuthWordmark />
 
       <div className="absolute right-4 top-5 z-20 flex items-center justify-end lg:right-8 lg:top-8">
         <div className="rounded-full bg-background/45 backdrop-blur-md [&_button]:text-foreground [&_svg]:text-foreground">

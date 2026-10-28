@@ -1,10 +1,17 @@
 import { useEffect, useState } from "react";
 
+const backgrounds = [
+  "/auth-tennis.png",
+  "/auth-racing.png",
+  "/auth-ski.png",
+  "/auth-surf.png",
+];
+
 export function AuthHeroBackground() {
-  const [background, setBackground] = useState("/auth-bg-3.png");
+  const [background, setBackground] = useState(backgrounds[0]);
 
   useEffect(() => {
-    setBackground(`/auth-bg-${Math.floor(Math.random() * 3) + 1}.png`);
+    setBackground(backgrounds[Math.floor(Math.random() * backgrounds.length)]);
   }, []);
 
   return (

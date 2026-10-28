@@ -166,6 +166,35 @@
   animation: auth-background-pulse 8s ease-in-out infinite;
 }
 
+.auth-wordmark {
+  top: clamp(64px, 11svh, 132px);
+}
+
+.auth-wordmark-name {
+  font-size: clamp(44px, 10vw, 84px);
+}
+
+.auth-wordmark-tagline {
+  font-size: clamp(16px, 3.5vw, 28px);
+}
+
+@keyframes auth-wordmark-rise {
+  0% { opacity: 0; transform: translateY(28svh) scale(1.06); }
+  18% { opacity: 1; }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.auth-wordmark-entrance {
+  animation: auth-wordmark-rise 1.25s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (max-height: 520px) {
+  .auth-wordmark { top: 32px; }
+  .auth-wordmark-name { font-size: 36px; }
+  .auth-wordmark-tagline { font-size: 14px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .auth-background-pulse { animation: none; }
+  .auth-wordmark-entrance { animation: none; }
 }
