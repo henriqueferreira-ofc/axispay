@@ -168,7 +168,8 @@ export const startPasskeyLogin = defineOperation()
       userVerification: "required",
     });
 
-    await supabaseAdmin
+    // Expired-challenge cleanup runs alongside the insert to save a round-trip.
+    const cleanup = supabaseAdmin
       .from("passkey_challenges")
       .delete()
       .lt("expires_at", new Date().toISOString());
@@ -183,6 +184,7 @@ export const startPasskeyLogin = defineOperation()
       })
       .select("id")
       .single();
+    await cleanup;
     if (error || !ch) throw new Error("Não foi possível iniciar o acesso");
     return {
       missing: false as const,
