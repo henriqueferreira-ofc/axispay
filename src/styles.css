@@ -178,14 +178,24 @@
   font-size: clamp(16px, 3.5vw, 28px);
 }
 
+/* Splash: the name sits centered on black, then rises as the photo fades in. */
 @keyframes auth-wordmark-rise {
-  0% { opacity: 0; transform: translateY(28svh) scale(1.06); }
-  18% { opacity: 1; }
+  0%, 42% { opacity: 1; transform: translateY(calc(50svh - clamp(64px, 11svh, 132px) - 40px)) scale(1.06); }
   100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .auth-wordmark-entrance {
-  animation: auth-wordmark-rise 1.25s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: auth-wordmark-rise 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes auth-splash-fade {
+  0%, 42% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.auth-splash {
+  animation: auth-splash-fade 1.2s ease-out both;
+  pointer-events: none;
 }
 
 @media (max-height: 520px) {
@@ -197,4 +207,5 @@
 @media (prefers-reduced-motion: reduce) {
   .auth-background-pulse { animation: none; }
   .auth-wordmark-entrance { animation: none; }
+  .auth-splash { animation: none; opacity: 0; }
 }

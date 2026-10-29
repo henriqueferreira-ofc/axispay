@@ -1,7 +1,9 @@
 /** Independent of the photos so the brand can animate when the login screen opens. */
 export function AuthWordmark() {
   return (
-    <div className="auth-wordmark pointer-events-none absolute inset-x-0 z-10 flex justify-center px-6">
+    <>
+    <div aria-hidden="true" className="auth-splash absolute inset-0 z-30 bg-[#0d0d0d]" />
+    <div className="auth-wordmark pointer-events-none absolute inset-x-0 z-40 flex justify-center px-6">
       <div role="img" className="auth-wordmark-entrance flex flex-col items-center text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.3)]" aria-label="AxisPay — Financial AxisControle">
         <div aria-hidden="true" className="auth-wordmark-name flex items-baseline whitespace-nowrap leading-none tracking-[-0.065em]">
           <span className="font-extrabold">Axis</span><span className="font-thin">Pay</span>
@@ -11,5 +13,6 @@ export function AuthWordmark() {
         </div>
       </div>
     </div>
+    </>
   );
 }
