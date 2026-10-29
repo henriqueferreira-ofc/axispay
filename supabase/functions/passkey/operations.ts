@@ -168,7 +168,8 @@ export const startPasskeyLogin = defineOperation()
       userVerification: "required",
     });
 
-    await supabaseAdmin
+    // Expired-challenge cleanup runs alongside the insert to save a round-trip.
+    const cleanup = supabaseAdmin
       .from("passkey_challenges")
       .delete()
       .lt("expires_at", new Date().toISOString());
@@ -183,6 +184,7 @@ export const startPasskeyLogin = defineOperation()
       })
       .select("id")
       .single();
+    await cleanup;
     if (error || !ch) throw new Error("Não foi possível iniciar o acesso");
     return {
       missing: false as const,
@@ -234,6 +236,8 @@ export const finishPasskeyLogin = defineOperation()
     });
     if (!verification.verified) throw new Error("Biometria não confirmada");
 
+    // Look up the account in parallel with the counter update (result is only used after it succeeds).
+    const userLookup = supabaseAdmin.auth.admin.getUserById(cred.user_id);
     const { data: updated, error: updateError } = await supabaseAdmin
       .from("passkey_credentials")
       .update({
@@ -244,11 +248,8 @@ export const finishPasskeyLogin = defineOperation()
       .eq("counter", cred.counter)
       .select("id")
       .maybeSingle();
+    const { data: userRes, error: userErr } = await userLookup;
     if (updateError || !updated) throw new Error("Biometria não confirmada");
-
-    const { data: userRes, error: userErr } = await supabaseAdmin.auth.admin.getUserById(
-      cred.user_id,
-    );
     const email = userRes?.user?.email;
     if (userErr || !email) throw new Error("Conta não encontrada");
 
