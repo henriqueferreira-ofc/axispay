@@ -8,8 +8,8 @@ export function AuthWordmark() {
         <div aria-hidden="true" className="auth-wordmark-name flex items-baseline whitespace-nowrap leading-none tracking-[-0.065em]">
           <span className="font-extrabold">Axis</span><span className="font-thin">Pay</span>
         </div>
-        <div aria-hidden="true" className="auth-wordmark-tagline mt-1 whitespace-nowrap font-thin leading-none tracking-[-0.035em] text-white/90">
-          <span className="text-[0.88em] font-[150]">Financial</span>{" "}<span className="text-[0.8em] font-bold">AxisControle</span>
+        <div aria-hidden="true" className="auth-wordmark-tagline mt-1.5 flex items-baseline whitespace-nowrap leading-none text-white">
+          <span className="font-[200] tracking-[0.02em] text-white/85">Financial</span>{"\u00A0"}<span className="font-[family-name:var(--font-serif-brand)] font-semibold tracking-[0.01em]">AxisControle</span>
         </div>
       </div>
     </div>
