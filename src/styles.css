@@ -175,7 +175,7 @@
 }
 
 .auth-wordmark-tagline {
-  font-size: clamp(16px, 3.5vw, 28px);
+  font-size: clamp(13px, 2.7vw, 21px);
 }
 
 /* Splash: the name sits centered on black, then rises as the photo fades in. */
