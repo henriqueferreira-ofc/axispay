@@ -269,7 +269,7 @@ function AuthPage() {
 
       <div className="relative z-10 mt-auto flex w-full flex-col items-center px-[3.7vw] pb-[max(2.8vw,env(safe-area-inset-bottom))] pt-28 md:px-8 md:pb-10">
         {!showForm ? (
-          <Card className="w-full max-w-4xl rounded-[9.5vw] border-white/5 bg-gradient-to-br from-[#373737]/95 to-[#272727]/95 p-[5.4vw] text-white shadow-2xl backdrop-blur-2xl md:rounded-[64px] md:p-10">
+          <Card className="w-full max-w-4xl rounded-[9.5vw] border-white/[0.04] bg-gradient-to-b from-[#303032]/95 to-[#262628]/95 p-[5.4vw] text-white shadow-2xl backdrop-blur-2xl md:rounded-[64px] md:p-10">
             <CardHeader className="space-y-[1.9vw] p-0 md:space-y-2">
               <CardTitle className="text-[3.8vw] font-normal leading-[1.25] md:text-[28px]">
                 {greeting}
