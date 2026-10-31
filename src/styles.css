@@ -232,3 +232,12 @@ html[data-auth-splash="true"] body {
   background-color: #0d0d0d;
   background-image: none;
 }
+
+/* Match native browser surfaces to the selected app theme. */
+html.dark {
+  color-scheme: dark;
+}
+
+html[data-auth-hero="true"] body {
+  background-color: #0d0d0d;
+}

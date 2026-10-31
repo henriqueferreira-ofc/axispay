@@ -31,8 +31,8 @@ export const Route = createRootRoute({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "apple-mobile-web-app-capable", content: "yes" },
-      { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
+      { name: "color-scheme", content: "dark" },
+      { name: "theme-color", content: "#0d0d0d" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { title: "AxisPay" },
       { name: "description", content: "AxisPay: track income, expenses, budgets and goals with smart insights." },
@@ -63,6 +63,9 @@ function RootShell({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-BR" className="dark" style={{ backgroundColor: "#0d0d0d" }}>
       <head>
+        {/* iOS reads these at launch/install, before any client effects run. */}
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <HeadContent />
       </head>
       <body>
