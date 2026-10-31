@@ -225,3 +225,10 @@ html[data-auth-hero="true"] body {
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
+
+/* Match the document canvas to the opening splash, including Safari chrome. */
+html[data-auth-splash="true"],
+html[data-auth-splash="true"] body {
+  background-color: #0d0d0d;
+  background-image: none;
+}
