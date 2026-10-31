@@ -168,7 +168,7 @@
 }
 
 .auth-wordmark {
-  top: clamp(48px, 9svh, 110px);
+  top: clamp(60px, 11svh, 134px);
 }
 
 .auth-wordmark-name {
@@ -185,7 +185,7 @@
 
 /* Splash: the name sits centered on black, then rises as the photo fades in. */
 @keyframes auth-wordmark-rise {
-  0%, 53% { opacity: 1; transform: translateY(calc(50svh - clamp(48px, 9svh, 110px) - 40px)) scale(1.06); }
+  0%, 53% { opacity: 1; transform: translateY(calc(50svh - clamp(60px, 11svh, 134px) - 40px)) scale(1.06); }
   100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
