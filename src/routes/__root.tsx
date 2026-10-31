@@ -31,7 +31,9 @@ export const Route = createRootRoute({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { title: "AxisPay" },
       { name: "description", content: "AxisPay: track income, expenses, budgets and goals with smart insights." },
       { property: "og:title", content: "AxisPay" },

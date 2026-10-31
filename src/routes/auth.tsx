@@ -42,9 +42,6 @@ export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
       { title: "AxisPay" },
-      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
-      { name: "apple-mobile-web-app-capable", content: "yes" },
-      { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
       { name: "description", content: "Acesse sua conta AxisPay para gerenciar suas finanças." },
       { property: "og:title", content: "AxisPay — Acesso" },
       {
@@ -261,7 +258,7 @@ function AuthPage() {
   };
 
   return (
-    <div className="relative isolate flex min-h-svh flex-col overflow-x-hidden bg-background">
+    <div className="relative isolate flex min-h-dvh flex-col overflow-x-hidden bg-background">
       <AuthHeroBackground />
       <AuthWordmark />
 
@@ -271,9 +268,9 @@ function AuthPage() {
         </div>
       </div>
 
-      <div className="relative z-10 mt-auto flex w-full flex-col items-center px-[3.7vw] pb-[max(2.8vw,env(safe-area-inset-bottom))] pt-28 md:px-8 md:pb-10">
+      <div className="relative z-10 mt-auto flex w-full flex-col items-center px-[3.7vw] pb-[max(1vw,env(safe-area-inset-bottom))] pt-28 md:px-8 md:pb-10">
         {!showForm ? (
-          <Card className="w-full max-w-4xl rounded-[9.5vw] border-white/[0.04] bg-gradient-to-b from-[#8c8582]/85 to-[#514d4b]/85 p-[5.4vw] text-white shadow-2xl backdrop-blur-2xl md:rounded-[64px] md:p-10">
+          <Card className="w-full max-w-4xl rounded-[9.5vw] border-white/[0.04] bg-transparent bg-gradient-to-b from-[#8c8582]/45 to-[#514d4b]/40 p-[5.4vw] text-white shadow-xl backdrop-blur-md md:rounded-[64px] md:p-10">
             <CardHeader className="space-y-[1.9vw] p-0 md:space-y-2">
               <CardTitle className="text-[3.8vw] font-normal leading-[1.25] md:text-[28px]">
                 {greeting}
