@@ -241,3 +241,14 @@ html.dark {
 html[data-auth-hero="true"] body {
   background-color: #0d0d0d;
 }
+
+/* Paint beneath the iPhone home indicator even when its dynamic viewport shrinks. */
+.auth-hero-background {
+  bottom: calc(0px - env(safe-area-inset-bottom, 0px));
+  min-height: 100lvh;
+}
+
+html[data-auth-hero="true"],
+html[data-auth-hero="true"] body {
+  min-height: 100lvh;
+}

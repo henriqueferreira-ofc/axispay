@@ -28,7 +28,7 @@ export function AuthHeroBackground() {
 
   return (
     <div
-      className="pointer-events-none fixed inset-0 overflow-hidden"
+      className="auth-hero-background pointer-events-none fixed inset-x-0 top-0 overflow-hidden"
       aria-hidden="true"
     >
       <img
