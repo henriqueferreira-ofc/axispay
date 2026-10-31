@@ -34,7 +34,7 @@ export function AuthHeroBackground() {
       <img
         src={background}
         alt=""
-        className="absolute bottom-0 h-[105%] w-full max-w-none object-cover object-[52%_bottom] md:h-full md:object-center lg:object-[center_28%]"
+        className="absolute top-0 h-[105%] w-full max-w-none object-cover object-[52%_top] md:h-full md:object-center lg:object-[center_28%]"
       />
       {/* Fade the subtle sky blur out before it reaches the portrait. */}
       <div className="absolute inset-x-0 top-0 h-[22%] backdrop-blur-[2px] [mask-image:linear-gradient(to_bottom,black,transparent)]" />
