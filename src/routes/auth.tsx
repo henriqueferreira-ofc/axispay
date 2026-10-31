@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { z } from "zod";
+import { ChartNoAxesCombined, LayoutGrid, SlidersHorizontal } from "lucide-react";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useI18n } from "@/i18n/I18nProvider";
 import { AuthHeroBackground } from "@/components/AuthHeroBackground";
@@ -41,6 +42,9 @@ export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
       { title: "AxisPay" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
       { name: "description", content: "Acesse sua conta AxisPay para gerenciar suas finanças." },
       { property: "og:title", content: "AxisPay — Acesso" },
       {
@@ -261,7 +265,7 @@ function AuthPage() {
       <AuthHeroBackground />
       <AuthWordmark />
 
-      <div className="absolute right-4 top-5 z-20 flex items-center justify-end lg:right-8 lg:top-8">
+      <div className="absolute right-4 top-[max(1.25rem,env(safe-area-inset-top))] z-20 flex items-center justify-end lg:right-8 lg:top-8">
         <div className="rounded-full bg-background/45 backdrop-blur-md [&_button]:text-foreground [&_svg]:text-foreground">
           <LanguageSwitcher />
         </div>
@@ -269,16 +273,25 @@ function AuthPage() {
 
       <div className="relative z-10 mt-auto flex w-full flex-col items-center px-[3.7vw] pb-[max(2.8vw,env(safe-area-inset-bottom))] pt-28 md:px-8 md:pb-10">
         {!showForm ? (
-          <Card className="w-full max-w-4xl rounded-[9.5vw] border-white/[0.04] bg-gradient-to-b from-[#303032]/95 to-[#262628]/95 p-[5.4vw] text-white shadow-2xl backdrop-blur-2xl md:rounded-[64px] md:p-10">
+          <Card className="w-full max-w-4xl rounded-[9.5vw] border-white/[0.04] bg-gradient-to-b from-[#8c8582]/85 to-[#514d4b]/85 p-[5.4vw] text-white shadow-2xl backdrop-blur-2xl md:rounded-[64px] md:p-10">
             <CardHeader className="space-y-[1.9vw] p-0 md:space-y-2">
               <CardTitle className="text-[3.8vw] font-normal leading-[1.25] md:text-[28px]">
                 {greeting}
               </CardTitle>
-              <CardDescription className="text-[2.8vw] leading-[1.4] text-[#c2c5c9] md:text-[22px]">
-                {t("auth.signinDesc")}
-              </CardDescription>
+              <div className="grid grid-cols-3 pt-[3vw] text-white/90 md:pt-5">
+                {[
+                  { icon: SlidersHorizontal, label: t("auth.control") },
+                  { icon: ChartNoAxesCombined, label: t("auth.management") },
+                  { icon: LayoutGrid, label: t("auth.everythingHere") },
+                ].map(({ icon: Icon, label }) => (
+                  <div key={label} className="flex min-w-0 flex-col items-center gap-[1.5vw] border-r border-white/20 last:border-r-0 md:gap-2">
+                    <Icon aria-hidden="true" strokeWidth={1.6} className="size-[4vw] md:size-7" />
+                    <span className="text-[2.8vw] leading-snug md:text-lg">{label}</span>
+                  </div>
+                ))}
+              </div>
             </CardHeader>
-            <CardContent className="flex flex-col gap-[2.8vw] p-0 pt-[5.9vw] md:gap-5 md:pt-10">
+            <CardContent className="flex flex-col gap-[2.8vw] p-0 pt-[4.5vw] md:gap-5 md:pt-8">
               <Button
                 className="h-[11.2vw] w-full rounded-[4vw] bg-[#0cc6a0] text-[4vw] font-normal text-[#064c72] hover:bg-[#0bb590] md:h-24 md:rounded-[36px] md:text-[34px]"
                 onClick={handleAccess}
