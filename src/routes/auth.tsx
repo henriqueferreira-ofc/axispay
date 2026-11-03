@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { z } from "zod";
-import { ChartNoAxesCombined, LayoutGrid, SlidersHorizontal } from "lucide-react";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useI18n } from "@/i18n/I18nProvider";
 import { AuthHeroBackground } from "@/components/AuthHeroBackground";
@@ -258,39 +257,30 @@ function AuthPage() {
   };
 
   return (
-    <div className="relative isolate flex min-h-dvh flex-col overflow-x-hidden bg-transparent">
+    <div className="relative isolate flex min-h-svh flex-col overflow-x-hidden bg-background">
       <AuthHeroBackground />
       <AuthWordmark />
 
-      <div className="absolute right-4 top-[max(1.25rem,env(safe-area-inset-top))] z-20 flex items-center justify-end lg:right-8 lg:top-8">
+      <div className="absolute right-4 top-5 z-20 flex items-center justify-end lg:right-8 lg:top-8">
         <div className="rounded-full bg-background/45 backdrop-blur-md [&_button]:text-foreground [&_svg]:text-foreground">
           <LanguageSwitcher />
         </div>
       </div>
 
-      <div className="relative z-10 mt-auto flex w-full flex-col items-center px-[3.7vw] pb-[max(1vw,env(safe-area-inset-bottom))] pt-28 md:px-8 md:pb-10">
+      <div className="relative z-10 mt-auto flex w-full flex-col items-center px-[3.7vw] pb-[max(2.8vw,env(safe-area-inset-bottom))] pt-28 md:px-8 md:pb-12 lg:pb-16">
         {!showForm ? (
-          <Card className="relative top-[12px] w-full max-w-4xl md:top-0 rounded-[9.5vw] border-white/[0.04] bg-transparent bg-gradient-to-b from-[#8c8582]/45 to-[#514d4b]/40 p-[5.4vw] text-white shadow-xl backdrop-blur-md md:rounded-[64px] md:p-10">
+          <Card className="w-full max-w-4xl md:max-w-[520px] rounded-[9.5vw] border-white/[0.04] bg-gradient-to-b from-[#303032]/95 to-[#262628]/95 p-[5.4vw] text-white shadow-2xl backdrop-blur-2xl md:rounded-[36px] md:p-8">
             <CardHeader className="space-y-[1.9vw] p-0 md:space-y-2">
-              <CardTitle className="text-[3.8vw] font-normal leading-[1.25] md:text-[28px]">
+              <CardTitle className="text-[3.8vw] font-normal leading-[1.25] md:text-[22px]">
                 {greeting}
               </CardTitle>
-              <div className="grid grid-cols-3 pt-[3vw] text-white/90 md:pt-5">
-                {[
-                  { icon: SlidersHorizontal, label: t("auth.control") },
-                  { icon: ChartNoAxesCombined, label: t("auth.management") },
-                  { icon: LayoutGrid, label: t("auth.everythingHere") },
-                ].map(({ icon: Icon, label }) => (
-                  <div key={label} className="flex min-w-0 flex-col items-center gap-[1.5vw] border-r border-white/20 last:border-r-0 md:gap-2">
-                    <Icon aria-hidden="true" strokeWidth={1.6} className="size-[4vw] md:size-7" />
-                    <span className="text-[2.8vw] leading-snug md:text-lg">{label}</span>
-                  </div>
-                ))}
-              </div>
+              <CardDescription className="text-[2.8vw] leading-[1.4] text-[#c2c5c9] md:text-[15px]">
+                {t("auth.signinDesc")}
+              </CardDescription>
             </CardHeader>
-            <CardContent className="flex flex-col gap-[2.8vw] p-0 pt-[4.5vw] md:gap-5 md:pt-8">
+            <CardContent className="flex flex-col gap-[2.8vw] p-0 pt-[5.9vw] md:gap-3 md:pt-7">
               <Button
-                className="h-[11.2vw] w-full rounded-[4vw] bg-[#0cc6a0] text-[4vw] font-normal text-[#064c72] hover:bg-[#0bb590] md:h-24 md:rounded-[36px] md:text-[34px]"
+                className="h-[11.2vw] w-full rounded-[4vw] bg-[#0cc6a0] text-[4vw] font-normal text-[#064c72] hover:bg-[#0bb590] md:h-14 md:rounded-2xl md:text-lg"
                 onClick={handleAccess}
                 disabled={submitting || loading}
               >
@@ -298,7 +288,7 @@ function AuthPage() {
               </Button>
               <Button
                 variant="outline"
-                className="h-[11.2vw] w-full rounded-[4vw] border-transparent bg-[#303940] text-[4vw] font-normal text-[#18d6ae] hover:border-transparent hover:bg-[#3a454d] hover:text-[#43e8c4] md:h-24 md:rounded-[36px] md:text-[28px]"
+                className="h-[11.2vw] w-full rounded-[4vw] border-transparent bg-[#303940] text-[4vw] font-normal text-[#18d6ae] hover:border-transparent hover:bg-[#3a454d] hover:text-[#43e8c4] md:h-14 md:rounded-2xl md:text-lg"
                 onClick={() => {
                   setTab("signup");
                   setShowForm(true);

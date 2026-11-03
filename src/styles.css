@@ -168,11 +168,11 @@
 }
 
 .auth-wordmark {
-  top: clamp(60px, 11svh, 134px);
+  top: clamp(36px, 6.5svh, 84px);
 }
 
 .auth-wordmark-name {
-  font-size: clamp(44px, 10vw, 84px);
+  font-size: clamp(44px, 10vw, 64px);
 }
 
 .auth-wordmark-tagline {
@@ -185,7 +185,7 @@
 
 /* Splash: the name sits centered on black, then rises as the photo fades in. */
 @keyframes auth-wordmark-rise {
-  0%, 53% { opacity: 1; transform: translateY(calc(50svh - clamp(60px, 11svh, 134px) - 40px)) scale(1.06); }
+  0%, 53% { opacity: 1; transform: translateY(calc(50svh - clamp(36px, 6.5svh, 84px) - 40px)) scale(1.06); }
   100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
@@ -213,42 +213,4 @@
   .auth-background-pulse { animation: none; }
   .auth-wordmark-entrance { animation: none; }
   .auth-splash { animation: none; opacity: 0; }
-}
-
-/* Continue the login photo into Safari's document canvas and unsafe top area. */
-html[data-auth-hero="true"],
-html[data-auth-hero="true"] body {
-  background-color: transparent;
-  background-image: var(--auth-hero-image);
-  background-size: cover;
-  background-position: 52% top;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-}
-
-/* Match the document canvas to the opening splash, including Safari chrome. */
-html[data-auth-splash="true"],
-html[data-auth-splash="true"] body {
-  background-color: #0d0d0d;
-  background-image: none;
-}
-
-/* Match native browser surfaces to the selected app theme. */
-html.dark {
-  color-scheme: dark;
-}
-
-html[data-auth-hero="true"] body {
-  background-color: #0d0d0d;
-}
-
-/* Paint beneath the iPhone home indicator even when its dynamic viewport shrinks. */
-.auth-hero-background {
-  bottom: calc(0px - env(safe-area-inset-bottom, 0px));
-  min-height: 100lvh;
-}
-
-html[data-auth-hero="true"],
-html[data-auth-hero="true"] body {
-  min-height: 100lvh;
 }
