@@ -172,7 +172,7 @@
 }
 
 .auth-wordmark-name {
-  font-size: clamp(44px, 10vw, 84px);
+  font-size: clamp(44px, 10vw, 64px);
 }
 
 .auth-wordmark-tagline {
