@@ -267,20 +267,20 @@ function AuthPage() {
         </div>
       </div>
 
-      <div className="relative z-10 mt-auto flex w-full flex-col items-center px-[3.7vw] pb-[max(2.8vw,env(safe-area-inset-bottom))] pt-28 md:px-8 md:pb-10">
+      <div className="relative z-10 mt-auto flex w-full flex-col items-center px-[3.7vw] pb-[max(2.8vw,env(safe-area-inset-bottom))] pt-28 md:px-8 md:pb-12 lg:pb-16">
         {!showForm ? (
-          <Card className="w-full max-w-4xl rounded-[9.5vw] border-white/[0.04] bg-gradient-to-b from-[#303032]/95 to-[#262628]/95 p-[5.4vw] text-white shadow-2xl backdrop-blur-2xl md:rounded-[64px] md:p-10">
+          <Card className="w-full max-w-4xl md:max-w-[520px] rounded-[9.5vw] border-white/[0.04] bg-gradient-to-b from-[#303032]/95 to-[#262628]/95 p-[5.4vw] text-white shadow-2xl backdrop-blur-2xl md:rounded-[36px] md:p-8">
             <CardHeader className="space-y-[1.9vw] p-0 md:space-y-2">
-              <CardTitle className="text-[3.8vw] font-normal leading-[1.25] md:text-[28px]">
+              <CardTitle className="text-[3.8vw] font-normal leading-[1.25] md:text-[22px]">
                 {greeting}
               </CardTitle>
-              <CardDescription className="text-[2.8vw] leading-[1.4] text-[#c2c5c9] md:text-[22px]">
+              <CardDescription className="text-[2.8vw] leading-[1.4] text-[#c2c5c9] md:text-[15px]">
                 {t("auth.signinDesc")}
               </CardDescription>
             </CardHeader>
-            <CardContent className="flex flex-col gap-[2.8vw] p-0 pt-[5.9vw] md:gap-5 md:pt-10">
+            <CardContent className="flex flex-col gap-[2.8vw] p-0 pt-[5.9vw] md:gap-3 md:pt-7">
               <Button
-                className="h-[11.2vw] w-full rounded-[4vw] bg-[#0cc6a0] text-[4vw] font-normal text-[#064c72] hover:bg-[#0bb590] md:h-24 md:rounded-[36px] md:text-[34px]"
+                className="h-[11.2vw] w-full rounded-[4vw] bg-[#0cc6a0] text-[4vw] font-normal text-[#064c72] hover:bg-[#0bb590] md:h-14 md:rounded-2xl md:text-lg"
                 onClick={handleAccess}
                 disabled={submitting || loading}
               >
@@ -288,7 +288,7 @@ function AuthPage() {
               </Button>
               <Button
                 variant="outline"
-                className="h-[11.2vw] w-full rounded-[4vw] border-transparent bg-[#303940] text-[4vw] font-normal text-[#18d6ae] hover:border-transparent hover:bg-[#3a454d] hover:text-[#43e8c4] md:h-24 md:rounded-[36px] md:text-[28px]"
+                className="h-[11.2vw] w-full rounded-[4vw] border-transparent bg-[#303940] text-[4vw] font-normal text-[#18d6ae] hover:border-transparent hover:bg-[#3a454d] hover:text-[#43e8c4] md:h-14 md:rounded-2xl md:text-lg"
                 onClick={() => {
                   setTab("signup");
                   setShowForm(true);
