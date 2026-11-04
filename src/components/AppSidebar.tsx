@@ -36,8 +36,8 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarContent>
-        <div className="px-3 pt-5 pb-3">
+      <SidebarContent className="pt-[env(safe-area-inset-top)] md:pt-0">
+        <div className="shrink-0 px-3 pt-5 pb-3">
           <motion.div
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
@@ -76,7 +76,7 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter>
+      <SidebarFooter className="pb-[max(0.5rem,env(safe-area-inset-bottom))] md:pb-2">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild isActive={isActive("/perfil")} className="h-12">
