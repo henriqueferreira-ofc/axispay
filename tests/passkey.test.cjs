@@ -26,7 +26,7 @@ function setup(session, finishError, preparationError, embedded = false) {
     Error, exports, require: (id) => modules[id], navigator: { userAgent: 'iPhone' },
     window: { self: 1, top: embedded ? 2 : 1, localStorage: { setItem: (k, v) => stored.set(k, v), getItem: (k) => stored.get(k), removeItem: (k) => stored.delete(k) } },
   });
-  return { rememberAccount: exports.rememberAccount, getRememberedAccount: exports.getRememberedAccount, getLocalPasskey: exports.getLocalPasskey, prepareLogin: exports.preparePasskeyLogin, login: exports.loginWithPasskey, registrationErrorMessage: exports.registrationErrorMessage, enroll: exports.enrollPasskey, prepare: exports.preparePasskeyRegistration, calls, stored, events };
+  return { prepareExisting: exports.prepareExistingPasskeyLogin, rememberAccount: exports.rememberAccount, getRememberedAccount: exports.getRememberedAccount, getLocalPasskey: exports.getLocalPasskey, prepareLogin: exports.preparePasskeyLogin, login: exports.loginWithPasskey, registrationErrorMessage: exports.registrationErrorMessage, enroll: exports.enrollPasskey, prepare: exports.preparePasskeyRegistration, calls, stored, events };
 }
 
 test('registration authenticates both server calls and remembers only verified credentials', async () => {
@@ -153,4 +153,22 @@ test('a last account without biometrics never falls back to an older account key
   assert.equal(s.getRememberedAccount().email, 'new@example.com');
   assert.equal(s.getLocalPasskey('old').userId, 'old');
   assert.equal(s.stored.has('password'), false);
+});
+
+
+test('server-known account credentials recover authentication without local storage or new enrollment', async () => {
+  const s = setup({ user: { id: 'user' } });
+  const prepared = await s.prepareExisting('user', { options: { excludeCredentials: [{ id: 'first' }, { id: 'credential' }] } });
+  assert.equal(prepared.options.allowCredentials.length, 2);
+  assert.equal(s.stored.size, 0);
+  assert.equal(s.events.includes('webauthn'), false);
+  assert.equal(await s.login(prepared), 'ok');
+  assert.equal(s.getLocalPasskey('user').credentialId, 'credential');
+  assert.equal(s.getLocalPasskey().userId, 'user');
+});
+
+test('only accounts without registered credentials continue to enrollment', async () => {
+  const s = setup({ user: { id: 'user' } });
+  assert.equal(await s.prepareExisting('user', { options: { excludeCredentials: [] } }), null);
+  assert.equal(s.events.length, 0);
 });

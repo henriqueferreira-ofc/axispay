@@ -16,6 +16,7 @@ import { AuthWordmark } from "@/components/AuthWordmark";
 import {
   enrollPasskey,
   preparePasskeyRegistration,
+  prepareExistingPasskeyLogin,
   registrationErrorMessage,
   isEmbeddedAuthContext,
   type PreparedPasskeyRegistration,
@@ -124,8 +125,17 @@ function AuthPage() {
     setPreparingRegistration(true);
     setRegistrationError(null);
     preparePasskeyRegistration()
-      .then((prepared) => {
-        if (active) setPreparedRegistration(prepared);
+      .then(async (prepared) => {
+        const existing = await prepareExistingPasskeyLogin(enrollmentUserId, prepared);
+        if (!active) return;
+        if (existing) {
+          setPreparedLogin(existing);
+          setEnrollment(false);
+          setShowForm(false);
+          toast.info("Toque em Acessar conta para confirmar com sua biometria já cadastrada.");
+        } else {
+          setPreparedRegistration(prepared);
+        }
       })
       .catch((error) => {
         if (active)
@@ -181,7 +191,7 @@ function AuthPage() {
 
   const handleAccess = async () => {
     setBiometricError(false);
-    if (!getLocalPasskey(user?.id)) {
+    if (!getLocalPasskey(user?.id) && !preparedLogin) {
       if (user) {
         if (await isBiometricAvailable()) {
           setEnrollment(true);
@@ -195,7 +205,7 @@ function AuthPage() {
       setShowForm(true);
       return;
     }
-    if (!preparedLogin || preparedLogin.local.userId !== getLocalPasskey(user?.id)?.userId || Date.now() - preparedLogin.preparedAt >= 4 * 60 * 1000) {
+    if (!preparedLogin || preparedLogin.local.userId !== (user?.id ?? getRememberedAccount()?.userId ?? getLocalPasskey()?.userId) || Date.now() - preparedLogin.preparedAt >= 4 * 60 * 1000) {
       setLoginAttempt((attempt) => attempt + 1);
       if (loginPreparationError) { setBiometricError(true); toast.error(loginPreparationError); }
       else toast.info("Preparando a biometria. Toque em Acessar conta novamente quando estiver pronto.");

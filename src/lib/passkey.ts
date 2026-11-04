@@ -94,6 +94,21 @@ export async function preparePasskeyRegistration() {
 
 export type PreparedPasskeyRegistration = Awaited<ReturnType<typeof preparePasskeyRegistration>>;
 
+// The authenticated registration options already contain this account's saved
+// credentials. Recover them even when Safari/PWA local storage has no pointer.
+export async function prepareExistingPasskeyLogin(userId: string, registration: PreparedPasskeyRegistration) {
+  const credentials = registration.options.excludeCredentials ?? [];
+  if (!credentials.length) return null;
+  const start = await startPasskeyLogin({ data: { credentialId: credentials[0].id } });
+  if (start.missing) throw new Error("Não foi possível recuperar a chave existente. Entre com e-mail e senha.");
+  return {
+    ...start,
+    options: { ...start.options, allowCredentials: credentials },
+    local: { credentialId: credentials[0].id, userId },
+    preparedAt: Date.now(),
+  };
+}
+
 export async function enrollPasskey(userId: string, prepared?: PreparedPasskeyRegistration) {
   prepared ??= await preparePasskeyRegistration();
   if (Date.now() - prepared.preparedAt >= 4 * 60 * 1000) {
@@ -163,6 +178,8 @@ export async function loginWithPasskey(prepared?: PreparedPasskeyLogin): Promise
     throw new Error("A chave de acesso não corresponde à conta selecionada.");
   }
   rememberAccount(data.user);
-  window.localStorage.setItem(KEY, JSON.stringify(attempt.local));
+  const local = { credentialId: response.id, userId: data.user.id } satisfies LocalPasskey;
+  window.localStorage.setItem(`${KEY}.${local.userId}`, JSON.stringify(local));
+  window.localStorage.setItem(KEY, JSON.stringify(local));
   return "ok";
 }
