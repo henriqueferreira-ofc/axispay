@@ -9,7 +9,7 @@ type AuthContextValue = {
   loading: boolean;
   accessConfirmed: boolean;
   setAccessConfirmed: (confirmed: boolean) => void;
-  signUp: (email: string, password: string, name: string) => Promise<{ error: Error | null }>;
+  signUp: (email: string, password: string, name: string) => Promise<{ error: Error | null; confirmationRequired: boolean }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: Error | null }>;
@@ -21,7 +21,13 @@ const AuthContext = React.createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = React.useState<Session | null>(null);
   const [loading, setLoading] = React.useState(true);
-  const [accessConfirmed, setAccessConfirmed] = React.useState(false);
+  const [confirmedUserId, setConfirmedUserId] = React.useState<string | null>(null);
+  const accessConfirmed = !!session && confirmedUserId === session.user.id;
+  const sessionRef = React.useRef(session);
+  sessionRef.current = session;
+  const setAccessConfirmed = React.useCallback((confirmed: boolean) => {
+    setConfirmedUserId(confirmed ? sessionRef.current?.user.id ?? null : null);
+  }, []);
 
   React.useEffect(() => {
     const lock = () => {
@@ -38,11 +44,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   React.useEffect(() => {
     // CRITICAL: subscribe BEFORE getSession
     const { data: subscription } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      if (sessionRef.current?.user.id !== newSession?.user.id || !newSession) setConfirmedUserId(null);
+      sessionRef.current = newSession;
       setSession(newSession);
       setLoading(false);
     });
 
     supabase.auth.getSession().then(({ data }) => {
+      sessionRef.current = data.session;
       setSession(data.session);
       setLoading(false);
     });
@@ -51,18 +60,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signUp = React.useCallback(async (email: string, password: string, name: string) => {
-    const { error } = await supabase.auth.signUp({
+    setAccessConfirmed(false);
+    if (sessionRef.current) {
+      const { error: signOutError } = await supabase.auth.signOut({ scope: "local" });
+      if (signOutError) throw signOutError;
+    }
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/`,
+        emailRedirectTo: `${window.location.origin}/auth?confirmed=true`,
         data: { name },
       },
     });
-    return { error };
+    if (!error && data.session) {
+      const { error: signOutError } = await supabase.auth.signOut({ scope: "local" });
+      if (signOutError) throw signOutError;
+    }
+    return { error, confirmationRequired: !data.session };
   }, []);
 
   const signIn = React.useCallback(async (email: string, password: string) => {
+    setAccessConfirmed(false);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     return { error };
   }, []);

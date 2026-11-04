@@ -11,21 +11,23 @@ const KEY = "axispay.passkey";
 
 export type LocalPasskey = { credentialId: string; userId: string };
 
-export function getLocalPasskey(): LocalPasskey | null {
+export function getLocalPasskey(userId?: string): LocalPasskey | null {
   if (typeof window === "undefined") return null;
   try {
-    const raw = window.localStorage.getItem(KEY);
+    const raw = (userId && window.localStorage.getItem(`${KEY}.${userId}`)) || window.localStorage.getItem(KEY);
     if (!raw) return null;
     const v = JSON.parse(raw) as LocalPasskey;
-    return v?.credentialId && v?.userId ? v : null;
+    return v?.credentialId && v?.userId && (!userId || v.userId === userId) ? v : null;
   } catch {
     return null;
   }
 }
 
-export function clearLocalPasskey() {
+export function clearLocalPasskey(userId?: string) {
   try {
-    window.localStorage.removeItem(KEY);
+    const local = getLocalPasskey(userId);
+    if (local) window.localStorage.removeItem(`${KEY}.${local.userId}`);
+    if (!userId || getLocalPasskey()?.userId === userId) window.localStorage.removeItem(KEY);
   } catch {
     // ignore
   }
@@ -78,7 +80,11 @@ export async function enrollPasskey(userId: string, prepared?: PreparedPasskeyRe
       deviceLabel: label,
     },
   });
-  window.localStorage.setItem(KEY, JSON.stringify({ credentialId, userId } satisfies LocalPasskey));
+  const previous = getLocalPasskey();
+  if (previous) window.localStorage.setItem(`${KEY}.${previous.userId}`, JSON.stringify(previous));
+  const value = JSON.stringify({ credentialId, userId } satisfies LocalPasskey);
+  window.localStorage.setItem(`${KEY}.${userId}`, value);
+  window.localStorage.setItem(KEY, value);
 }
 
 export function isEmbeddedAuthContext(): boolean {
@@ -97,23 +103,35 @@ export function registrationErrorMessage(error: unknown): string {
   return "Não foi possível concluir a ativação. Tente novamente ou entre com e-mail e senha.";
 }
 
-/** Returns "ok" on success, "missing" when this device has no valid biometric registered. */
-export async function loginWithPasskey(): Promise<"ok" | "missing"> {
-  const local = getLocalPasskey();
-  if (!local) return "missing";
+export async function preparePasskeyLogin(userId?: string) {
+  const local = getLocalPasskey(userId);
+  if (!local) return null;
   const start = await startPasskeyLogin({ data: { credentialId: local.credentialId } });
   if (start.missing) {
-    clearLocalPasskey();
-    return "missing";
+    clearLocalPasskey(local.userId);
+    return null;
   }
-  const response = await startAuthentication({ optionsJSON: start.options });
+  return { ...start, local, preparedAt: Date.now() };
+}
+
+export type PreparedPasskeyLogin = NonNullable<Awaited<ReturnType<typeof preparePasskeyLogin>>>;
+
+/** Prepared options keep the native prompt directly attached to the user's tap on Safari. */
+export async function loginWithPasskey(prepared?: PreparedPasskeyLogin): Promise<"ok" | "missing"> {
+  const attempt = prepared ?? await preparePasskeyLogin();
+  if (!attempt) return "missing";
+  if (Date.now() - attempt.preparedAt >= 4 * 60 * 1000)
+    throw new Error("O acesso expirou. Toque novamente para preparar uma nova tentativa.");
+  const response = await startAuthentication({ optionsJSON: attempt.options });
   const { tokenHash } = await finishPasskeyLogin({
-    data: {
-      challengeId: start.challengeId,
-      response: response as unknown as Record<string, unknown>,
-    },
+    data: { challengeId: attempt.challengeId, response: response as unknown as Record<string, unknown> },
   });
-  const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: "email" });
+  const { data, error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: "email" });
   if (error) throw error;
+  if (data.user?.id !== attempt.local.userId) {
+    await supabase.auth.signOut({ scope: "local" });
+    throw new Error("A chave de acesso não corresponde à conta selecionada.");
+  }
+  window.localStorage.setItem(KEY, JSON.stringify(attempt.local));
   return "ok";
 }

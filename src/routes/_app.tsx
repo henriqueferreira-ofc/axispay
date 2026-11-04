@@ -26,7 +26,7 @@ function AppLayout() {
 
   React.useEffect(() => {
     if (!loading && (!user || needsAccessConfirmation)) {
-      navigate({ to: "/auth", search: { redirect: location.pathname } });
+      navigate({ to: "/auth", search: { redirect: location.pathname, confirmed: false } });
     }
   }, [loading, user, navigate, location.pathname, needsAccessConfirmation]);
 
@@ -74,6 +74,13 @@ function AppShell({
   t: (k: string) => string;
 }) {
   useGoalCelebrations();
+
+  React.useEffect(() => {
+    const root = document.documentElement;
+    const previous = root.style.overflow;
+    root.style.overflow = "hidden";
+    return () => { root.style.overflow = previous; };
+  }, []);
 
   // Start the authenticated area at the top after the login keyboard closes.
   // This runs only when the shell mounts, preserving navigation scroll history.

@@ -9,9 +9,11 @@ function setup(session, finishError, preparationError, embedded = false) {
   const stored = new Map();
   const events = [];
   const modules = {
-    '@simplewebauthn/browser': { startRegistration: async () => { events.push('webauthn'); return { id: 'credential' }; } },
-    '@/integrations/supabase/client': { supabase: { auth: { getSession: async () => { events.push("session"); return { data: { session } }; } } } },
+    '@simplewebauthn/browser': { startRegistration: async () => { events.push('webauthn'); return { id: 'credential' }; }, startAuthentication: async () => { events.push('authenticate'); return { id: 'credential' }; } },
+    '@/integrations/supabase/client': { supabase: { auth: { getSession: async () => { events.push("session"); return { data: { session } }; }, verifyOtp: async () => ({ data: { user: { id: session?.user?.id ?? "user" } }, error: null }), signOut: async () => { events.push("signOut"); } } } },
     '@/lib/passkey.functions': {
+      startPasskeyLogin: async () => { events.push("prepare-login"); return { missing: false, challengeId: "challenge", options: {} }; },
+      finishPasskeyLogin: async () => ({ tokenHash: "token" }),
       startPasskeyRegistration: async (args) => { calls.push(args); return preparationError ? { error: preparationError } : { challengeId: 'challenge', options: {} }; },
       finishPasskeyRegistration: async (args) => { calls.push(args); if (finishError) throw finishError; return { credentialId: 'credential' }; },
     },
@@ -22,9 +24,9 @@ function setup(session, finishError, preparationError, embedded = false) {
   }).outputText;
   vm.runInNewContext(code, {
     Error, exports, require: (id) => modules[id], navigator: { userAgent: 'iPhone' },
-    window: { self: 1, top: embedded ? 2 : 1, localStorage: { setItem: (k, v) => stored.set(k, v) } },
+    window: { self: 1, top: embedded ? 2 : 1, localStorage: { setItem: (k, v) => stored.set(k, v), getItem: (k) => stored.get(k), removeItem: (k) => stored.delete(k) } },
   });
-  return { registrationErrorMessage: exports.registrationErrorMessage, enroll: exports.enrollPasskey, prepare: exports.preparePasskeyRegistration, calls, stored, events };
+  return { getLocalPasskey: exports.getLocalPasskey, prepareLogin: exports.preparePasskeyLogin, login: exports.loginWithPasskey, registrationErrorMessage: exports.registrationErrorMessage, enroll: exports.enrollPasskey, prepare: exports.preparePasskeyRegistration, calls, stored, events };
 }
 
 test('registration authenticates both server calls and remembers only verified credentials', async () => {
@@ -93,4 +95,39 @@ test('embedded preview failure explains how to activate outside the editor', () 
   const error = new Error('not allowed');
   error.name = 'NotAllowedError';
   assert.match(s.registrationErrorMessage(error), /fora do editor/);
+});
+
+
+test('switching accounts preserves each verified credential and never selects another account key', async () => {
+  const s = setup({ access_token: 'session-token' });
+  await s.enroll('first');
+  await s.enroll('second');
+  assert.equal(s.getLocalPasskey('first').userId, 'first');
+  assert.equal(s.getLocalPasskey('second').userId, 'second');
+  assert.equal(s.getLocalPasskey('unknown'), null);
+});
+
+test('legacy single-account credential survives enrollment of a second account', async () => {
+  const s = setup({ access_token: 'session-token' });
+  s.stored.set('axispay.passkey', JSON.stringify({ credentialId: 'old', userId: 'first' }));
+  await s.enroll('second');
+  assert.equal(s.getLocalPasskey('first').credentialId, 'old');
+});
+
+test('prepared login opens native authentication immediately from the tap', async () => {
+  const s = setup({ user: { id: 'user' } });
+  s.stored.set('axispay.passkey', JSON.stringify({ credentialId: 'credential', userId: 'user' }));
+  const prepared = await s.prepareLogin('user');
+  s.events.length = 0;
+  const result = s.login(prepared);
+  assert.deepEqual(s.events, ['authenticate']);
+  assert.equal(await result, 'ok');
+});
+
+test('a verified session for a different account is rejected and signed out', async () => {
+  const s = setup({ user: { id: 'other' } });
+  s.stored.set('axispay.passkey', JSON.stringify({ credentialId: 'credential', userId: 'user' }));
+  const prepared = await s.prepareLogin('user');
+  await assert.rejects(s.login(prepared), /não corresponde/);
+  assert.ok(s.events.includes('signOut'));
 });

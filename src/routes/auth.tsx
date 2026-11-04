@@ -22,6 +22,8 @@ import {
   getLocalPasskey,
   isBiometricAvailable,
   loginWithPasskey,
+  preparePasskeyLogin,
+  type PreparedPasskeyLogin,
 } from "@/lib/passkey";
 import {
   Dialog,
@@ -31,12 +33,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { supabase } from "@/integrations/supabase/client";
 import { accessDestination } from "@/lib/passkey-policy";
 
 const LAST_USER_NAME_KEY = "axispay.lastUserName";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (s: Record<string, unknown>) => ({
+    confirmed: s.confirmed === true || s.confirmed === "true",
     redirect: typeof s.redirect === "string" ? s.redirect : "/",
   }),
   head: () => ({
@@ -58,9 +62,43 @@ export const Route = createFileRoute("/auth")({
 function AuthPage() {
   const navigate = useNavigate();
   const search = Route.useSearch();
-  const { user, loading, signIn, signUp, resetPassword, accessConfirmed, setAccessConfirmed } =
+  const { user, loading, signIn, signUp, signOut, resetPassword, accessConfirmed, setAccessConfirmed } =
     useAuth();
   const { t } = useI18n();
+  const [signupNotice, setSignupNotice] = useState<string | null>(null);
+  const [preparedLogin, setPreparedLogin] = useState<PreparedPasskeyLogin | null>(null);
+  const [loginAttempt, setLoginAttempt] = useState(0);
+  const [preparingLogin, setPreparingLogin] = useState(false);
+  const [loginPreparationError, setLoginPreparationError] = useState<string | null>(null);
+  useEffect(() => {
+    let active = true;
+    setPreparedLogin(null);
+    setLoginPreparationError(null);
+    if (loading) return;
+    setPreparingLogin(true);
+    preparePasskeyLogin(user?.id).then((prepared) => {
+      if (active) setPreparedLogin(prepared);
+    }).catch((error) => {
+      if (active) setLoginPreparationError(error instanceof Error ? error.message : t("auth.biometricFailed"));
+    }).finally(() => { if (active) setPreparingLogin(false); });
+    return () => { active = false; };
+  }, [user?.id, loading, loginAttempt]);
+
+  useEffect(() => {
+    if (!search.confirmed || loading) return;
+    let active = true;
+    const confirmed = !!user?.email_confirmed_at;
+    setAccessConfirmed(false);
+    signOut().then(() => {
+      if (!active) return;
+      setSignupNotice(confirmed ? "E-mail confirmado. Entre com seu e-mail e senha para continuar." : "Após confirmar o e-mail, entre com seu e-mail e senha para continuar. Se o link expirou, solicite um novo cadastro ou reenvio da confirmação.");
+      setTab("login");
+      setShowForm(true);
+      navigate({ to: "/auth", search: { redirect: search.redirect, confirmed: false }, replace: true });
+    }).catch(() => { if (active) toast.error("Não foi possível finalizar a confirmação. Tente novamente."); });
+    return () => { active = false; };
+  }, [search.confirmed, loading, signOut]);
+
   const [tab, setTab] = useState<"login" | "signup" | "reset">("login");
   const [showForm, setShowForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -123,7 +161,7 @@ function AuthPage() {
   });
 
   useEffect(() => {
-    if (loading || !user || holdLogin || enrollment) return;
+    if (loading || !user || holdLogin || enrollment || search.confirmed) return;
     const name = typeof user.user_metadata?.name === "string" ? user.user_metadata.name : null;
     if (name) {
       try {
@@ -139,7 +177,7 @@ function AuthPage() {
 
   const handleAccess = async () => {
     setBiometricError(false);
-    if (!getLocalPasskey()) {
+    if (!getLocalPasskey(user?.id)) {
       if (user) {
         if (await isBiometricAvailable()) {
           setEnrollment(true);
@@ -153,13 +191,20 @@ function AuthPage() {
       setShowForm(true);
       return;
     }
+    if (!preparedLogin || Date.now() - preparedLogin.preparedAt >= 4 * 60 * 1000) {
+      setLoginAttempt((attempt) => attempt + 1);
+      if (loginPreparationError) { setBiometricError(true); toast.error(loginPreparationError); }
+      else toast.info("Preparando a biometria. Toque em Acessar conta novamente quando estiver pronto.");
+      return;
+    }
     setSubmitting(true);
     try {
-      const result = await loginWithPasskey();
+      const result = await loginWithPasskey(preparedLogin);
       if (result !== "ok") throw new Error("Missing credential");
       setAccessConfirmed(true);
       navigate({ to: destination });
     } catch {
+      setLoginAttempt((attempt) => attempt + 1);
       setBiometricError(true);
       toast.error(t("auth.biometricFailed"));
     } finally {
@@ -193,7 +238,8 @@ function AuthPage() {
     }
   };
 
-  const firstName = rememberedName?.trim().split(" ")[0];
+  const currentName = typeof user?.user_metadata?.name === "string" ? user.user_metadata.name : rememberedName;
+  const firstName = currentName?.trim().split(" ")[0];
   const greeting = firstName ? t("auth.helloName", { name: firstName }) : t("auth.helloGeneric");
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -206,7 +252,12 @@ function AuthPage() {
     }
     setSubmitting(true);
     setHoldLogin(true);
-    const { error } = await signIn(parsed.data.email, parsed.data.password);
+    let error: Error | null;
+    try {
+      ({ error } = await signIn(parsed.data.email, parsed.data.password));
+    } catch (failure) {
+      error = failure instanceof Error ? failure : new Error("Não foi possível entrar. Tente novamente.");
+    }
     setSubmitting(false);
     if (error) {
       setHoldLogin(false);
@@ -215,7 +266,12 @@ function AuthPage() {
       );
     } else {
       toast.success(t("auth.welcomeBack"));
-      if (!getLocalPasskey() && (await isBiometricAvailable())) setEnrollment(true);
+      const { data } = await supabase.auth.getSession();
+      if (data.session && getLocalPasskey(data.session.user.id) && !biometricError) {
+        setShowForm(false);
+        toast.info("Toque em Acessar conta para confirmar com a biometria.");
+        setLoginAttempt((attempt) => attempt + 1);
+      } else if (!biometricError && (await isBiometricAvailable())) setEnrollment(true);
       else {
         setAccessConfirmed(true);
         setHoldLogin(false);
@@ -236,12 +292,23 @@ function AuthPage() {
       return;
     }
     setSubmitting(true);
-    const { error } = await signUp(parsed.data.email, parsed.data.password, parsed.data.name);
-    setSubmitting(false);
-    if (error) {
-      toast.error(error.message.includes("already") ? t("auth.exists") : error.message);
-    } else {
-      toast.success(t("auth.created"));
+    setHoldLogin(true);
+    try {
+      const { error, confirmationRequired } = await signUp(parsed.data.email, parsed.data.password, parsed.data.name);
+      if (error) {
+        toast.error(error.message.includes("already") ? t("auth.exists") : error.message);
+        return;
+      }
+      setSignupNotice(confirmationRequired
+        ? `Verifique seu e-mail (${parsed.data.email}) para confirmar o cadastro. Depois, volte e entre com seu e-mail e senha.`
+        : "Conta criada. Entre com seu e-mail e senha para continuar.");
+      setTab("login");
+      setShowForm(true);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Não foi possível cadastrar. Tente novamente.");
+    } finally {
+      setSubmitting(false);
+      setHoldLogin(false);
     }
   };
 
@@ -292,9 +359,9 @@ function AuthPage() {
               <Button
                 className="h-[11.2vw] w-full rounded-[4vw] bg-[#0cc6a0] text-[4vw] font-normal text-[#064c72] hover:bg-[#0bb590] md:h-24 md:rounded-[36px] md:text-[34px]"
                 onClick={handleAccess}
-                disabled={submitting || loading}
+                disabled={submitting || loading || preparingLogin}
               >
-                {submitting ? t("auth.verifying") : t("auth.accessAccount")}
+                {submitting || preparingLogin ? t("auth.verifying") : t("auth.accessAccount")}
               </Button>
               <Button
                 variant="outline"
@@ -307,18 +374,11 @@ function AuthPage() {
                 {t("auth.create")}
               </Button>
             </CardContent>
-            {biometricError && (
-              <Button
-                variant="ghost"
-                className="mt-3 w-full"
-                onClick={() => {
-                  setTab("login");
-                  setShowForm(true);
-                }}
-              >
-                {t("auth.usePassword")}
-              </Button>
-            )}
+            <Button variant="ghost" className="mt-3 w-full text-white" onClick={() => {
+              setTab("login"); setShowForm(true); setSignupNotice(null);
+            }}>{t("auth.usePassword")}</Button>
+            {loginPreparationError && <p role="alert" className="mt-2 text-sm text-white">{loginPreparationError}</p>}
+            {biometricError && <p role="alert" className="mt-2 text-sm text-white">Confirme com a biometria em Acessar conta ou entre com e-mail e senha.</p>}
           </Card>
         ) : (
           <Card className="w-full max-w-md self-center rounded-xl border-border/70 bg-background/88 text-foreground shadow-2xl backdrop-blur-xl [&_input]:h-8 [&_input]:border-border/80 [&_input]:bg-background/60 [&_label]:text-xs">
@@ -339,6 +399,7 @@ function AuthPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="px-4 pb-4 pt-0.5">
+              {signupNotice && <p role="status" className="mb-3 rounded-md border border-primary/30 bg-primary/10 p-3 text-sm">{signupNotice}</p>}
               <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
                 <TabsList className="grid h-8 w-full grid-cols-2">
                   <TabsTrigger value="login" className="text-xs">
