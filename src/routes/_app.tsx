@@ -14,6 +14,14 @@ import { useGoalCelebrations } from "@/hooks/use-goal-celebrations";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_app")({
+  // Keep authenticated controls out of the iPhone's translucent system area.
+  // The login route retains the root's edge-to-edge photo viewport.
+  head: () => ({
+    meta: [
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=contain" },
+      { name: "color-scheme", content: "light dark" },
+    ],
+  }),
   component: AppLayout,
 });
 
@@ -78,8 +86,25 @@ function AppShell({
   React.useEffect(() => {
     const root = document.documentElement;
     const previous = root.style.overflow;
+    const previousBackground = root.style.backgroundColor;
+    const themeMeta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+    const previousThemeColor = themeMeta?.content;
     root.style.overflow = "hidden";
-    return () => { root.style.overflow = previous; };
+    root.style.backgroundColor = "var(--background)";
+    root.dataset.appShell = "true";
+    const syncTheme = () => {
+      if (themeMeta) themeMeta.content = getComputedStyle(document.body).backgroundColor;
+    };
+    syncTheme();
+    const observer = new MutationObserver(syncTheme);
+    observer.observe(root, { attributes: true, attributeFilter: ["class"] });
+    return () => {
+      observer.disconnect();
+      root.style.overflow = previous;
+      root.style.backgroundColor = previousBackground;
+      delete root.dataset.appShell;
+      if (themeMeta && previousThemeColor !== undefined) themeMeta.content = previousThemeColor;
+    };
   }, []);
 
   // Start the authenticated area at the top after the login keyboard closes.

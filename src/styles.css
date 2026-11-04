@@ -238,6 +238,23 @@ html.dark {
   color-scheme: dark;
 }
 
+/* Only the authenticated shell uses a solid, non-scrolling document canvas.
+   Menus and notification portals share this canvas, outside the content scroller. */
+html[data-app-shell="true"] {
+  color-scheme: light;
+  overscroll-behavior: none;
+}
+
+html[data-app-shell="true"].dark {
+  color-scheme: dark;
+}
+
+html[data-app-shell="true"] body {
+  overflow: hidden;
+  overscroll-behavior: none;
+  background-color: var(--background);
+}
+
 html[data-auth-hero="true"] body {
   background-color: #0d0d0d;
 }

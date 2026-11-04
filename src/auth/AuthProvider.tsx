@@ -1,6 +1,6 @@
 import * as React from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { getLocalPasskey } from "@/lib/passkey";
+import { getLocalPasskey, rememberAccount } from "@/lib/passkey";
 import type { Session, User } from "@supabase/supabase-js";
 
 type AuthContextValue = {
@@ -26,6 +26,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const sessionRef = React.useRef(session);
   sessionRef.current = session;
   const setAccessConfirmed = React.useCallback((confirmed: boolean) => {
+    if (confirmed && sessionRef.current) rememberAccount(sessionRef.current.user);
     setConfirmedUserId(confirmed ? sessionRef.current?.user.id ?? null : null);
   }, []);
 
@@ -82,7 +83,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signIn = React.useCallback(async (email: string, password: string) => {
     setAccessConfirmed(false);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (!error && data.user) rememberAccount(data.user);
     return { error };
   }, []);
 

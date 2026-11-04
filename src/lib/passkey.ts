@@ -8,12 +8,42 @@ import {
 } from "@/lib/passkey.functions";
 
 const KEY = "axispay.passkey";
+const LAST_ACCOUNT_KEY = "axispay.lastAccount";
+type RememberedAccount = { userId: string; email: string; name: string };
+
+export function getRememberedAccount(): RememberedAccount | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const account = JSON.parse(window.localStorage.getItem(LAST_ACCOUNT_KEY) || "null");
+    return typeof account?.userId === "string" && typeof account.email === "string" && typeof account.name === "string" ? account : null;
+  } catch { return null; }
+}
+
+// Store identity only after authentication succeeds; never store passwords.
+export function rememberAccount(user: { id: string; email?: string; user_metadata?: Record<string, unknown> }) {
+  try {
+    const legacy = window.localStorage.getItem(KEY);
+    if (legacy) {
+      const previous = JSON.parse(legacy) as LocalPasskey;
+      if (previous.userId && previous.credentialId)
+        window.localStorage.setItem(`${KEY}.${previous.userId}`, legacy);
+    }
+    const name = user.user_metadata?.name || user.user_metadata?.full_name;
+    const account: RememberedAccount = { userId: user.id, email: user.email || "", name: typeof name === "string" ? name : user.email?.split("@")[0] || "" };
+    window.localStorage.setItem(LAST_ACCOUNT_KEY, JSON.stringify(account));
+    window.localStorage.setItem("axispay.lastUserName", account.name);
+    const credential = window.localStorage.getItem(`${KEY}.${user.id}`);
+    if (credential) window.localStorage.setItem(KEY, credential);
+    else window.localStorage.removeItem(KEY);
+  } catch { /* Authentication remains available when storage is blocked. */ }
+}
 
 export type LocalPasskey = { credentialId: string; userId: string };
 
 export function getLocalPasskey(userId?: string): LocalPasskey | null {
   if (typeof window === "undefined") return null;
   try {
+    userId ??= getRememberedAccount()?.userId;
     const raw = (userId && window.localStorage.getItem(`${KEY}.${userId}`)) || window.localStorage.getItem(KEY);
     if (!raw) return null;
     const v = JSON.parse(raw) as LocalPasskey;
@@ -132,6 +162,7 @@ export async function loginWithPasskey(prepared?: PreparedPasskeyLogin): Promise
     await supabase.auth.signOut({ scope: "local" });
     throw new Error("A chave de acesso não corresponde à conta selecionada.");
   }
+  rememberAccount(data.user);
   window.localStorage.setItem(KEY, JSON.stringify(attempt.local));
   return "ok";
 }

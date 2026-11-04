@@ -17,8 +17,9 @@ function setup(signupResult) {
   const modules = {
     react: React,
     'react/jsx-runtime': { jsx: (_, props) => { context = props.value; } },
-    '@/lib/passkey': { getLocalPasskey: () => null },
+    '@/lib/passkey': { getLocalPasskey: () => null, rememberAccount: (user) => calls.push(['remember', user]) },
     '@/integrations/supabase/client': { supabase: { auth: {
+      signInWithPassword: async (args) => { calls.push(['signin', args]); return signupResult; },
       signUp: async (args) => { calls.push(['signup', args]); return signupResult; },
       signOut: async (args) => { calls.push(['signout', args]); return { error: null }; },
     } } },
@@ -53,5 +54,20 @@ test('signup failure is returned for display without signing out a nonexistent s
   const s = setup({ data: { session: null }, error });
   const result = await s.auth.signUp('new@example.com', 'password', 'New User');
   assert.equal(result.error, error);
+  assert.equal(s.calls.length, 1);
+});
+
+
+test('password login remembers the authenticated account, not an earlier account', async () => {
+  const user = { id: 'latest', email: 'latest@example.com' };
+  const s = setup({ data: { user }, error: null });
+  await s.auth.signIn(user.email, 'password');
+  assert.equal(s.calls[1][0], 'remember');
+  assert.equal(s.calls[1][1].id, 'latest');
+});
+
+test('failed password login does not replace the last successful account', async () => {
+  const s = setup({ data: { user: null }, error: new Error('Invalid login credentials') });
+  await s.auth.signIn('wrong@example.com', 'wrong');
   assert.equal(s.calls.length, 1);
 });

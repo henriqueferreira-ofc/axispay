@@ -26,7 +26,7 @@ function setup(session, finishError, preparationError, embedded = false) {
     Error, exports, require: (id) => modules[id], navigator: { userAgent: 'iPhone' },
     window: { self: 1, top: embedded ? 2 : 1, localStorage: { setItem: (k, v) => stored.set(k, v), getItem: (k) => stored.get(k), removeItem: (k) => stored.delete(k) } },
   });
-  return { getLocalPasskey: exports.getLocalPasskey, prepareLogin: exports.preparePasskeyLogin, login: exports.loginWithPasskey, registrationErrorMessage: exports.registrationErrorMessage, enroll: exports.enrollPasskey, prepare: exports.preparePasskeyRegistration, calls, stored, events };
+  return { rememberAccount: exports.rememberAccount, getRememberedAccount: exports.getRememberedAccount, getLocalPasskey: exports.getLocalPasskey, prepareLogin: exports.preparePasskeyLogin, login: exports.loginWithPasskey, registrationErrorMessage: exports.registrationErrorMessage, enroll: exports.enrollPasskey, prepare: exports.preparePasskeyRegistration, calls, stored, events };
 }
 
 test('registration authenticates both server calls and remembers only verified credentials', async () => {
@@ -130,4 +130,27 @@ test('a verified session for a different account is rejected and signed out', as
   const prepared = await s.prepareLogin('user');
   await assert.rejects(s.login(prepared), /não corresponde/);
   assert.ok(s.events.includes('signOut'));
+});
+
+
+test('the latest password account wins over the legacy biometric pointer after logout', async () => {
+  const s = setup({ access_token: 'token' });
+  await s.enroll('old');
+  await s.enroll('latest');
+  s.rememberAccount({ id: 'old', email: 'old@example.com', user_metadata: { name: 'Old' } });
+  s.rememberAccount({ id: 'latest', email: 'latest@example.com', user_metadata: { name: 'Latest' } });
+  assert.equal(s.getLocalPasskey().userId, 'latest');
+  assert.equal(s.getRememberedAccount().email, 'latest@example.com');
+  assert.equal(s.getRememberedAccount().name, 'Latest');
+  assert.equal(s.getLocalPasskey('old').userId, 'old');
+});
+
+test('a last account without biometrics never falls back to an older account key', async () => {
+  const s = setup({ access_token: 'token' });
+  await s.enroll('old');
+  s.rememberAccount({ id: 'new', email: 'new@example.com' });
+  assert.equal(s.getLocalPasskey(), null);
+  assert.equal(s.getRememberedAccount().email, 'new@example.com');
+  assert.equal(s.getLocalPasskey('old').userId, 'old');
+  assert.equal(s.stored.has('password'), false);
 });

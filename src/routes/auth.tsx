@@ -20,6 +20,7 @@ import {
   isEmbeddedAuthContext,
   type PreparedPasskeyRegistration,
   getLocalPasskey,
+  getRememberedAccount,
   isBiometricAvailable,
   loginWithPasskey,
   preparePasskeyLogin,
@@ -102,6 +103,7 @@ function AuthPage() {
   const [tab, setTab] = useState<"login" | "signup" | "reset">("login");
   const [showForm, setShowForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [rememberedEmail, setRememberedEmail] = useState("");
   const [rememberedName, setRememberedName] = useState<string | null>(null);
   const [enrollment, setEnrollment] = useState(false);
   const [embeddedPreview, setEmbeddedPreview] = useState(false);
@@ -146,11 +148,13 @@ function AuthPage() {
   const destination = accessDestination(search.redirect);
   useEffect(() => {
     try {
-      setRememberedName(window.localStorage.getItem(LAST_USER_NAME_KEY));
+      const account = getRememberedAccount();
+      setRememberedName(account?.name || window.localStorage.getItem(LAST_USER_NAME_KEY));
+      setRememberedEmail(account?.email || "");
     } catch {
       // Storage can be unavailable in private browsing.
     }
-  }, []);
+  }, [user?.id]);
 
   const loginSchema = z.object({
     email: z.string().email(t("auth.invalidEmail")),
@@ -191,7 +195,7 @@ function AuthPage() {
       setShowForm(true);
       return;
     }
-    if (!preparedLogin || Date.now() - preparedLogin.preparedAt >= 4 * 60 * 1000) {
+    if (!preparedLogin || preparedLogin.local.userId !== getLocalPasskey(user?.id)?.userId || Date.now() - preparedLogin.preparedAt >= 4 * 60 * 1000) {
       setLoginAttempt((attempt) => attempt + 1);
       if (loginPreparationError) { setBiometricError(true); toast.error(loginPreparationError); }
       else toast.info("Preparando a biometria. Toque em Acessar conta novamente quando estiver pronto.");
@@ -413,7 +417,7 @@ function AuthPage() {
                   <form onSubmit={handleLogin} className="space-y-2">
                     <div className="grid gap-1">
                       <Label htmlFor="l-email">{t("auth.email")}</Label>
-                      <Input id="l-email" name="email" type="email" autoComplete="email" required />
+                      <Input id="l-email" name="email" type="email" autoComplete="username" defaultValue={rememberedEmail} required />
                     </div>
                     <div className="grid gap-1">
                       <Label htmlFor="l-pass">{t("auth.password")}</Label>
