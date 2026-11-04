@@ -51,6 +51,7 @@ export const Route = createRootRoute({
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@100..800&family=Playfair+Display:wght@500;600;700&display=swap" },
       { rel: "icon", type: "image/png", href: "/logo.png" },
+      { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "apple-touch-icon", href: "/logo.png" },
     ],
   }),
@@ -65,6 +66,8 @@ function RootShell({ children }: { children: React.ReactNode }) {
       <head>
         {/* iOS reads these at launch/install, before any client effects run. */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-title" content="AxisPay" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <HeadContent />
       </head>

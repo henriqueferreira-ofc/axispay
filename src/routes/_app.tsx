@@ -75,6 +75,18 @@ function AppShell({
 }) {
   useGoalCelebrations();
 
+  // Start the authenticated area at the top after the login keyboard closes.
+  // This runs only when the shell mounts, preserving navigation scroll history.
+  React.useEffect(() => {
+    const resetScroll = () => window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    const frame = window.requestAnimationFrame(resetScroll);
+    const keyboardSettled = window.setTimeout(resetScroll, 350);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.clearTimeout(keyboardSettled);
+    };
+  }, []);
+
   // Apply theme on mount
   React.useEffect(() => {
     const saved = localStorage.getItem("axispay-theme");
@@ -107,10 +119,10 @@ function AppShell({
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background transition-colors duration-300">
+      <div className="min-h-dvh flex w-full bg-background pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] transition-colors duration-300">
         <AppSidebar />
         <div className="flex-1 flex flex-col min-w-0">
-          <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-2 border-b border-border/60 bg-background/80 px-3 backdrop-blur sm:px-4">
+          <header className="sticky top-0 z-30 flex h-[calc(3.5rem+env(safe-area-inset-top))] shrink-0 items-center justify-between gap-2 border-b border-border/60 bg-background/80 px-3 pt-[env(safe-area-inset-top)] backdrop-blur sm:px-4">
             <div className="flex items-center gap-2">
               <SidebarTrigger />
             </div>
