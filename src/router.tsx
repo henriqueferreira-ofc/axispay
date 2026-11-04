@@ -60,6 +60,7 @@ export const getRouter = () => {
     routeTree,
     context: {},
     scrollRestoration: true,
+    scrollToTopSelectors: ["#app-scroll-content"],
     defaultPreloadStaleTime: 0,
     defaultErrorComponent: DefaultErrorComponent,
   });

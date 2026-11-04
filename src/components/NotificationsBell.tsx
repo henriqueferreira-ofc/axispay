@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetHeader,
   SheetTitle,
@@ -75,83 +76,94 @@ function NotificationsBellInner() {
           )}
         </Button>
       </SheetTrigger>
-      <SheetContent className="w-full max-w-md overflow-y-auto sm:max-w-md">
-        <SheetHeader className="mb-4 flex flex-row items-center justify-between border-b pb-4">
+      <SheetContent className="flex w-full max-w-md flex-col overflow-hidden pt-[calc(1rem+env(safe-area-inset-top))] pb-[calc(1rem+env(safe-area-inset-bottom))] sm:max-w-md [&>button]:hidden">
+        <SheetHeader className="mb-4 flex shrink-0 flex-row items-center justify-between gap-2 border-b pb-4">
           <SheetTitle className="flex items-center gap-2">
             <Bell className="h-4 w-4 text-primary" />
             {t("notif.title")}
           </SheetTitle>
-          {insights.length > 0 && (
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={clearAll}
-              className="h-8 gap-1.5 px-2 text-xs text-muted-foreground hover:text-foreground"
-            >
-              <Trash2 className="h-3.5 w-3.5" />
-              {t("notif.clearAll")}
-            </Button>
-          )}
+          <div className="flex shrink-0 items-center gap-1">
+            {insights.length > 0 && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={clearAll}
+                className="h-8 gap-1.5 px-2 text-xs text-muted-foreground hover:text-foreground"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+                {t("notif.clearAll")}
+              </Button>
+            )}
+            <SheetClose asChild>
+              <Button variant="ghost" size="icon" className="h-11 w-11" aria-label={t("common.close")}>
+                <X className="h-5 w-5" />
+              </Button>
+            </SheetClose>
+          </div>
         </SheetHeader>
 
-        {insights.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-border/60 p-8 text-center text-sm text-muted-foreground">
-            <CheckCircle2 className="mx-auto mb-3 h-10 w-10 text-success/60" />
-            <p className="font-medium text-foreground">{t("notif.empty")}</p>
-          </div>
-        ) : (
-          <ul className="space-y-3">
-            {insights.map((ins) => {
-              const cfg = sevConfig[ins.severity];
-              const Icon = cfg.icon;
-              return (
-                <li key={ins.id} className="group relative">
-                  <div className={`rounded-xl border ${cfg.border} bg-card/40 p-4 transition-colors hover:bg-card/60`}>
-                    <div className="flex items-start gap-3">
-                      <div
-                        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${cfg.bg} ${cfg.color}`}
-                      >
-                        <Icon className="h-5 w-5" />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center justify-between gap-2">
-                          <p className="truncate text-sm font-semibold leading-snug">{t(ins.titleKey, ins.params)}</p>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => dismiss(ins.id)}
-                            className="h-6 w-6 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 hover:text-foreground"
-                            aria-label={t("notif.delete")}
-                          >
-                            <X className="h-3.5 w-3.5" />
-                          </Button>
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+          {insights.length === 0 ? (
+            <div className="rounded-lg border border-dashed border-border/60 p-8 text-center text-sm text-muted-foreground">
+              <CheckCircle2 className="mx-auto mb-3 h-10 w-10 text-success/60" />
+              <p className="font-medium text-foreground">{t("notif.empty")}</p>
+            </div>
+          ) : (
+            <ul className="space-y-3">
+              {insights.map((ins) => {
+                const cfg = sevConfig[ins.severity];
+                const Icon = cfg.icon;
+                return (
+                  <li key={ins.id} className="group relative">
+                    <div className={`rounded-xl border ${cfg.border} bg-card/40 p-4 transition-colors hover:bg-card/60`}>
+                      <div className="flex items-start gap-3">
+                        <div
+                          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${cfg.bg} ${cfg.color}`}
+                        >
+                          <Icon className="h-5 w-5" />
                         </div>
-                        <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
-                          {t(ins.descriptionKey, ins.params)}
-                        </p>
-                        <div className="mt-3 flex items-center justify-between gap-2">
-                          {ins.ctaLabelKey && ins.ctaTo ? (
-                            <Link
-                              to={ins.ctaTo}
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center justify-between gap-2">
+                            <p className="truncate text-sm font-semibold leading-snug">{t(ins.titleKey, ins.params)}</p>
+                            <Button
+                              variant="ghost"
+                              size="icon"
                               onClick={() => dismiss(ins.id)}
-                              className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+                              className="h-6 w-6 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 hover:text-foreground"
+                              aria-label={t("notif.delete")}
                             >
-                              {t(ins.ctaLabelKey)}
-                              <ArrowRight className="h-3 w-3" />
-                            </Link>
-                          ) : <div />}
-                          <Badge variant="outline" className="h-5 px-1.5 text-[9px] uppercase tracking-wider">
-                            {t(`sev.${ins.severity}`)}
-                          </Badge>
+                              <X className="h-3.5 w-3.5" />
+                            </Button>
+                          </div>
+                          <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
+                            {t(ins.descriptionKey, ins.params)}
+                          </p>
+                          <div className="mt-3 flex items-center justify-between gap-2">
+                            {ins.ctaLabelKey && ins.ctaTo ? (
+                              <SheetClose asChild>
+                              <Link
+                                to={ins.ctaTo}
+                                onClick={() => dismiss(ins.id)}
+                                className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+                              >
+                                {t(ins.ctaLabelKey)}
+                                <ArrowRight className="h-3 w-3" />
+                              </Link>
+                            </SheetClose>
+                            ) : <div />}
+                            <Badge variant="outline" className="h-5 px-1.5 text-[9px] uppercase tracking-wider">
+                              {t(`sev.${ins.severity}`)}
+                            </Badge>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        )}
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </div>
       </SheetContent>
     </Sheet>
   );
