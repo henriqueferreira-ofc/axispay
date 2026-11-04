@@ -172,7 +172,7 @@
 }
 
 .auth-wordmark-name {
-  font-size: clamp(44px, 10vw, 64px);
+  font-size: clamp(44px, 10vw, 84px);
 }
 
 .auth-wordmark-tagline {
@@ -207,12 +207,6 @@
   .auth-wordmark { top: 32px; }
   .auth-wordmark-name { font-size: 36px; }
   .auth-wordmark-tagline { font-size: 12px; }
-}
-
-/* Tablet keeps the phone look: the wordmark only grows a step above mobile. */
-@media (min-width: 768px) and (max-width: 1023px) {
-  .auth-wordmark-name { font-size: 54px; }
-  .auth-wordmark-tagline { font-size: 14px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
