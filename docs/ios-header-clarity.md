@@ -8,7 +8,7 @@ A comparação do histórico também confirmou que o commit `728cd28` (4 de nove
 
 Alterações:
 
-- Removida a opção `black-translucent` do shell HTML, válida tanto na abertura quanto nas páginas internas.
+- A configuração de barra de status agora é por rota: `default` nas páginas internas e `black-translucent` somente na abertura. A remoção indiscriminada anterior produziu uma faixa preta na captura do usuário; foi corrigida para permitir novamente a foto atrás da área de status na abertura.
 - Restaurado o viewport global anterior (`width=device-width, initial-scale=1`) e removidos os metadados globais de esquema escuro e cor preta. O `viewport-fit=cover` e o tema preto do splash agora pertencem exclusivamente à rota de autenticação.
 - Removido o fundo preto inline do documento; o canvas passa a seguir o tema, preservando as regras específicas da foto e do splash.
 - Somente abaixo de 768 px, o cabeçalho interno usa `sticky`, fundo opaco e isolamento de pintura, sem filtros, backdrop-filter ou sombra. Em tablet e computador, mantém a posição `relative` original.
@@ -21,10 +21,12 @@ Validação:
 - Confirmada uma única meta de viewport na abertura com `viewport-fit=cover` e uma única meta no dashboard com o viewport original, após navegação sem recarregar a página.
 - Resultado em `artifacts/responsive/ios-header-checks.json`. Capturas de teste usam `/logo.png` como avatar fictício; não são a foto real do usuário.
 - A renderização nativa da barra de status do iPhone instalado não pode ser comprovada nesses testes. É necessário reabrir e conferir no aparelho. O iOS pode conservar opções de apresentação definidas quando o atalho foi instalado.
-- Com a barra de status padrão, a fotografia continua preenchendo o viewport da página; a área do relógio/sinal é administrada pelo iOS e pode ficar fora dele.
+- A abertura solicita novamente a foto até a região do relógio/sinal; páginas internas usam a barra de status padrão. A renderização nativa exata ainda depende de conferência no aparelho.
 
 Referências primárias:
 
 - [Apple: Supported Meta Tags](https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariHTMLRef/Articles/MetaTags.html)
 - [WebKit 317153, comentário 2](https://bugs.webkit.org/show_bug.cgi?id=317153#c2)
 - [WebKit 316008: geometria e configuração de instalação de web apps](https://bugs.webkit.org/show_bug.cgi?id=316008)
+
+A correção da faixa preta foi verificada em SSR e após navegação: somente a abertura usa `viewport-fit=cover` e `black-translucent`; o dashboard retorna a viewport padrão e barra `default`. Resultado em `artifacts/responsive/opening-status-bar-checks.json`. Build e TypeScript passaram.

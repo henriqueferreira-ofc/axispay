@@ -32,6 +32,7 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "default" },
       { title: "AxisPay" },
       { name: "description", content: "AxisPay: track income, expenses, budgets and goals with smart insights." },
       { property: "og:title", content: "AxisPay" },
@@ -66,7 +67,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-title" content="AxisPay" />
-        {/* Use the default system status bar instead of the translucent overlay mode. */}
+        {/* Route metadata opts into the photo status bar only on the opening screen. */}
         <HeadContent />
       </head>
       <body>
