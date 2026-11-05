@@ -1,0 +1,90 @@
+{
+  "mode": "Chromium, isolated session and data fixtures; native iPhone status-bar rendering not emulated",
+  "results": [
+    {
+      "width": 430,
+      "height": 932,
+      "viewports": [
+        "width=device-width, initial-scale=1"
+      ],
+      "meta": null,
+      "header": {
+        "y": 0,
+        "height": 56,
+        "background": "lab(97.6762 -0.553459 -1.78936)",
+        "position": "sticky",
+        "filter": "none",
+        "backdrop": "none",
+        "shadow": "none"
+      },
+      "avatar": {
+        "loaded": true,
+        "filter": "none",
+        "opacity": "1"
+      },
+      "authBackground": false,
+      "scrollWidth": 430,
+      "viewport": 430,
+      "headerStableAfterScroll": true,
+      "sidebar": true,
+      "languageMenu": true
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "viewports": [
+        "width=device-width, initial-scale=1"
+      ],
+      "meta": null,
+      "header": {
+        "y": 0,
+        "height": 56,
+        "background": "lab(97.6762 -0.553459 -1.78936)",
+        "position": "relative",
+        "filter": "none",
+        "backdrop": "none",
+        "shadow": "none"
+      },
+      "avatar": {
+        "loaded": true,
+        "filter": "none",
+        "opacity": "1"
+      },
+      "authBackground": false,
+      "scrollWidth": 768,
+      "viewport": 768,
+      "headerStableAfterScroll": true,
+      "sidebar": true,
+      "languageMenu": true
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "viewports": [
+        "width=device-width, initial-scale=1"
+      ],
+      "meta": null,
+      "header": {
+        "y": 0,
+        "height": 56,
+        "background": "lab(97.6762 -0.553459 -1.78936)",
+        "position": "relative",
+        "filter": "none",
+        "backdrop": "none",
+        "shadow": "none"
+      },
+      "avatar": {
+        "loaded": true,
+        "filter": "none",
+        "opacity": "1"
+      },
+      "authBackground": false,
+      "scrollWidth": 1440,
+      "viewport": 1440,
+      "headerStableAfterScroll": true,
+      "sidebar": true,
+      "languageMenu": true
+    }
+  ],
+  "errors": []
+}

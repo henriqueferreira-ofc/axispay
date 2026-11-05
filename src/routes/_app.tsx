@@ -129,7 +129,7 @@ function AppShell({
       <div className="fixed inset-0 flex h-dvh w-full overflow-hidden bg-background pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] transition-colors duration-300">
         <AppSidebar />
         <div className="flex-1 flex flex-col min-h-0 min-w-0">
-          <header className="relative z-30 flex h-[calc(3.5rem+env(safe-area-inset-top))] shrink-0 items-center justify-between gap-2 border-b border-border/60 bg-background px-3 pt-[env(safe-area-inset-top)] sm:px-4">
+          <header className="app-header relative z-30 flex h-[calc(3.5rem+env(safe-area-inset-top))] shrink-0 items-center justify-between gap-2 border-b border-border/60 bg-background px-3 pt-[env(safe-area-inset-top)] sm:px-4">
             <div className="flex items-center gap-2">
               <SidebarTrigger />
             </div>

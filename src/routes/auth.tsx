@@ -47,6 +47,9 @@ export const Route = createFileRoute("/auth")({
   }),
   head: () => ({
     meta: [
+      // Edge-to-edge photo rendering belongs to the opening screen only.
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
+      { name: "theme-color", content: "#0d0d0d" },
       { title: "AxisPay" },
       { name: "description", content: "Acesse sua conta AxisPay para gerenciar suas finanças." },
       { property: "og:title", content: "AxisPay — Acesso" },

@@ -147,6 +147,7 @@
   }
 
   html {
+    background-color: var(--color-background);
     font-family: var(--font-sans);
   }
 
@@ -410,3 +411,16 @@ html[data-auth-hero="true"] body {
 .auth-page .auth-features > div { gap: 4px; }
 .auth-page .auth-actions { padding-top: 8px; gap: 8px; }
 .auth-page .auth-welcome > button { margin-top: 4px; }
+
+/* Mobile toolbar: avoid compositing effects around the iPhone status bar. */
+@media (max-width: 767px) {
+  .app-header {
+    position: sticky;
+    top: 0;
+    isolation: isolate;
+    filter: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    box-shadow: none;
+  }
+}
