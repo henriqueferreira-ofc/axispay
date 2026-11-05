@@ -382,7 +382,7 @@ function AuthPage() {
               </Button>
               <Button
                 variant="outline"
-                className="h-[11.2vw] w-full rounded-[4vw] border-transparent bg-[#303940] text-[4vw] font-normal text-[#18d6ae] hover:border-transparent hover:bg-[#3a454d] hover:text-[#43e8c4] md:h-24 md:rounded-[36px] md:text-[28px]"
+                className="h-[11.2vw] w-full rounded-[4vw] border-transparent bg-[#064c72]/55 backdrop-blur-sm backdrop-brightness-50 text-[4vw] font-normal text-[#18d6ae] hover:border-transparent hover:bg-[#064c72]/70 hover:text-[#43e8c4] md:h-24 md:rounded-[36px] md:text-[28px]"
                 onClick={() => {
                   setTab("signup");
                   setShowForm(true);
