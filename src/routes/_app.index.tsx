@@ -104,7 +104,7 @@ function DashboardPage() {
 
   return (
     <div className="mx-auto w-full max-w-7xl space-y-4 px-3 py-4 sm:space-y-6 sm:px-4 sm:py-6 md:px-8 md:py-8">
-      <div className="flex flex-col gap-3 sm:gap-4 md:flex-row md:items-end md:justify-between">
+      <div className="flex flex-col gap-3 sm:gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div className="min-w-0">
           <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">{t("dash.title")}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
@@ -137,7 +137,7 @@ function DashboardPage() {
 
       {/* KPIs */}
       {loading ? (
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+        <div className="dashboard-kpis grid gap-4 sm:grid-cols-2">
           {Array.from({ length: 5 }).map((_, i) => (
             <Skeleton key={i} className="h-[110px] w-full rounded-xl" />
           ))}
@@ -153,7 +153,7 @@ function DashboardPage() {
               transition: { staggerChildren: 0.05 }
             }
           }}
-          className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5"
+          className="dashboard-kpis grid gap-4 sm:grid-cols-2"
         >
           <motion.div variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}>
             <KpiCard

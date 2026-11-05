@@ -103,8 +103,8 @@ function ContasPage() {
       </div>
 
       {/* ── Account Cards Grid (always visible) ── */}
-      <div className="grid gap-4 md:grid-cols-3">
-        <div className="md:col-span-2 space-y-4">
+      <div className="grid gap-4 xl:grid-cols-3">
+        <div className="xl:col-span-2 space-y-4">
           <div className="grid gap-4 sm:grid-cols-2">
             {/* Nova Conta */}
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }}>

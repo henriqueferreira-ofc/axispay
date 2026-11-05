@@ -124,9 +124,9 @@ function IntelligencePage() {
     return (
       <div className="mx-auto w-full max-w-7xl space-y-6 px-4 py-6 md:px-8 md:py-8">
         <Skeleton className="h-12 w-72" />
-        <div className="grid gap-4 lg:grid-cols-3">
-          <Skeleton className="h-[280px] lg:col-span-1" />
-          <Skeleton className="h-[280px] lg:col-span-2" />
+        <div className="grid gap-4 xl:grid-cols-3">
+          <Skeleton className="h-[280px] xl:col-span-1" />
+          <Skeleton className="h-[280px] xl:col-span-2" />
         </div>
       </div>
     );
@@ -151,7 +151,7 @@ function IntelligencePage() {
       </div>
 
       {/* Score + Forecast side by side */}
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid gap-4 xl:grid-cols-3">
         <ScoreCard score={score} />
         <ForecastCard forecast={forecast} horizon={horizon} setHorizon={setHorizon} />
       </div>
@@ -242,7 +242,7 @@ function ScoreCard({ score }: { score: ReturnType<typeof calculateScore> }) {
   const color = colors[score.level] || "var(--primary)";
 
   return (
-    <Card className="border-border/60 shadow-[var(--shadow-card)] lg:col-span-1">
+    <Card className="border-border/60 shadow-[var(--shadow-card)] xl:col-span-1">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <Zap className="h-4 w-4 text-primary" />
@@ -333,7 +333,7 @@ function ForecastCard({
   const { t } = useI18n();
   const isPositive = forecast.avgDailyNet >= 0;
   return (
-    <Card className="border-border/60 shadow-[var(--shadow-card)] lg:col-span-2">
+    <Card className="border-border/60 shadow-[var(--shadow-card)] xl:col-span-2">
       <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <CardTitle className="flex items-center gap-2 text-base">
           {isPositive ? (

@@ -1,0 +1,152 @@
+{
+  "width": 375,
+  "height": 812,
+  "identicalScreenshot": true,
+  "identicalGeometry": true,
+  "measures": [
+    [
+      {
+        "text": "",
+        "x": 0,
+        "y": 0,
+        "w": 375,
+        "h": 812,
+        "font": "16px",
+        "padding": "0px",
+        "background": "rgba(0, 0, 0, 0)"
+      },
+      {
+        "text": "AxisPayfinancial AxisControle",
+        "x": 0,
+        "y": 89.3125,
+        "w": 375,
+        "h": 58,
+        "font": "16px",
+        "padding": "0px 24px",
+        "background": "rgba(0, 0, 0, 0)"
+      },
+      {
+        "text": "🇧🇷 Português",
+        "x": 319,
+        "y": 20,
+        "w": 40,
+        "h": 32,
+        "font": "12px",
+        "padding": "0px 12px",
+        "background": "rgba(0, 0, 0, 0)"
+      },
+      {
+        "text": "Olá!ControleGestãoTudo Aqui!Acessar contaCriar contaEntrar com e-mail e senha",
+        "x": 13.875,
+        "y": 547.125,
+        "w": 347.25,
+        "h": 273.125,
+        "font": "16px",
+        "padding": "20.25px",
+        "background": "rgba(0, 0, 0, 0)"
+      },
+      {
+        "text": "Acessar conta",
+        "x": 35.125,
+        "y": 656.5,
+        "w": 304.75,
+        "h": 42,
+        "font": "15px",
+        "padding": "8px 16px",
+        "background": "rgb(12, 198, 160)"
+      },
+      {
+        "text": "Criar conta",
+        "x": 35.125,
+        "y": 709,
+        "w": 304.75,
+        "h": 42,
+        "font": "15px",
+        "padding": "8px 16px",
+        "background": "rgb(48, 57, 64)"
+      },
+      {
+        "text": "Entrar com e-mail e senha",
+        "x": 35.125,
+        "y": 763,
+        "w": 304.75,
+        "h": 36,
+        "font": "14px",
+        "padding": "8px 16px",
+        "background": "rgba(0, 0, 0, 0)"
+      }
+    ],
+    [
+      {
+        "text": "",
+        "x": 0,
+        "y": 0,
+        "w": 375,
+        "h": 812,
+        "font": "16px",
+        "padding": "0px",
+        "background": "rgba(0, 0, 0, 0)"
+      },
+      {
+        "text": "AxisPayfinancial AxisControle",
+        "x": 0,
+        "y": 89.3125,
+        "w": 375,
+        "h": 58,
+        "font": "16px",
+        "padding": "0px 24px",
+        "background": "rgba(0, 0, 0, 0)"
+      },
+      {
+        "text": "🇧🇷 Português",
+        "x": 319,
+        "y": 20,
+        "w": 40,
+        "h": 32,
+        "font": "12px",
+        "padding": "0px 12px",
+        "background": "rgba(0, 0, 0, 0)"
+      },
+      {
+        "text": "Olá!ControleGestãoTudo Aqui!Acessar contaCriar contaEntrar com e-mail e senha",
+        "x": 13.875,
+        "y": 547.125,
+        "w": 347.25,
+        "h": 273.125,
+        "font": "16px",
+        "padding": "20.25px",
+        "background": "rgba(0, 0, 0, 0)"
+      },
+      {
+        "text": "Acessar conta",
+        "x": 35.125,
+        "y": 656.5,
+        "w": 304.75,
+        "h": 42,
+        "font": "15px",
+        "padding": "8px 16px",
+        "background": "rgb(12, 198, 160)"
+      },
+      {
+        "text": "Criar conta",
+        "x": 35.125,
+        "y": 709,
+        "w": 304.75,
+        "h": 42,
+        "font": "15px",
+        "padding": "8px 16px",
+        "background": "rgb(48, 57, 64)"
+      },
+      {
+        "text": "Entrar com e-mail e senha",
+        "x": 35.125,
+        "y": 763,
+        "w": 304.75,
+        "h": 36,
+        "font": "14px",
+        "padding": "8px 16px",
+        "background": "rgba(0, 0, 0, 0)"
+      }
+    ]
+  ]
+}

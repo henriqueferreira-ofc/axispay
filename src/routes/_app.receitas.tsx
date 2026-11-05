@@ -243,7 +243,7 @@ function ReceitasPage() {
       </AnimatePresence>
 
       {/* KPI Mini Cards */}
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-3 md:grid-cols-2 xl:grid-cols-3">
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0 }}>
           <Card
             className="border-border/60 shadow-[var(--shadow-card)] hover:border-success/40 transition-colors cursor-pointer"

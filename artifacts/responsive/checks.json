@@ -1,0 +1,138 @@
+[
+  {
+    "width": 375,
+    "height": 812,
+    "viewport": 375,
+    "scroll": 375,
+    "panel": {
+      "x": 13.875,
+      "y": 547.125,
+      "width": 347.25,
+      "height": 273.125,
+      "bottom": 820.25
+    },
+    "image": "/auth-racing.png",
+    "signup": true,
+    "password": true,
+    "access": true
+  },
+  {
+    "width": 768,
+    "height": 1024,
+    "viewport": 768,
+    "scroll": 768,
+    "panel": {
+      "x": 164,
+      "y": 636.75,
+      "width": 440,
+      "height": 355.25,
+      "bottom": 992
+    },
+    "image": "/auth-racing.png",
+    "signup": true,
+    "password": true,
+    "access": true
+  },
+  {
+    "width": 1024,
+    "height": 768,
+    "viewport": 1024,
+    "scroll": 1024,
+    "panel": {
+      "x": 582.5625,
+      "y": 291.375,
+      "width": 380,
+      "height": 355.25,
+      "bottom": 646.625
+    },
+    "image": "/auth-racing.png",
+    "signup": true,
+    "password": true,
+    "access": true
+  },
+  {
+    "width": 1280,
+    "height": 800,
+    "viewport": 1280,
+    "scroll": 1280,
+    "panel": {
+      "x": 768.015625,
+      "y": 307.375,
+      "width": 435.1875,
+      "height": 355.25,
+      "bottom": 662.625
+    },
+    "image": "/auth-racing.png",
+    "signup": true,
+    "password": true,
+    "access": true
+  },
+  {
+    "width": 1366,
+    "height": 768,
+    "viewport": 1366,
+    "scroll": 1366,
+    "panel": {
+      "x": 819.609375,
+      "y": 291.375,
+      "width": 464.4375,
+      "height": 355.25,
+      "bottom": 646.625
+    },
+    "image": "/auth-racing.png",
+    "signup": true,
+    "password": true,
+    "access": true
+  },
+  {
+    "width": 1440,
+    "height": 900,
+    "viewport": 1440,
+    "scroll": 1440,
+    "panel": {
+      "x": 873.609375,
+      "y": 357.375,
+      "width": 480,
+      "height": 355.25,
+      "bottom": 712.625
+    },
+    "image": "/auth-racing.png",
+    "signup": true,
+    "password": true,
+    "access": true
+  },
+  {
+    "width": 1920,
+    "height": 1080,
+    "viewport": 1920,
+    "scroll": 1920,
+    "panel": {
+      "x": 1324.8125,
+      "y": 447.375,
+      "width": 480,
+      "height": 355.25,
+      "bottom": 802.625
+    },
+    "image": "/auth-racing.png",
+    "signup": true,
+    "password": true,
+    "access": true
+  },
+  {
+    "width": 1440,
+    "height": 650,
+    "viewport": 1440,
+    "scroll": 1440,
+    "panel": {
+      "x": 873.609375,
+      "y": 219.375,
+      "width": 480,
+      "height": 355.25,
+      "bottom": 574.625
+    },
+    "image": "/auth-racing.png",
+    "signup": true,
+    "password": true,
+    "access": true
+  }
+]

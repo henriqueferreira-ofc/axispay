@@ -25,16 +25,16 @@ const toneRing: Record<string, string> = {
 export function KpiCard({ label, value, hint, icon: Icon, tone = "default", delay = 0, extra, to }: KpiCardProps) {
   const card = (
     <Card className={cn(
-      "overflow-hidden border-border/60 bg-card shadow-[var(--shadow-card)] transition-all hover:border-border",
+      "kpi-card overflow-hidden border-border/60 bg-card shadow-[var(--shadow-card)] transition-all hover:border-border",
       to && "cursor-pointer hover:shadow-md hover:-translate-y-0.5"
     )}>
-      <CardContent className="flex items-start justify-between gap-4 p-5">
+      <CardContent className="kpi-content flex items-start justify-between gap-4 p-5">
         <div className="flex flex-col gap-1 min-w-0 flex-1">
           <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">
             {label}
           </span>
-          <div className="flex items-baseline gap-2 overflow-hidden">
-            <span className="text-2xl font-bold tracking-tight text-foreground truncate">{value}</span>
+          <div className="kpi-value-row flex items-baseline gap-2 overflow-hidden">
+            <span className="kpi-value text-2xl font-bold tracking-tight text-foreground truncate">{value}</span>
           </div>
           <div className="mt-1 flex flex-wrap items-center gap-2">
             {extra}

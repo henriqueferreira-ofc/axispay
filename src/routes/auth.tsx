@@ -339,7 +339,7 @@ function AuthPage() {
   };
 
   return (
-    <div className="relative isolate flex min-h-dvh flex-col overflow-x-hidden bg-transparent">
+    <div className="auth-page relative isolate flex min-h-dvh flex-col overflow-x-hidden bg-transparent">
       <AuthHeroBackground />
       <AuthWordmark />
 
@@ -349,14 +349,14 @@ function AuthPage() {
         </div>
       </div>
 
-      <div className="relative z-10 mt-auto flex w-full flex-col items-center px-[3.7vw] pb-[max(1vw,env(safe-area-inset-bottom))] pt-28 md:px-8 md:pb-10">
+      <div className="auth-content relative z-10 mt-auto flex w-full flex-col items-center px-[3.7vw] pb-[max(1vw,env(safe-area-inset-bottom))] pt-28 md:px-8 md:pb-10">
         {!showForm ? (
-          <Card className="relative top-[12px] w-full max-w-4xl md:top-0 rounded-[9.5vw] border-white/[0.04] bg-transparent bg-gradient-to-b from-[#8c8582]/45 to-[#514d4b]/40 p-[5.4vw] text-white shadow-xl backdrop-blur-md md:rounded-[64px] md:p-10">
+          <Card className="auth-welcome relative top-[12px] w-full max-w-4xl md:top-0 rounded-[9.5vw] border-white/[0.04] bg-transparent bg-gradient-to-b from-[#8c8582]/45 to-[#514d4b]/40 p-[5.4vw] text-white shadow-xl backdrop-blur-md md:rounded-[64px] md:p-10">
             <CardHeader className="space-y-[1.9vw] p-0 md:space-y-2">
-              <CardTitle className="text-[3.8vw] font-normal leading-[1.25] md:text-[28px]">
+              <CardTitle className="auth-greeting text-[3.8vw] font-normal leading-[1.25] md:text-[28px]">
                 {greeting}
               </CardTitle>
-              <div className="grid grid-cols-3 pt-[3vw] text-white/90 md:pt-5">
+              <div className="auth-features grid grid-cols-3 pt-[3vw] text-white/90 md:pt-5">
                 {[
                   { icon: SlidersHorizontal, label: t("auth.control") },
                   { icon: ChartNoAxesCombined, label: t("auth.management") },
@@ -369,7 +369,7 @@ function AuthPage() {
                 ))}
               </div>
             </CardHeader>
-            <CardContent className="flex flex-col gap-[2.8vw] p-0 pt-[4.5vw] md:gap-5 md:pt-8">
+            <CardContent className="auth-actions flex flex-col gap-[2.8vw] p-0 pt-[4.5vw] md:gap-5 md:pt-8">
               <Button
                 className="h-[11.2vw] w-full rounded-[4vw] bg-[#0cc6a0] text-[4vw] font-normal text-[#064c72] hover:bg-[#0bb590] md:h-24 md:rounded-[36px] md:text-[34px]"
                 onClick={handleAccess}
@@ -395,7 +395,7 @@ function AuthPage() {
             {biometricError && <p role="alert" className="mt-2 text-sm text-white">Confirme com a biometria em Acessar conta ou entre com e-mail e senha.</p>}
           </Card>
         ) : (
-          <Card className="w-full max-w-md self-center rounded-xl border-border/70 bg-background/88 text-foreground shadow-2xl backdrop-blur-xl [&_input]:h-8 [&_input]:border-border/80 [&_input]:bg-background/60 [&_label]:text-xs">
+          <Card className="auth-form w-full max-w-md self-center rounded-xl border-border/70 bg-background/88 text-foreground shadow-2xl backdrop-blur-xl [&_input]:h-8 [&_input]:border-border/80 [&_input]:bg-background/60 [&_label]:text-xs">
             <CardHeader className="gap-0.5 px-4 pb-1.5 pt-4">
               <CardTitle className="text-sm">
                 {tab === "login"

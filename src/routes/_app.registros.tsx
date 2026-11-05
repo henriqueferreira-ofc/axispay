@@ -117,7 +117,7 @@ function RegistrosPage() {
 
         <Card className="border-border/60 shadow-[var(--shadow-card)]">
           <CardContent className="p-3 sm:p-4">
-            <div className="grid gap-2 sm:gap-3 md:grid-cols-[1fr_auto_auto]">
+            <div className="grid gap-2 sm:gap-3 xl:grid-cols-[minmax(0,1fr)_auto_auto]">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input

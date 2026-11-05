@@ -1,0 +1,487 @@
+{
+  "results": [
+    {
+      "variant": 1,
+      "width": 375,
+      "height": 812,
+      "source": "/iphone-vertical/1.png",
+      "natural": [
+        1080,
+        2340
+      ],
+      "rootBackground": "url(\"/iphone-vertical/1.png\")",
+      "bodyBackground": "url(\"/iphone-vertical/1.png\")",
+      "documentWidth": 375,
+      "viewport": 375,
+      "imageWidth": 375,
+      "mask": "none"
+    },
+    {
+      "variant": 1,
+      "width": 768,
+      "height": 1024,
+      "source": "/Tablete-vertical/1.png",
+      "natural": [
+        1536,
+        2048
+      ],
+      "rootBackground": "url(\"/Tablete-vertical/1.png\")",
+      "bodyBackground": "url(\"/Tablete-vertical/1.png\")",
+      "documentWidth": 768,
+      "viewport": 768,
+      "imageWidth": 768,
+      "mask": "none"
+    },
+    {
+      "variant": 1,
+      "width": 1024,
+      "height": 768,
+      "source": "/tablete-horizontal/1.png",
+      "natural": [
+        2048,
+        1536
+      ],
+      "rootBackground": "url(\"/tablete-horizontal/1.png\")",
+      "bodyBackground": "url(\"/tablete-horizontal/1.png\")",
+      "documentWidth": 1024,
+      "viewport": 1024,
+      "imageWidth": 1024,
+      "mask": "none"
+    },
+    {
+      "variant": 1,
+      "width": 1180,
+      "height": 820,
+      "source": "/tablete-horizontal/1.png",
+      "natural": [
+        2048,
+        1536
+      ],
+      "rootBackground": "url(\"/tablete-horizontal/1.png\")",
+      "bodyBackground": "url(\"/tablete-horizontal/1.png\")",
+      "documentWidth": 1180,
+      "viewport": 1180,
+      "imageWidth": 1180,
+      "mask": "none"
+    },
+    {
+      "variant": 1,
+      "width": 1440,
+      "height": 900,
+      "source": "/Computador-horizontal/1.png",
+      "natural": [
+        2560,
+        1440
+      ],
+      "rootBackground": "url(\"/Computador-horizontal/1.png\")",
+      "bodyBackground": "url(\"/Computador-horizontal/1.png\")",
+      "documentWidth": 1440,
+      "viewport": 1440,
+      "imageWidth": 1440,
+      "mask": "none"
+    },
+    {
+      "variant": 1,
+      "width": 1920,
+      "height": 1080,
+      "source": "/Computador-horizontal/1.png",
+      "natural": [
+        2560,
+        1440
+      ],
+      "rootBackground": "url(\"/Computador-horizontal/1.png\")",
+      "bodyBackground": "url(\"/Computador-horizontal/1.png\")",
+      "documentWidth": 1920,
+      "viewport": 1920,
+      "imageWidth": 1920,
+      "mask": "none"
+    },
+    {
+      "variant": 2,
+      "width": 375,
+      "height": 812,
+      "source": "/iphone-vertical/2.png",
+      "natural": [
+        1080,
+        2340
+      ],
+      "rootBackground": "url(\"/iphone-vertical/2.png\")",
+      "bodyBackground": "url(\"/iphone-vertical/2.png\")",
+      "documentWidth": 375,
+      "viewport": 375,
+      "imageWidth": 375,
+      "mask": "none"
+    },
+    {
+      "variant": 2,
+      "width": 768,
+      "height": 1024,
+      "source": "/Tablete-vertical/2.png",
+      "natural": [
+        1536,
+        2048
+      ],
+      "rootBackground": "url(\"/Tablete-vertical/2.png\")",
+      "bodyBackground": "url(\"/Tablete-vertical/2.png\")",
+      "documentWidth": 768,
+      "viewport": 768,
+      "imageWidth": 768,
+      "mask": "none"
+    },
+    {
+      "variant": 2,
+      "width": 1024,
+      "height": 768,
+      "source": "/tablete-horizontal/2.png",
+      "natural": [
+        2048,
+        1536
+      ],
+      "rootBackground": "url(\"/tablete-horizontal/2.png\")",
+      "bodyBackground": "url(\"/tablete-horizontal/2.png\")",
+      "documentWidth": 1024,
+      "viewport": 1024,
+      "imageWidth": 1024,
+      "mask": "none"
+    },
+    {
+      "variant": 2,
+      "width": 1180,
+      "height": 820,
+      "source": "/tablete-horizontal/2.png",
+      "natural": [
+        2048,
+        1536
+      ],
+      "rootBackground": "url(\"/tablete-horizontal/2.png\")",
+      "bodyBackground": "url(\"/tablete-horizontal/2.png\")",
+      "documentWidth": 1180,
+      "viewport": 1180,
+      "imageWidth": 1180,
+      "mask": "none"
+    },
+    {
+      "variant": 2,
+      "width": 1440,
+      "height": 900,
+      "source": "/Computador-horizontal/2.png",
+      "natural": [
+        2560,
+        1440
+      ],
+      "rootBackground": "url(\"/Computador-horizontal/2.png\")",
+      "bodyBackground": "url(\"/Computador-horizontal/2.png\")",
+      "documentWidth": 1440,
+      "viewport": 1440,
+      "imageWidth": 1440,
+      "mask": "none"
+    },
+    {
+      "variant": 2,
+      "width": 1920,
+      "height": 1080,
+      "source": "/Computador-horizontal/2.png",
+      "natural": [
+        2560,
+        1440
+      ],
+      "rootBackground": "url(\"/Computador-horizontal/2.png\")",
+      "bodyBackground": "url(\"/Computador-horizontal/2.png\")",
+      "documentWidth": 1920,
+      "viewport": 1920,
+      "imageWidth": 1920,
+      "mask": "none"
+    },
+    {
+      "variant": 3,
+      "width": 375,
+      "height": 812,
+      "source": "/iphone-vertical/3.png",
+      "natural": [
+        1080,
+        2340
+      ],
+      "rootBackground": "url(\"/iphone-vertical/3.png\")",
+      "bodyBackground": "url(\"/iphone-vertical/3.png\")",
+      "documentWidth": 375,
+      "viewport": 375,
+      "imageWidth": 375,
+      "mask": "none"
+    },
+    {
+      "variant": 3,
+      "width": 768,
+      "height": 1024,
+      "source": "/Tablete-vertical/3.png",
+      "natural": [
+        1536,
+        2048
+      ],
+      "rootBackground": "url(\"/Tablete-vertical/3.png\")",
+      "bodyBackground": "url(\"/Tablete-vertical/3.png\")",
+      "documentWidth": 768,
+      "viewport": 768,
+      "imageWidth": 768,
+      "mask": "none"
+    },
+    {
+      "variant": 3,
+      "width": 1024,
+      "height": 768,
+      "source": "/tablete-horizontal/3.png",
+      "natural": [
+        2048,
+        1536
+      ],
+      "rootBackground": "url(\"/tablete-horizontal/3.png\")",
+      "bodyBackground": "url(\"/tablete-horizontal/3.png\")",
+      "documentWidth": 1024,
+      "viewport": 1024,
+      "imageWidth": 1024,
+      "mask": "none"
+    },
+    {
+      "variant": 3,
+      "width": 1180,
+      "height": 820,
+      "source": "/tablete-horizontal/3.png",
+      "natural": [
+        2048,
+        1536
+      ],
+      "rootBackground": "url(\"/tablete-horizontal/3.png\")",
+      "bodyBackground": "url(\"/tablete-horizontal/3.png\")",
+      "documentWidth": 1180,
+      "viewport": 1180,
+      "imageWidth": 1180,
+      "mask": "none"
+    },
+    {
+      "variant": 3,
+      "width": 1440,
+      "height": 900,
+      "source": "/Computador-horizontal/3.png",
+      "natural": [
+        2560,
+        1440
+      ],
+      "rootBackground": "url(\"/Computador-horizontal/3.png\")",
+      "bodyBackground": "url(\"/Computador-horizontal/3.png\")",
+      "documentWidth": 1440,
+      "viewport": 1440,
+      "imageWidth": 1440,
+      "mask": "none"
+    },
+    {
+      "variant": 3,
+      "width": 1920,
+      "height": 1080,
+      "source": "/Computador-horizontal/3.png",
+      "natural": [
+        2560,
+        1440
+      ],
+      "rootBackground": "url(\"/Computador-horizontal/3.png\")",
+      "bodyBackground": "url(\"/Computador-horizontal/3.png\")",
+      "documentWidth": 1920,
+      "viewport": 1920,
+      "imageWidth": 1920,
+      "mask": "none"
+    },
+    {
+      "variant": 4,
+      "width": 375,
+      "height": 812,
+      "source": "/iphone-vertical/4.png",
+      "natural": [
+        1080,
+        2340
+      ],
+      "rootBackground": "url(\"/iphone-vertical/4.png\")",
+      "bodyBackground": "url(\"/iphone-vertical/4.png\")",
+      "documentWidth": 375,
+      "viewport": 375,
+      "imageWidth": 375,
+      "mask": "none"
+    },
+    {
+      "variant": 4,
+      "width": 768,
+      "height": 1024,
+      "source": "/Tablete-vertical/4.png",
+      "natural": [
+        1536,
+        2048
+      ],
+      "rootBackground": "url(\"/Tablete-vertical/4.png\")",
+      "bodyBackground": "url(\"/Tablete-vertical/4.png\")",
+      "documentWidth": 768,
+      "viewport": 768,
+      "imageWidth": 768,
+      "mask": "none"
+    },
+    {
+      "variant": 4,
+      "width": 1024,
+      "height": 768,
+      "source": "/tablete-horizontal/4.png",
+      "natural": [
+        2048,
+        1536
+      ],
+      "rootBackground": "url(\"/tablete-horizontal/4.png\")",
+      "bodyBackground": "url(\"/tablete-horizontal/4.png\")",
+      "documentWidth": 1024,
+      "viewport": 1024,
+      "imageWidth": 1024,
+      "mask": "none"
+    },
+    {
+      "variant": 4,
+      "width": 1180,
+      "height": 820,
+      "source": "/tablete-horizontal/4.png",
+      "natural": [
+        2048,
+        1536
+      ],
+      "rootBackground": "url(\"/tablete-horizontal/4.png\")",
+      "bodyBackground": "url(\"/tablete-horizontal/4.png\")",
+      "documentWidth": 1180,
+      "viewport": 1180,
+      "imageWidth": 1180,
+      "mask": "none"
+    },
+    {
+      "variant": 4,
+      "width": 1440,
+      "height": 900,
+      "source": "/Computador-horizontal/4.png",
+      "natural": [
+        2560,
+        1440
+      ],
+      "rootBackground": "url(\"/Computador-horizontal/4.png\")",
+      "bodyBackground": "url(\"/Computador-horizontal/4.png\")",
+      "documentWidth": 1440,
+      "viewport": 1440,
+      "imageWidth": 1440,
+      "mask": "none"
+    },
+    {
+      "variant": 4,
+      "width": 1920,
+      "height": 1080,
+      "source": "/Computador-horizontal/4.png",
+      "natural": [
+        2560,
+        1440
+      ],
+      "rootBackground": "url(\"/Computador-horizontal/4.png\")",
+      "bodyBackground": "url(\"/Computador-horizontal/4.png\")",
+      "documentWidth": 1920,
+      "viewport": 1920,
+      "imageWidth": 1920,
+      "mask": "none"
+    },
+    {
+      "variant": 5,
+      "width": 375,
+      "height": 812,
+      "source": "/iphone-vertical/5.png",
+      "natural": [
+        1080,
+        2340
+      ],
+      "rootBackground": "url(\"/iphone-vertical/5.png\")",
+      "bodyBackground": "url(\"/iphone-vertical/5.png\")",
+      "documentWidth": 375,
+      "viewport": 375,
+      "imageWidth": 375,
+      "mask": "none"
+    },
+    {
+      "variant": 5,
+      "width": 768,
+      "height": 1024,
+      "source": "/Tablete-vertical/5.png",
+      "natural": [
+        1536,
+        2048
+      ],
+      "rootBackground": "url(\"/Tablete-vertical/5.png\")",
+      "bodyBackground": "url(\"/Tablete-vertical/5.png\")",
+      "documentWidth": 768,
+      "viewport": 768,
+      "imageWidth": 768,
+      "mask": "none"
+    },
+    {
+      "variant": 5,
+      "width": 1024,
+      "height": 768,
+      "source": "/tablete-horizontal/5.png",
+      "natural": [
+        2048,
+        1536
+      ],
+      "rootBackground": "url(\"/tablete-horizontal/5.png\")",
+      "bodyBackground": "url(\"/tablete-horizontal/5.png\")",
+      "documentWidth": 1024,
+      "viewport": 1024,
+      "imageWidth": 1024,
+      "mask": "none"
+    },
+    {
+      "variant": 5,
+      "width": 1180,
+      "height": 820,
+      "source": "/tablete-horizontal/5.png",
+      "natural": [
+        2048,
+        1536
+      ],
+      "rootBackground": "url(\"/tablete-horizontal/5.png\")",
+      "bodyBackground": "url(\"/tablete-horizontal/5.png\")",
+      "documentWidth": 1180,
+      "viewport": 1180,
+      "imageWidth": 1180,
+      "mask": "none"
+    },
+    {
+      "variant": 5,
+      "width": 1440,
+      "height": 900,
+      "source": "/Computador-horizontal/5.png",
+      "natural": [
+        2560,
+        1440
+      ],
+      "rootBackground": "url(\"/Computador-horizontal/5.png\")",
+      "bodyBackground": "url(\"/Computador-horizontal/5.png\")",
+      "documentWidth": 1440,
+      "viewport": 1440,
+      "imageWidth": 1440,
+      "mask": "none"
+    },
+    {
+      "variant": 5,
+      "width": 1920,
+      "height": 1080,
+      "source": "/Computador-horizontal/5.png",
+      "natural": [
+        2560,
+        1440
+      ],
+      "rootBackground": "url(\"/Computador-horizontal/5.png\")",
+      "bodyBackground": "url(\"/Computador-horizontal/5.png\")",
+      "documentWidth": 1920,
+      "viewport": 1920,
+      "imageWidth": 1920,
+      "mask": "none"
+    }
+  ],
+  "errors": [],
+  "failures": [],
+  "buttons": true
+}

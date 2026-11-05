@@ -1,0 +1,70 @@
+{
+  "mode": "zoom represented by equivalent CSS viewport (1440 / factor); isolated fixtures",
+  "results": [
+    {
+      "width": 768,
+      "height": 600,
+      "zoomEquivalent": 1,
+      "dialog": {
+        "x": 144,
+        "y": 24,
+        "width": 480,
+        "height": 552,
+        "scrollHeight": 710,
+        "clientHeight": 550,
+        "viewportHeight": 600,
+        "viewportWidth": 768
+      },
+      "sidebarToggle": true
+    },
+    {
+      "width": 1024,
+      "height": 600,
+      "zoomEquivalent": 1,
+      "dialog": {
+        "x": 272,
+        "y": 24,
+        "width": 480,
+        "height": 552,
+        "scrollHeight": 710,
+        "clientHeight": 550,
+        "viewportHeight": 600,
+        "viewportWidth": 1024
+      },
+      "sidebarToggle": true
+    },
+    {
+      "width": 960,
+      "height": 600,
+      "zoomEquivalent": 1.5,
+      "dialog": {
+        "x": 240,
+        "y": 24,
+        "width": 480,
+        "height": 552,
+        "scrollHeight": 710,
+        "clientHeight": 550,
+        "viewportHeight": 600,
+        "viewportWidth": 960
+      },
+      "sidebarToggle": true
+    },
+    {
+      "width": 720,
+      "height": 450,
+      "zoomEquivalent": 2,
+      "dialog": {
+        "x": 120,
+        "y": 22.5,
+        "width": 480,
+        "height": 405,
+        "scrollHeight": 710,
+        "clientHeight": 403,
+        "viewportHeight": 450,
+        "viewportWidth": 720
+      },
+      "sidebarToggle": true
+    }
+  ],
+  "errors": []
+}

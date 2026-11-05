@@ -118,7 +118,7 @@ function RelatoriosPage() {
 
     return (
       <div className="mx-auto w-full max-w-7xl space-y-4 px-3 py-4 sm:space-y-6 sm:px-4 sm:py-6 md:px-8 md:py-8">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between md:flex-col md:items-start lg:flex-row lg:items-end">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">{t("rep.title")}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
@@ -151,7 +151,7 @@ function RelatoriosPage() {
         </div>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-3 md:grid-cols-2 xl:grid-cols-3">
         <KpiCard
           label={t("rep.kpi.balance")}
           value={brl(filteredData.balance)}

@@ -1,0 +1,958 @@
+{
+  "mode": "isolated browser fixtures; no real account or writes",
+  "results": [
+    {
+      "width": 375,
+      "height": 812,
+      "route": "/",
+      "path": "/",
+      "viewport": 375,
+      "document": 375,
+      "mainWidth": 375,
+      "mainScroll": 375,
+      "overflow": []
+    },
+    {
+      "width": 375,
+      "height": 812,
+      "route": "/registros",
+      "path": "/registros",
+      "viewport": 375,
+      "document": 375,
+      "mainWidth": 375,
+      "mainScroll": 375,
+      "overflow": []
+    },
+    {
+      "width": 375,
+      "height": 812,
+      "route": "/inteligencia",
+      "path": "/inteligencia",
+      "viewport": 375,
+      "document": 375,
+      "mainWidth": 375,
+      "mainScroll": 375,
+      "overflow": []
+    },
+    {
+      "width": 375,
+      "height": 812,
+      "route": "/categorias",
+      "path": "/categorias",
+      "viewport": 375,
+      "document": 375,
+      "mainWidth": 375,
+      "mainScroll": 411,
+      "overflow": [
+        {
+          "tag": "DIV",
+          "cls": "rounded-xl border bg-card text-card-foreground shadow border-border/60 shadow-[var(--shadow-card)]",
+          "text": "Alimentação e supermercadodespesa"
+        },
+        {
+          "tag": "DIV",
+          "cls": "flex items-center justify-between gap-3 p-4",
+          "text": "Alimentação e supermercadodespesa"
+        },
+        {
+          "tag": "DIV",
+          "cls": "flex gap-1",
+          "text": ""
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground h-9 w-9",
+          "text": ""
+        },
+        {
+          "tag": "svg",
+          "cls": {},
+          "text": ""
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "height": 812,
+      "route": "/orcamentos",
+      "path": "/orcamentos",
+      "viewport": 375,
+      "document": 375,
+      "mainWidth": 375,
+      "mainScroll": 375,
+      "overflow": []
+    },
+    {
+      "width": 375,
+      "height": 812,
+      "route": "/metas",
+      "path": "/metas",
+      "viewport": 375,
+      "document": 375,
+      "mainWidth": 375,
+      "mainScroll": 375,
+      "overflow": []
+    },
+    {
+      "width": 375,
+      "height": 812,
+      "route": "/recorrentes",
+      "path": "/recorrentes",
+      "viewport": 375,
+      "document": 375,
+      "mainWidth": 375,
+      "mainScroll": 375,
+      "overflow": []
+    },
+    {
+      "width": 375,
+      "height": 812,
+      "route": "/importar",
+      "path": "/importar",
+      "viewport": 375,
+      "document": 375,
+      "mainWidth": 375,
+      "mainScroll": 375,
+      "overflow": []
+    },
+    {
+      "width": 375,
+      "height": 812,
+      "route": "/importar-extrato",
+      "path": "/importar-extrato",
+      "viewport": 375,
+      "document": 375,
+      "mainWidth": 375,
+      "mainScroll": 375,
+      "overflow": []
+    },
+    {
+      "width": 375,
+      "height": 812,
+      "route": "/relatorios",
+      "path": "/relatorios",
+      "viewport": 375,
+      "document": 375,
+      "mainWidth": 375,
+      "mainScroll": 375,
+      "overflow": []
+    },
+    {
+      "width": 375,
+      "height": 812,
+      "route": "/perfil",
+      "path": "/perfil",
+      "viewport": 375,
+      "document": 375,
+      "mainWidth": 375,
+      "mainScroll": 375,
+      "overflow": []
+    },
+    {
+      "width": 375,
+      "height": 812,
+      "route": "/contas",
+      "path": "/contas",
+      "viewport": 375,
+      "document": 375,
+      "mainWidth": 375,
+      "mainScroll": 375,
+      "overflow": []
+    },
+    {
+      "width": 375,
+      "height": 812,
+      "route": "/receitas",
+      "path": "/receitas",
+      "viewport": 375,
+      "document": 375,
+      "mainWidth": 375,
+      "mainScroll": 375,
+      "overflow": [
+        {
+          "tag": "TABLE",
+          "cls": "w-full caption-bottom text-sm",
+          "text": "SituaçãoDataDescriçãoCategoriaCarteiraValorAções01/11/2026Salário mens"
+        },
+        {
+          "tag": "THEAD",
+          "cls": "[&_tr]:border-b",
+          "text": "SituaçãoDataDescriçãoCategoriaCarteiraValorAções"
+        },
+        {
+          "tag": "TR",
+          "cls": "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted border-border/40",
+          "text": "SituaçãoDataDescriçãoCategoriaCarteiraValorAções"
+        },
+        {
+          "tag": "TH",
+          "cls": "h-10 px-2 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+          "text": "Carteira"
+        },
+        {
+          "tag": "TH",
+          "cls": "h-10 px-2 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] text-right",
+          "text": "Valor"
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "height": 812,
+      "route": "/despesas",
+      "path": "/despesas",
+      "viewport": 375,
+      "document": 375,
+      "mainWidth": 375,
+      "mainScroll": 375,
+      "overflow": [
+        {
+          "tag": "TABLE",
+          "cls": "w-full caption-bottom text-sm",
+          "text": "SituaçãoDataDescriçãoCategoriaCarteiraValorAções05/11/2026Compras de s"
+        },
+        {
+          "tag": "THEAD",
+          "cls": "[&_tr]:border-b",
+          "text": "SituaçãoDataDescriçãoCategoriaCarteiraValorAções"
+        },
+        {
+          "tag": "TR",
+          "cls": "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted border-border/40",
+          "text": "SituaçãoDataDescriçãoCategoriaCarteiraValorAções"
+        },
+        {
+          "tag": "TH",
+          "cls": "h-10 px-2 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+          "text": "Categoria"
+        },
+        {
+          "tag": "TH",
+          "cls": "h-10 px-2 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+          "text": "Carteira"
+        }
+      ]
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "route": "/",
+      "path": "/",
+      "viewport": 768,
+      "document": 768,
+      "mainWidth": 512,
+      "mainScroll": 512,
+      "overflow": []
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "route": "/registros",
+      "path": "/registros",
+      "viewport": 768,
+      "document": 768,
+      "mainWidth": 512,
+      "mainScroll": 512,
+      "overflow": [
+        {
+          "tag": "TABLE",
+          "cls": "w-full caption-bottom text-sm",
+          "text": "DataDescriçãoCategoriarec.typeTagsValorAções05/11/2026Compras de super"
+        },
+        {
+          "tag": "THEAD",
+          "cls": "[&_tr]:border-b",
+          "text": "DataDescriçãoCategoriarec.typeTagsValorAções"
+        },
+        {
+          "tag": "TR",
+          "cls": "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
+          "text": "DataDescriçãoCategoriarec.typeTagsValorAções"
+        },
+        {
+          "tag": "TH",
+          "cls": "h-10 px-2 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] w-[140px] text-right",
+          "text": "Ações"
+        },
+        {
+          "tag": "TBODY",
+          "cls": "[&_tr:last-child]:border-0",
+          "text": "05/11/2026Compras de supermercado para o mêsAlimentação e supermercado"
+        }
+      ]
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "route": "/inteligencia",
+      "path": "/inteligencia",
+      "viewport": 768,
+      "document": 768,
+      "mainWidth": 512,
+      "mainScroll": 512,
+      "overflow": []
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "route": "/categorias",
+      "path": "/categorias",
+      "viewport": 768,
+      "document": 768,
+      "mainWidth": 512,
+      "mainScroll": 512,
+      "overflow": []
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "route": "/orcamentos",
+      "path": "/orcamentos",
+      "viewport": 768,
+      "document": 768,
+      "mainWidth": 512,
+      "mainScroll": 512,
+      "overflow": []
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "route": "/metas",
+      "path": "/metas",
+      "viewport": 768,
+      "document": 768,
+      "mainWidth": 512,
+      "mainScroll": 512,
+      "overflow": []
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "route": "/recorrentes",
+      "path": "/recorrentes",
+      "viewport": 768,
+      "document": 768,
+      "mainWidth": 512,
+      "mainScroll": 512,
+      "overflow": []
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "route": "/importar",
+      "path": "/importar",
+      "viewport": 768,
+      "document": 768,
+      "mainWidth": 512,
+      "mainScroll": 512,
+      "overflow": []
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "route": "/importar-extrato",
+      "path": "/importar-extrato",
+      "viewport": 768,
+      "document": 768,
+      "mainWidth": 512,
+      "mainScroll": 512,
+      "overflow": []
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "route": "/relatorios",
+      "path": "/relatorios",
+      "viewport": 768,
+      "document": 768,
+      "mainWidth": 512,
+      "mainScroll": 512,
+      "overflow": [
+        {
+          "tag": "TABLE",
+          "cls": "w-full caption-bottom text-sm",
+          "text": "DataDescriçãoCategoriaValorPagoAções05/11/26Compras de supermercado pa"
+        },
+        {
+          "tag": "THEAD",
+          "cls": "[&_tr]:border-b",
+          "text": "DataDescriçãoCategoriaValorPagoAções"
+        },
+        {
+          "tag": "TR",
+          "cls": "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
+          "text": "DataDescriçãoCategoriaValorPagoAções"
+        },
+        {
+          "tag": "TH",
+          "cls": "h-10 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] text-right px-4",
+          "text": "Valor"
+        },
+        {
+          "tag": "TH",
+          "cls": "h-10 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] w-20 px-4 text-center",
+          "text": "Pago"
+        }
+      ]
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "route": "/perfil",
+      "path": "/perfil",
+      "viewport": 768,
+      "document": 768,
+      "mainWidth": 512,
+      "mainScroll": 512,
+      "overflow": []
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "route": "/contas",
+      "path": "/contas",
+      "viewport": 768,
+      "document": 768,
+      "mainWidth": 512,
+      "mainScroll": 512,
+      "overflow": []
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "route": "/receitas",
+      "path": "/receitas",
+      "viewport": 768,
+      "document": 768,
+      "mainWidth": 512,
+      "mainScroll": 512,
+      "overflow": [
+        {
+          "tag": "TABLE",
+          "cls": "w-full caption-bottom text-sm",
+          "text": "SituaçãoDataDescriçãoCategoriaCarteiraValorAções01/11/2026Salário mens"
+        },
+        {
+          "tag": "THEAD",
+          "cls": "[&_tr]:border-b",
+          "text": "SituaçãoDataDescriçãoCategoriaCarteiraValorAções"
+        },
+        {
+          "tag": "TR",
+          "cls": "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted border-border/40",
+          "text": "SituaçãoDataDescriçãoCategoriaCarteiraValorAções"
+        },
+        {
+          "tag": "TH",
+          "cls": "h-10 px-2 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] text-right",
+          "text": "Valor"
+        },
+        {
+          "tag": "TH",
+          "cls": "h-10 px-2 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] text-right",
+          "text": "Ações"
+        }
+      ]
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "route": "/despesas",
+      "path": "/despesas",
+      "viewport": 768,
+      "document": 768,
+      "mainWidth": 512,
+      "mainScroll": 512,
+      "overflow": [
+        {
+          "tag": "TABLE",
+          "cls": "w-full caption-bottom text-sm",
+          "text": "SituaçãoDataDescriçãoCategoriaCarteiraValorAções05/11/2026Compras de s"
+        },
+        {
+          "tag": "THEAD",
+          "cls": "[&_tr]:border-b",
+          "text": "SituaçãoDataDescriçãoCategoriaCarteiraValorAções"
+        },
+        {
+          "tag": "TR",
+          "cls": "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted border-border/40",
+          "text": "SituaçãoDataDescriçãoCategoriaCarteiraValorAções"
+        },
+        {
+          "tag": "TH",
+          "cls": "h-10 px-2 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+          "text": "Carteira"
+        },
+        {
+          "tag": "TH",
+          "cls": "h-10 px-2 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] text-right",
+          "text": "Valor"
+        }
+      ]
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "route": "/",
+      "path": "/",
+      "viewport": 1024,
+      "document": 1024,
+      "mainWidth": 768,
+      "mainScroll": 768,
+      "overflow": []
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "route": "/registros",
+      "path": "/registros",
+      "viewport": 1024,
+      "document": 1024,
+      "mainWidth": 768,
+      "mainScroll": 768,
+      "overflow": []
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "route": "/inteligencia",
+      "path": "/inteligencia",
+      "viewport": 1024,
+      "document": 1024,
+      "mainWidth": 768,
+      "mainScroll": 768,
+      "overflow": []
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "route": "/categorias",
+      "path": "/categorias",
+      "viewport": 1024,
+      "document": 1024,
+      "mainWidth": 768,
+      "mainScroll": 768,
+      "overflow": []
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "route": "/orcamentos",
+      "path": "/orcamentos",
+      "viewport": 1024,
+      "document": 1024,
+      "mainWidth": 768,
+      "mainScroll": 768,
+      "overflow": []
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "route": "/metas",
+      "path": "/metas",
+      "viewport": 1024,
+      "document": 1024,
+      "mainWidth": 768,
+      "mainScroll": 768,
+      "overflow": []
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "route": "/recorrentes",
+      "path": "/recorrentes",
+      "viewport": 1024,
+      "document": 1024,
+      "mainWidth": 768,
+      "mainScroll": 768,
+      "overflow": []
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "route": "/importar",
+      "path": "/importar",
+      "viewport": 1024,
+      "document": 1024,
+      "mainWidth": 768,
+      "mainScroll": 768,
+      "overflow": []
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "route": "/importar-extrato",
+      "path": "/importar-extrato",
+      "viewport": 1024,
+      "document": 1024,
+      "mainWidth": 768,
+      "mainScroll": 768,
+      "overflow": []
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "route": "/relatorios",
+      "path": "/relatorios",
+      "viewport": 1024,
+      "document": 1024,
+      "mainWidth": 768,
+      "mainScroll": 768,
+      "overflow": []
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "route": "/perfil",
+      "path": "/perfil",
+      "viewport": 1024,
+      "document": 1024,
+      "mainWidth": 768,
+      "mainScroll": 768,
+      "overflow": []
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "route": "/contas",
+      "path": "/contas",
+      "viewport": 1024,
+      "document": 1024,
+      "mainWidth": 768,
+      "mainScroll": 768,
+      "overflow": []
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "route": "/receitas",
+      "path": "/receitas",
+      "viewport": 1024,
+      "document": 1024,
+      "mainWidth": 768,
+      "mainScroll": 768,
+      "overflow": []
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "route": "/despesas",
+      "path": "/despesas",
+      "viewport": 1024,
+      "document": 1024,
+      "mainWidth": 768,
+      "mainScroll": 768,
+      "overflow": []
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "route": "/",
+      "path": "/",
+      "viewport": 1440,
+      "document": 1440,
+      "mainWidth": 1184,
+      "mainScroll": 1184,
+      "overflow": []
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "route": "/registros",
+      "path": "/registros",
+      "viewport": 1440,
+      "document": 1440,
+      "mainWidth": 1184,
+      "mainScroll": 1184,
+      "overflow": []
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "route": "/inteligencia",
+      "path": "/inteligencia",
+      "viewport": 1440,
+      "document": 1440,
+      "mainWidth": 1184,
+      "mainScroll": 1184,
+      "overflow": []
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "route": "/categorias",
+      "path": "/categorias",
+      "viewport": 1440,
+      "document": 1440,
+      "mainWidth": 1184,
+      "mainScroll": 1184,
+      "overflow": []
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "route": "/orcamentos",
+      "path": "/orcamentos",
+      "viewport": 1440,
+      "document": 1440,
+      "mainWidth": 1184,
+      "mainScroll": 1184,
+      "overflow": []
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "route": "/metas",
+      "path": "/metas",
+      "viewport": 1440,
+      "document": 1440,
+      "mainWidth": 1184,
+      "mainScroll": 1184,
+      "overflow": []
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "route": "/recorrentes",
+      "path": "/recorrentes",
+      "viewport": 1440,
+      "document": 1440,
+      "mainWidth": 1184,
+      "mainScroll": 1184,
+      "overflow": []
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "route": "/importar",
+      "path": "/importar",
+      "viewport": 1440,
+      "document": 1440,
+      "mainWidth": 1184,
+      "mainScroll": 1184,
+      "overflow": []
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "route": "/importar-extrato",
+      "path": "/importar-extrato",
+      "viewport": 1440,
+      "document": 1440,
+      "mainWidth": 1184,
+      "mainScroll": 1184,
+      "overflow": []
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "route": "/relatorios",
+      "path": "/relatorios",
+      "viewport": 1440,
+      "document": 1440,
+      "mainWidth": 1184,
+      "mainScroll": 1184,
+      "overflow": []
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "route": "/perfil",
+      "path": "/perfil",
+      "viewport": 1440,
+      "document": 1440,
+      "mainWidth": 1184,
+      "mainScroll": 1184,
+      "overflow": []
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "route": "/contas",
+      "path": "/contas",
+      "viewport": 1440,
+      "document": 1440,
+      "mainWidth": 1184,
+      "mainScroll": 1184,
+      "overflow": []
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "route": "/receitas",
+      "path": "/receitas",
+      "viewport": 1440,
+      "document": 1440,
+      "mainWidth": 1184,
+      "mainScroll": 1184,
+      "overflow": []
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "route": "/despesas",
+      "path": "/despesas",
+      "viewport": 1440,
+      "document": 1440,
+      "mainWidth": 1184,
+      "mainScroll": 1184,
+      "overflow": []
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "route": "/",
+      "path": "/",
+      "viewport": 1920,
+      "document": 1920,
+      "mainWidth": 1664,
+      "mainScroll": 1664,
+      "overflow": []
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "route": "/registros",
+      "path": "/registros",
+      "viewport": 1920,
+      "document": 1920,
+      "mainWidth": 1664,
+      "mainScroll": 1664,
+      "overflow": []
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "route": "/inteligencia",
+      "path": "/inteligencia",
+      "viewport": 1920,
+      "document": 1920,
+      "mainWidth": 1664,
+      "mainScroll": 1664,
+      "overflow": []
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "route": "/categorias",
+      "path": "/categorias",
+      "viewport": 1920,
+      "document": 1920,
+      "mainWidth": 1664,
+      "mainScroll": 1664,
+      "overflow": []
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "route": "/orcamentos",
+      "path": "/orcamentos",
+      "viewport": 1920,
+      "document": 1920,
+      "mainWidth": 1664,
+      "mainScroll": 1664,
+      "overflow": []
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "route": "/metas",
+      "path": "/metas",
+      "viewport": 1920,
+      "document": 1920,
+      "mainWidth": 1664,
+      "mainScroll": 1664,
+      "overflow": []
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "route": "/recorrentes",
+      "path": "/recorrentes",
+      "viewport": 1920,
+      "document": 1920,
+      "mainWidth": 1664,
+      "mainScroll": 1664,
+      "overflow": []
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "route": "/importar",
+      "path": "/importar",
+      "viewport": 1920,
+      "document": 1920,
+      "mainWidth": 1664,
+      "mainScroll": 1664,
+      "overflow": []
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "route": "/importar-extrato",
+      "path": "/importar-extrato",
+      "viewport": 1920,
+      "document": 1920,
+      "mainWidth": 1664,
+      "mainScroll": 1664,
+      "overflow": []
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "route": "/relatorios",
+      "path": "/relatorios",
+      "viewport": 1920,
+      "document": 1920,
+      "mainWidth": 1664,
+      "mainScroll": 1664,
+      "overflow": []
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "route": "/perfil",
+      "path": "/perfil",
+      "viewport": 1920,
+      "document": 1920,
+      "mainWidth": 1664,
+      "mainScroll": 1664,
+      "overflow": []
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "route": "/contas",
+      "path": "/contas",
+      "viewport": 1920,
+      "document": 1920,
+      "mainWidth": 1664,
+      "mainScroll": 1664,
+      "overflow": []
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "route": "/receitas",
+      "path": "/receitas",
+      "viewport": 1920,
+      "document": 1920,
+      "mainWidth": 1664,
+      "mainScroll": 1664,
+      "overflow": []
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "route": "/despesas",
+      "path": "/despesas",
+      "viewport": 1920,
+      "document": 1920,
+      "mainWidth": 1664,
+      "mainScroll": 1664,
+      "overflow": []
+    }
+  ],
+  "errors": []
+}

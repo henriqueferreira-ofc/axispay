@@ -216,6 +216,10 @@
 }
 
 /* Continue the login photo into Safari's document canvas and unsafe top area. */
+html[data-auth-hero="true"] {
+  --auth-hero-image: var(--auth-hero-phone-image);
+}
+
 html[data-auth-hero="true"],
 html[data-auth-hero="true"] body {
   background-color: transparent;
@@ -224,6 +228,23 @@ html[data-auth-hero="true"] body {
   background-position: 52% top;
   background-repeat: no-repeat;
   background-attachment: fixed;
+}
+
+/* Keep the Safari canvas in sync with the sources in AuthHeroBackground. */
+@media (min-width: 768px) {
+  html[data-auth-hero="true"] {
+    --auth-hero-image: var(--auth-hero-tablet-portrait-image);
+  }
+}
+@media (min-width: 768px) and (orientation: landscape) {
+  html[data-auth-hero="true"] {
+    --auth-hero-image: var(--auth-hero-tablet-landscape-image);
+  }
+}
+@media (min-width: 1280px) {
+  html[data-auth-hero="true"] {
+    --auth-hero-image: var(--auth-hero-desktop-image);
+  }
 }
 
 /* Match the document canvas to the opening splash, including Safari chrome. */
@@ -251,4 +272,134 @@ html[data-auth-hero="true"] body {
 html[data-auth-hero="true"],
 html[data-auth-hero="true"] body {
   min-height: 100lvh;
+}
+
+/* Tablet and desktop compositions. Keep the approved phone rules above intact. */
+@media (min-width: 768px) {
+  .auth-page {
+    padding: 104px 32px 32px;
+    justify-content: flex-end;
+    gap: 28px;
+  }
+  .auth-page .auth-wordmark {
+    position: relative;
+    inset: auto;
+    padding: 0;
+    flex-shrink: 0;
+  }
+  .auth-page .auth-hero-photo { object-position: center; }
+  .auth-page .auth-wordmark-name { font-size: 64px; }
+  .auth-page .auth-wordmark-tagline { font-size: 16px; }
+  .auth-page .auth-content { margin: 0; padding: 0; }
+  .auth-page .auth-welcome {
+    width: min(100%, 440px);
+    padding: 28px;
+    border-radius: 28px;
+    background-color: rgb(35 40 43 / 35%);
+  }
+  .auth-page .auth-greeting { font-size: 24px; }
+  .auth-page .auth-welcome svg { width: 24px; height: 24px; }
+  .auth-page .auth-welcome span { font-size: 14px; }
+  .auth-page .auth-actions { gap: 12px; padding-top: 24px; }
+  .auth-page .auth-actions button {
+    height: 52px;
+    border-radius: 16px;
+    font-size: 18px;
+  }
+  .auth-page .auth-form {
+    max-width: 440px;
+    padding: 8px;
+    border-radius: 24px;
+  }
+  .auth-page .auth-form input { height: 42px; }
+  .auth-page .auth-form label { font-size: 14px; }
+  .auth-page .auth-form form { display: grid; gap: 8px; }
+  .auth-page .auth-form form button[type="submit"] { height: 44px; font-size: 14px; }
+  .auth-page .auth-form > div:first-child > div:first-child { font-size: 20px; }
+
+  /* Grid children may shrink; wide tables retain their own scroll containers. */
+  #app-scroll-content > div { min-width: 0; }
+  #app-scroll-content .grid > * { min-width: 0; }
+}
+
+@media (min-width: 1024px), (min-width: 768px) and (max-height: 700px) {
+  .auth-page {
+    --auth-column: clamp(380px, 34vw, 480px);
+    padding: 96px clamp(40px, 6vw, 120px) 48px;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 32px;
+  }
+  .auth-page .auth-wordmark,
+  .auth-page .auth-content { width: var(--auth-column); }
+  .auth-page .auth-welcome,
+  .auth-page .auth-form { width: 100%; max-width: none; }
+  .auth-page .auth-wordmark-name { font-size: 72px; }
+  .auth-page .auth-hero-photo {
+    width: 100%;
+    object-position: center;
+  }
+  .auth-page .auth-hero-background { background: transparent; }
+  .auth-page .auth-hero-shade {
+    background: none;
+  }
+}
+
+/* Short landscape tablets and browser zoom must scroll naturally, without overlap. */
+@media (min-width: 768px) and (max-height: 700px) {
+  .auth-page .auth-hero-photo { object-position: center; }
+  .auth-page { padding-top: 80px; padding-bottom: 24px; gap: 20px; }
+  .auth-page .auth-wordmark-name { font-size: 52px; }
+  .auth-page .auth-wordmark-tagline { font-size: 14px; }
+}
+
+@media (min-width: 768px) {
+  .dashboard-kpis { grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); }
+  .kpi-card { container-type: inline-size; height: 100%; }
+  .kpi-value-row { overflow: visible; }
+  .kpi-value { white-space: normal; overflow: visible; overflow-wrap: anywhere; }
+  @container (max-width: 260px) {
+    .kpi-content { flex-direction: column-reverse; gap: 12px; }
+    .kpi-value { font-size: 22px; }
+  }
+}
+
+/* Wide desktop: a single continuous photograph behind the content.
+   Keep the approved tablet and phone compositions below xl unchanged. */
+@media (min-width: 1280px) {
+  .auth-page { padding-inline-end: max(32px, calc((42vw - var(--auth-column)) / 2)); }
+  .auth-page .auth-hero-background { background: transparent; }
+
+  .auth-page .auth-hero-photo {
+    width: 100%;
+    mask-image: none;
+  }
+
+  .auth-page .auth-hero-background > div:not(.auth-hero-shade) {
+    width: 100%;
+    right: auto;
+  }
+  .auth-page .auth-hero-shade { background: none; }
+
+  .auth-page .auth-wordmark-entrance {
+    color: #fff;
+    filter: drop-shadow(0 2px 8px rgb(0 0 0 / 40%));
+  }
+  .auth-page .auth-wordmark-tagline { color: #fff; }
+  .auth-page .auth-wordmark-tagline-lead { color: rgb(255 255 255 / 85%); }
+
+  .auth-page .auth-welcome {
+    color: #173b43;
+    background: rgb(255 255 255 / 88%);
+    border-color: rgb(255 255 255 / 60%);
+    box-shadow: 0 12px 40px rgb(15 29 31 / 8%);
+    backdrop-filter: none;
+  }
+
+  .auth-page .auth-features,
+  .auth-page .auth-welcome > button { color: #29464d; }
+  .auth-page .auth-features > div { border-color: rgb(41 70 77 / 18%); }
+  .auth-page .auth-actions > button:first-child,
+  .auth-page .auth-welcome [role="alert"] { color: #173b43; }
+  .auth-page .auth-welcome > button:hover { background-color: rgb(41 70 77 / 8%); }
 }
