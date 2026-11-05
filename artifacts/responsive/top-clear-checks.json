@@ -1,0 +1,29 @@
+[
+  {
+    "width": 430,
+    "height": 932,
+    "backdrop": "none",
+    "filter": "none",
+    "shadow": "none",
+    "topBlurLayers": 0,
+    "languageMenu": true
+  },
+  {
+    "width": 768,
+    "height": 1024,
+    "backdrop": "none",
+    "filter": "none",
+    "shadow": "none",
+    "topBlurLayers": 0,
+    "languageMenu": true
+  },
+  {
+    "width": 1440,
+    "height": 900,
+    "backdrop": "none",
+    "filter": "none",
+    "shadow": "none",
+    "topBlurLayers": 0,
+    "languageMenu": true
+  }
+]

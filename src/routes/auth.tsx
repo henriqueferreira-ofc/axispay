@@ -344,7 +344,7 @@ function AuthPage() {
       <AuthWordmark />
 
       <div className="absolute right-4 top-[max(1.25rem,env(safe-area-inset-top))] z-20 flex items-center justify-end lg:right-8 lg:top-8">
-        <div className="rounded-full bg-background/45 backdrop-blur-md [&_button]:text-foreground [&_svg]:text-foreground">
+        <div className="rounded-full bg-background/45 [&_button]:text-foreground [&_svg]:text-foreground">
           <LanguageSwitcher />
         </div>
       </div>

@@ -58,8 +58,6 @@ export function AuthHeroBackground() {
           className="auth-hero-photo absolute top-0 h-[105%] w-full max-w-none object-cover object-[52%_top] md:h-full md:object-center"
         />
       </picture>
-      {/* Fade the subtle sky blur out before it reaches the portrait. */}
-      <div className="absolute inset-x-0 top-0 h-[22%] backdrop-blur-[2px] [mask-image:linear-gradient(to_bottom,black,transparent)]" />
       {/* Gradual frosted finish, confined to the bottom of the photo. */}
       <div className="absolute inset-x-0 bottom-0 h-[38%] bg-black/10 backdrop-blur-[3px] [mask-image:linear-gradient(to_bottom,transparent,black)]" />
       <div className="auth-hero-shade absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20" />
