@@ -3,7 +3,7 @@
   "name": "AxisPay",
   "short_name": "AxisPay",
   "lang": "pt-BR",
-  "start_url": "/",
+  "start_url": "/auth",
   "scope": "/",
   "display": "standalone",
   "background_color": "#0d0d0d",

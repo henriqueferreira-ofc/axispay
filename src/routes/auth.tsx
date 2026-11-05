@@ -343,7 +343,7 @@ function AuthPage() {
   };
 
   return (
-    <div className="auth-page relative isolate flex min-h-dvh flex-col overflow-x-hidden bg-transparent">
+    <div data-auth-view={showForm ? "form" : "welcome"} className="auth-page relative isolate flex min-h-dvh flex-col overflow-x-hidden bg-transparent">
       <AuthHeroBackground />
       <AuthWordmark />
 

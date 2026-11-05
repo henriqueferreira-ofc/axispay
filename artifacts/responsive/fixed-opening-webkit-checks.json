@@ -1,0 +1,113 @@
+{
+  "engine": "webkit",
+  "manifestStart": "/auth",
+  "results": [
+    {
+      "width": 375,
+      "height": 812,
+      "stableBeforeAndAfterScroll": true,
+      "stableAfterFormReturn": true,
+      "formUnlocked": true,
+      "buttons": true,
+      "stage": {
+        "x": 0,
+        "y": 0,
+        "width": 375,
+        "height": 812
+      },
+      "brand": {
+        "x": 0,
+        "y": 89.3125,
+        "width": 375,
+        "height": 57.5625
+      },
+      "panel": {
+        "x": 13.875,
+        "y": 571.625,
+        "width": 347.25,
+        "height": 228.375
+      },
+      "scrollY": 0,
+      "rootScrollHeight": 812,
+      "viewport": 812,
+      "rootOverflow": "hidden",
+      "stagePosition": "fixed",
+      "transform": "none",
+      "status": [
+        "black-translucent"
+      ]
+    },
+    {
+      "width": 430,
+      "height": 932,
+      "stableBeforeAndAfterScroll": true,
+      "stableAfterFormReturn": true,
+      "formUnlocked": true,
+      "buttons": true,
+      "stage": {
+        "x": 0,
+        "y": 0,
+        "width": 430,
+        "height": 932
+      },
+      "brand": {
+        "x": 0,
+        "y": 102.515625,
+        "width": 430,
+        "height": 57.5625
+      },
+      "panel": {
+        "x": 15.90625,
+        "y": 671.40625,
+        "width": 398.1875,
+        "height": 248.59375
+      },
+      "scrollY": 0,
+      "rootScrollHeight": 932,
+      "viewport": 932,
+      "rootOverflow": "hidden",
+      "stagePosition": "fixed",
+      "transform": "matrix(1, 0, 0, 1, 0, 0)",
+      "status": [
+        "black-translucent"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "stableBeforeAndAfterScroll": true,
+      "stableAfterFormReturn": true,
+      "formUnlocked": true,
+      "buttons": true,
+      "stage": {
+        "x": 0,
+        "y": 0,
+        "width": 390,
+        "height": 844
+      },
+      "brand": {
+        "x": 0,
+        "y": 92.828125,
+        "width": 390,
+        "height": 57.5625
+      },
+      "panel": {
+        "x": 14.421875,
+        "y": 598.171875,
+        "width": 361.15625,
+        "height": 233.828125
+      },
+      "scrollY": 0,
+      "rootScrollHeight": 844,
+      "viewport": 844,
+      "rootOverflow": "hidden",
+      "stagePosition": "fixed",
+      "transform": "none",
+      "status": [
+        "black-translucent"
+      ]
+    }
+  ],
+  "errors": [],
+  "nativeStatusBar": "not reproduced by browser automation"
+}

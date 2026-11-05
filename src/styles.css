@@ -424,3 +424,41 @@ html[data-auth-hero="true"] body {
     box-shadow: none;
   }
 }
+
+/* Only the phone welcome screen is a fixed stage. Browser chrome and document
+   overscroll must not move its controls relative to the fixed photograph.
+   Forms retain normal scrolling so the keyboard can reveal their fields. */
+@media (max-width: 767px) {
+  html[data-auth-hero="true"]:has(.auth-page[data-auth-view="welcome"]),
+  html[data-auth-hero="true"]:has(.auth-page[data-auth-view="welcome"]) body {
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  .auth-page[data-auth-view="welcome"] {
+    touch-action: pinch-zoom;
+    --auth-brand-top: clamp(60px, 11svh, 134px);
+    --auth-panel-bottom: max(12px, env(safe-area-inset-bottom, 0px));
+    position: fixed;
+    inset: 0;
+    height: 100svh;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .auth-page[data-auth-view="welcome"] .auth-wordmark {
+    top: var(--auth-brand-top);
+  }
+
+  .auth-page[data-auth-view="welcome"] .auth-content {
+    position: absolute;
+    inset-inline: 0;
+    bottom: var(--auth-panel-bottom);
+    margin: 0;
+    padding-block: 0;
+  }
+
+  .auth-page[data-auth-view="welcome"] .auth-welcome { top: 0; }
+}
