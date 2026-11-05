@@ -1,0 +1,57 @@
+[
+  {
+    "width": 347.25,
+    "height": 228.375,
+    "buttons": [
+      42,
+      42,
+      36
+    ],
+    "viewport": 375,
+    "scrollWidth": 375
+  },
+  {
+    "width": 440,
+    "height": 275.25,
+    "buttons": [
+      52,
+      52,
+      36
+    ],
+    "viewport": 768,
+    "scrollWidth": 768
+  },
+  {
+    "width": 380,
+    "height": 275.25,
+    "buttons": [
+      52,
+      52,
+      36
+    ],
+    "viewport": 1024,
+    "scrollWidth": 1024
+  },
+  {
+    "width": 480,
+    "height": 275.25,
+    "buttons": [
+      52,
+      52,
+      36
+    ],
+    "viewport": 1440,
+    "scrollWidth": 1440
+  },
+  {
+    "width": 480,
+    "height": 275.25,
+    "buttons": [
+      52,
+      52,
+      36
+    ],
+    "viewport": 1920,
+    "scrollWidth": 1920
+  }
+]

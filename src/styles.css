@@ -403,3 +403,10 @@ html[data-auth-hero="true"] body {
   .auth-page .auth-welcome [role="alert"] { color: #173b43; }
   .auth-page .auth-welcome > button:hover { background-color: rgb(41 70 77 / 8%); }
 }
+
+/* Shared compact welcome panel; button sizes remain responsive. */
+.auth-page .auth-welcome { padding-block: 12px; }
+.auth-page .auth-features { padding-top: 4px; }
+.auth-page .auth-features > div { gap: 4px; }
+.auth-page .auth-actions { padding-top: 8px; gap: 8px; }
+.auth-page .auth-welcome > button { margin-top: 4px; }
