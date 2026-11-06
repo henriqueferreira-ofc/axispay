@@ -19,10 +19,12 @@ export function AuthWordmark() {
     root.dataset.authSplash = "true";
     const theme = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
     const previousMedia = theme?.getAttribute("media");
+    const previousColor = theme?.getAttribute("content");
+    theme?.setAttribute("content", "#aee455");
     theme?.removeAttribute("media");
     const reveal = () => {
       delete root.dataset.authSplash;
-      // Keep black browser chrome for the splash only. Once the photo is visible,
+      // Match browser chrome to the splash only. Once the photo is visible,
       // let WebKit paint the document beneath the translucent status bar.
       theme?.setAttribute("media", "not all");
     };
@@ -36,6 +38,7 @@ export function AuthWordmark() {
       window.clearTimeout(timer);
       document.removeEventListener("animationend", onAnimationEnd);
       delete root.dataset.authSplash;
+      if (previousColor !== null && previousColor !== undefined) theme?.setAttribute("content", previousColor);
       if (previousMedia === null || previousMedia === undefined) theme?.removeAttribute("media");
       else theme?.setAttribute("media", previousMedia);
     };
@@ -45,13 +48,13 @@ export function AuthWordmark() {
     <>
       <div
         aria-hidden="true"
-        className="auth-splash fixed inset-x-0 bottom-0 top-[calc(0px_-_env(safe-area-inset-top,0px))] z-30 bg-[#0d0d0d]"
+        className="auth-splash fixed inset-x-0 bottom-0 top-[calc(0px_-_env(safe-area-inset-top,0px))] z-30 bg-[#aee455]"
       />
       <div className="auth-wordmark pointer-events-none absolute inset-x-0 z-40 flex justify-center px-6">
         <div
           role="img"
           onClick={onSupportTap}
-          className="pointer-events-auto select-none auth-wordmark-entrance flex flex-col items-center text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.3)]"
+          className="pointer-events-auto select-none auth-wordmark-entrance flex flex-col items-center text-white"
           aria-label="AxisPay — financial AxisControle"
         >
           <div

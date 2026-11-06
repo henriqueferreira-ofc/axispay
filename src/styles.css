@@ -169,7 +169,7 @@
 }
 
 .auth-wordmark {
-  top: clamp(60px, 11svh, 134px);
+  top: calc(clamp(60px, 11svh, 134px) + 24px);
 }
 
 .auth-wordmark-name {
@@ -184,9 +184,9 @@
   font-size: 0.62em;
 }
 
-/* Splash: the name sits centered on black, then rises as the photo fades in. */
+/* Splash: the name rises as the lime background reveals the photo. */
 @keyframes auth-wordmark-rise {
-  0%, 53% { opacity: 1; transform: translateY(calc(50svh - clamp(60px, 11svh, 134px) - 40px)) scale(1.06); }
+  0%, 53% { opacity: 1; transform: translateY(calc(50svh - clamp(60px, 11svh, 134px) - 64px)) scale(1.06); }
   100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
@@ -251,7 +251,7 @@ html[data-auth-hero="true"] body {
 /* Match the document canvas to the opening splash, including Safari chrome. */
 html[data-auth-splash="true"],
 html[data-auth-splash="true"] body {
-  background-color: #0d0d0d;
+  background-color: #aee455;
   background-image: none;
 }
 
@@ -285,6 +285,7 @@ html[data-auth-hero="true"] body {
   .auth-page .auth-wordmark {
     position: relative;
     inset: auto;
+    top: 24px;
     padding: 0;
     flex-shrink: 0;
   }
@@ -384,7 +385,6 @@ html[data-auth-hero="true"] body {
 
   .auth-page .auth-wordmark-entrance {
     color: #fff;
-    filter: drop-shadow(0 2px 8px rgb(0 0 0 / 40%));
   }
   .auth-page .auth-wordmark-tagline { color: #fff; }
   .auth-page .auth-wordmark-tagline-lead { color: rgb(255 255 255 / 85%); }
@@ -429,7 +429,7 @@ html[data-auth-hero="true"] body {
 
   .auth-page[data-auth-view="welcome"] {
     touch-action: pinch-zoom;
-    --auth-brand-top: clamp(60px, 11dvh, 134px);
+    --auth-brand-top: calc(clamp(60px, 11dvh, 134px) + 24px);
     --auth-panel-bottom: max(-8px, calc(env(safe-area-inset-bottom, 0px) - 20px));
     position: fixed;
     inset: 0;
