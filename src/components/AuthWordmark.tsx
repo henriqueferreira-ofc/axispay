@@ -58,7 +58,7 @@ export function AuthWordmark() {
             aria-hidden="true"
             className="auth-wordmark-name flex items-baseline whitespace-nowrap leading-none tracking-[-0.065em]"
           >
-            <span className="font-extrabold">Axis</span>
+            <span className="font-extrabold text-[#0cc6a0]">Axis</span>
             <span className="font-thin">Pay</span>
           </div>
           <div

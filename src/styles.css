@@ -389,20 +389,7 @@ html[data-auth-hero="true"] body {
   .auth-page .auth-wordmark-tagline { color: #fff; }
   .auth-page .auth-wordmark-tagline-lead { color: rgb(255 255 255 / 85%); }
 
-  .auth-page .auth-welcome {
-    color: #173b43;
-    background: rgb(255 255 255 / 88%);
-    border-color: rgb(255 255 255 / 60%);
-    box-shadow: 0 12px 40px rgb(15 29 31 / 8%);
-    backdrop-filter: none;
-  }
-
-  .auth-page .auth-features,
-  .auth-page .auth-welcome > button { color: #29464d; }
-  .auth-page .auth-features > div { border-color: rgb(41 70 77 / 18%); }
-  .auth-page .auth-actions > button:first-child,
-  .auth-page .auth-welcome [role="alert"] { color: #173b43; }
-  .auth-page .auth-welcome > button:hover { background-color: rgb(41 70 77 / 8%); }
+  /* Welcome panel and button colors are shared across all screen sizes. */
 }
 
 /* Shared compact welcome panel; button sizes remain responsive. */
