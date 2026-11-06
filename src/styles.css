@@ -431,10 +431,13 @@ html[data-auth-hero="true"] body {
 @media (max-width: 767px) {
   html[data-auth-hero="true"]:has(.auth-page[data-auth-view="welcome"]),
   html[data-auth-hero="true"]:has(.auth-page[data-auth-view="welcome"]) body {
-    height: 100%;
-    min-height: 0;
+    /* Keep the document canvas full height even when standalone WebKit
+       reports a shorter dynamic viewport. Lock scrolling independently. */
+    height: 100lvh;
+    min-height: 100lvh;
     overflow: hidden;
     overscroll-behavior: none;
+    background-attachment: scroll;
   }
 
   .auth-page[data-auth-view="welcome"] {
@@ -450,8 +453,10 @@ html[data-auth-hero="true"] body {
 
   .auth-page[data-auth-view="welcome"] .auth-hero-background {
     inset: 0;
-    height: 100dvh;
-    min-height: 0;
+    /* Only the photograph extends to the large viewport. Controls continue
+       to use the dynamic viewport so the last button cannot be clipped. */
+    height: 100lvh;
+    min-height: 100lvh;
   }
 
   .auth-page[data-auth-view="welcome"] .auth-hero-photo { height: 100%; }
