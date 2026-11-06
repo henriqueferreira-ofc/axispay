@@ -8,7 +8,7 @@ A faixa preta continuava no aplicativo aberto pelo ícone da Tela de Início. O 
 
 ## Alterações
 
-- Somente a tela de boas-vindas abaixo de 768 px usa um palco fixo de `100svh`, sem rolagem ou efeito elástico do documento.
+- Somente a tela de boas-vindas abaixo de 768 px usa um palco fixo preso às quatro bordas, sem rolagem ou efeito elástico do documento.
 - A marca conserva a animação de entrada e fica ancorada após ela; o box é ancorado ao rodapé com margem segura.
 - Posições centralizadas em `--auth-brand-top` e `--auth-panel-bottom`, na regra móvel de `.auth-page[data-auth-view="welcome"]`. Essas variáveis permitem ajustar depois o local desejado sem alterar a lógica dos componentes.
 - A rolagem normal é liberada ao abrir login, cadastro ou recuperação, para não prender campos atrás do teclado. Ao retornar à tela de boas-vindas, as âncoras são retomadas.
@@ -31,3 +31,16 @@ Referências primárias:
 
 - [Apple: configuração de status bar em web apps](https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariHTMLRef/Articles/MetaTags.html)
 - [WebKit: configurações de instalação e geometria de viewport](https://bugs.webkit.org/show_bug.cgi?id=316008)
+
+
+## Correção do recorte inferior após reinstalar no iPhone
+
+A captura posterior à reinstalação mostrou uma faixa preta inferior e o painel deslocado para cima. O palco ainda tinha `height: 100svh`, que prevalecia sobre o `bottom: 0` e podia limitar a área desenhada. Esse limite foi retirado.
+
+No navegador comum, o palco e a fotografia usam as quatro bordas do viewport. No iPhone instalado (`navigator.standalone`), somente em largura de celular e tela física curta abaixo de 768 px, `AuthHeroBackground` informa a altura da tela em pixels CSS através de `--auth-screen-height`. A marca, o painel e a fotografia usam a mesma referência. A altura fica estável em mudanças apenas de altura da janela/teclado e é recalculada quando a largura/orientação muda. A propriedade e os listeners são removidos ao sair da abertura.
+
+A foto agora usa 100% da altura dessa área, sem o aumento anterior de 105%. Não foram alterados os metadados da barra de status, o manifesto, a área interna ou layouts de tablet/computador nesta correção.
+
+Testes em Chromium e WebKit incluem tela de 430×932 com viewport integral e cenário simulado de viewport de 430×873. Em modo instalado simulado, palco, fundo e imagem chegam a 932 px; não há deslocamento após rolagem, retorno do formulário ou mudança apenas da altura da janela. A simulação não reproduz o contêiner nativo do iPhone; o resultado final no aparelho continua dependendo de conferência.
+
+Resultados: `artifacts/responsive/full-photo-{chromium,webkit}-checks.json`. Build, TypeScript e lint do componente passaram.

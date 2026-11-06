@@ -439,14 +439,22 @@ html[data-auth-hero="true"] body {
 
   .auth-page[data-auth-view="welcome"] {
     touch-action: pinch-zoom;
-    --auth-brand-top: clamp(60px, 11svh, 134px);
+    --auth-brand-top: clamp(60px, calc(var(--auth-screen-height, 100svh) * 0.11), 134px);
     --auth-panel-bottom: max(12px, env(safe-area-inset-bottom, 0px));
     position: fixed;
     inset: 0;
-    height: 100svh;
+    height: var(--auth-screen-height, auto);
     min-height: 0;
     overflow: hidden;
   }
+
+  .auth-page[data-auth-view="welcome"] .auth-hero-background {
+    inset: 0;
+    height: var(--auth-screen-height, auto);
+    min-height: 0;
+  }
+
+  .auth-page[data-auth-view="welcome"] .auth-hero-photo { height: 100%; }
 
   .auth-page[data-auth-view="welcome"] .auth-wordmark {
     top: var(--auth-brand-top);

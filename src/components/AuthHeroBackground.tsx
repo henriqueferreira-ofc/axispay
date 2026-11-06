@@ -27,11 +27,46 @@ export function AuthHeroBackground() {
       "--auth-hero-tablet-landscape-image": imageFolders.tabletLandscape,
       "--auth-hero-desktop-image": imageFolders.desktop,
     };
+    const standalone = window.matchMedia("(display-mode: standalone)");
+    let lastScreenWidth = 0;
+    const syncScreenHeight = () => {
+      const iosStandalone = (navigator as Navigator & { standalone?: boolean }).standalone;
+      const installed = typeof iosStandalone === "boolean" && (iosStandalone || standalone.matches);
+      const phone =
+        window.matchMedia("(max-width: 767px)").matches &&
+        Math.min(screen.width, screen.height) < 768;
+      if (!installed || !phone) {
+        root.style.removeProperty("--auth-screen-height");
+        lastScreenWidth = 0;
+        return;
+      }
+      // In an installed iPhone app, svh can omit the system inset. The physical
+      // screen size stays stable while chrome changes or the keyboard opens.
+      if (
+        window.innerWidth === lastScreenWidth &&
+        root.style.getPropertyValue("--auth-screen-height")
+      )
+        return;
+      lastScreenWidth = window.innerWidth;
+      const landscape = window.matchMedia("(orientation: landscape)").matches;
+      const height = landscape
+        ? Math.min(screen.width, screen.height)
+        : Math.max(screen.width, screen.height);
+      root.style.setProperty("--auth-screen-height", `${height}px`);
+    };
+    syncScreenHeight();
+    window.addEventListener("resize", syncScreenHeight);
+    window.addEventListener("orientationchange", syncScreenHeight);
+    standalone.addEventListener("change", syncScreenHeight);
     root.dataset.authHero = "true";
     for (const [property, folder] of Object.entries(canvasImages)) {
       root.style.setProperty(property, `url("${imagePath(folder, selected)}")`);
     }
     return () => {
+      window.removeEventListener("resize", syncScreenHeight);
+      window.removeEventListener("orientationchange", syncScreenHeight);
+      standalone.removeEventListener("change", syncScreenHeight);
+      root.style.removeProperty("--auth-screen-height");
       delete root.dataset.authHero;
       for (const property of Object.keys(canvasImages)) root.style.removeProperty(property);
     };
