@@ -355,7 +355,7 @@ function AuthPage() {
 
       <div className="auth-content relative z-10 mt-auto flex w-full flex-col items-center px-[3.7vw] pb-[max(1vw,env(safe-area-inset-bottom))] pt-28 md:px-8 md:pb-10">
         {!showForm ? (
-          <Card className="auth-welcome relative top-[12px] w-full max-w-4xl md:top-0 rounded-[9.5vw] border-white/[0.04] bg-transparent bg-gradient-to-b from-[#aee455]/45 to-[#aee455]/40 p-[5.4vw] text-white shadow-xl backdrop-blur-md md:rounded-[64px] md:p-10">
+          <Card className="auth-welcome relative top-[12px] w-full max-w-4xl md:top-0 rounded-[9.5vw] border-white/[0.04] bg-transparent bg-gradient-to-b from-[#0cc6a0]/45 to-[#0cc6a0]/40 p-[5.4vw] text-white shadow-xl backdrop-blur-md md:rounded-[64px] md:p-10">
             <CardHeader className="space-y-[1.9vw] p-0 md:space-y-2">
               <CardTitle className="auth-greeting text-[3.8vw] font-normal leading-[1.25] md:text-[28px]">
                 {greeting}
@@ -375,7 +375,7 @@ function AuthPage() {
             </CardHeader>
             <CardContent className="auth-actions flex flex-col gap-[2.8vw] p-0 pt-[4.5vw] md:gap-5 md:pt-8">
               <Button
-                className="h-[11.2vw] w-full rounded-[4vw] bg-[#0cc6a0] text-[4vw] font-normal text-[#064c72] hover:bg-[#0bb590] md:h-24 md:rounded-[36px] md:text-[34px]"
+                className="h-[11.2vw] w-full rounded-[4vw] bg-[#aee455] text-[4vw] font-normal text-[#064c72] hover:bg-[#a3d64f] md:h-24 md:rounded-[36px] md:text-[34px]"
                 onClick={handleAccess}
                 disabled={submitting || loading || preparingLogin}
               >
@@ -383,7 +383,7 @@ function AuthPage() {
               </Button>
               <Button
                 variant="outline"
-                className="h-[11.2vw] w-full rounded-[4vw] border-transparent bg-[#064c72]/85 text-[4vw] font-normal text-[#18d6ae] hover:border-transparent hover:bg-[#064c72]/95 hover:text-[#43e8c4] md:h-24 md:rounded-[36px] md:text-[28px]"
+                className="h-[11.2vw] w-full rounded-[4vw] border-transparent bg-[#064c72] text-[4vw] font-normal text-[#18d6ae] hover:border-transparent hover:bg-[#075780] hover:text-[#43e8c4] md:h-24 md:rounded-[36px] md:text-[28px]"
                 onClick={() => {
                   setTab("signup");
                   setShowForm(true);
