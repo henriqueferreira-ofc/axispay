@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 
 const imageFolders = {
-  phone: "/iphone-vertical",
-  tabletPortrait: "/Tablete-vertical",
-  tabletLandscape: "/tablete-horizontal",
-  desktop: "/Computador-horizontal",
+  phone: "/iphonevertical",
+  tabletPortrait: "/Tabletevertical",
+  tabletLandscape: "/tabletehorizontal",
+  desktop: "/Computadorhorizontal",
 } as const;
 
 const imageCount = 5;
