@@ -1,0 +1,114 @@
+{
+  "engine": "webkit",
+  "results": [
+    {
+      "installed": false,
+      "viewportHeight": 932,
+      "viewport": 932,
+      "screenHeight": 932,
+      "screenVariable": "",
+      "stage": {
+        "top": 0,
+        "bottom": 932,
+        "height": 932
+      },
+      "background": {
+        "top": 0,
+        "bottom": 932,
+        "height": 932
+      },
+      "photo": {
+        "top": 0,
+        "bottom": 932,
+        "height": 932
+      },
+      "brand": {
+        "top": 102.515625,
+        "bottom": 160.078125,
+        "height": 57.5625
+      },
+      "panel": {
+        "top": 671.40625,
+        "bottom": 920,
+        "height": 248.59375
+      },
+      "touch": "pinch-zoom",
+      "scrollY": 0,
+      "stable": true,
+      "form": true
+    },
+    {
+      "installed": true,
+      "viewportHeight": 932,
+      "viewport": 932,
+      "screenHeight": 932,
+      "screenVariable": "",
+      "stage": {
+        "top": 0,
+        "bottom": 932,
+        "height": 932
+      },
+      "background": {
+        "top": 0,
+        "bottom": 932,
+        "height": 932
+      },
+      "photo": {
+        "top": 0,
+        "bottom": 932,
+        "height": 932
+      },
+      "brand": {
+        "top": 102.515625,
+        "bottom": 160.078125,
+        "height": 57.5625
+      },
+      "panel": {
+        "top": 671.40625,
+        "bottom": 920,
+        "height": 248.59375
+      },
+      "touch": "pinch-zoom",
+      "scrollY": 0,
+      "stable": true,
+      "form": true
+    },
+    {
+      "installed": true,
+      "viewportHeight": 873,
+      "viewport": 873,
+      "screenHeight": 932,
+      "screenVariable": "",
+      "stage": {
+        "top": 0,
+        "bottom": 873,
+        "height": 873
+      },
+      "background": {
+        "top": 0,
+        "bottom": 873,
+        "height": 873
+      },
+      "photo": {
+        "top": 0,
+        "bottom": 873,
+        "height": 873
+      },
+      "brand": {
+        "top": 96.015625,
+        "bottom": 153.578125,
+        "height": 57.5625
+      },
+      "panel": {
+        "top": 612.40625,
+        "bottom": 861,
+        "height": 248.59375
+      },
+      "touch": "pinch-zoom",
+      "scrollY": 0,
+      "stable": true,
+      "form": true
+    }
+  ],
+  "note": "Installed mode and screen metrics simulated; native iPhone web-app container is not emulated"
+}

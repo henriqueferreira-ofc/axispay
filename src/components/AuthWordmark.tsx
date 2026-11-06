@@ -1,7 +1,19 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import { AuthViewportDiagnostics } from "@/components/AuthViewportDiagnostics";
 
 /** Independent of the photos so the brand can animate when the login screen opens. */
 export function AuthWordmark() {
+  const [diagnosticsOpen, setDiagnosticsOpen] = useState(false);
+  const taps = useRef({ count: 0, time: 0 });
+  const onSupportTap = () => {
+    const now = Date.now();
+    taps.current.count = now - taps.current.time < 1500 ? taps.current.count + 1 : 1;
+    taps.current.time = now;
+    if (taps.current.count === 5) {
+      taps.current.count = 0;
+      setDiagnosticsOpen(true);
+    }
+  };
   useEffect(() => {
     const root = document.documentElement;
     root.dataset.authSplash = "true";
@@ -31,17 +43,39 @@ export function AuthWordmark() {
 
   return (
     <>
-    <div aria-hidden="true" className="auth-splash fixed inset-x-0 bottom-0 top-[calc(0px_-_env(safe-area-inset-top,0px))] z-30 bg-[#0d0d0d]" />
-    <div className="auth-wordmark pointer-events-none absolute inset-x-0 z-40 flex justify-center px-6">
-      <div role="img" className="auth-wordmark-entrance flex flex-col items-center text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.3)]" aria-label="AxisPay — financial AxisControle">
-        <div aria-hidden="true" className="auth-wordmark-name flex items-baseline whitespace-nowrap leading-none tracking-[-0.065em]">
-          <span className="font-extrabold">Axis</span><span className="font-thin">Pay</span>
-        </div>
-        <div aria-hidden="true" className="auth-wordmark-tagline mt-0.5 flex items-baseline whitespace-nowrap leading-none text-white">
-          <span className="auth-wordmark-tagline-lead font-[400] tracking-[0.03em] text-white/75">financial</span>{" "}<span className="font-[family-name:var(--font-serif-brand)] font-semibold tracking-[0.01em]">AxisControle</span>
+      <div
+        aria-hidden="true"
+        className="auth-splash fixed inset-x-0 bottom-0 top-[calc(0px_-_env(safe-area-inset-top,0px))] z-30 bg-[#0d0d0d]"
+      />
+      <div className="auth-wordmark pointer-events-none absolute inset-x-0 z-40 flex justify-center px-6">
+        <div
+          role="img"
+          onClick={onSupportTap}
+          className="pointer-events-auto select-none auth-wordmark-entrance flex flex-col items-center text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.3)]"
+          aria-label="AxisPay — financial AxisControle"
+        >
+          <div
+            aria-hidden="true"
+            className="auth-wordmark-name flex items-baseline whitespace-nowrap leading-none tracking-[-0.065em]"
+          >
+            <span className="font-extrabold">Axis</span>
+            <span className="font-thin">Pay</span>
+          </div>
+          <div
+            aria-hidden="true"
+            className="auth-wordmark-tagline mt-0.5 flex items-baseline whitespace-nowrap leading-none text-white"
+          >
+            <span className="auth-wordmark-tagline-lead font-[400] tracking-[0.03em] text-white/75">
+              financial
+            </span>
+            {" "}
+            <span className="font-[family-name:var(--font-serif-brand)] font-semibold tracking-[0.01em]">
+              AxisControle
+            </span>
+          </div>
         </div>
       </div>
-    </div>
+      <AuthViewportDiagnostics open={diagnosticsOpen} onOpenChange={setDiagnosticsOpen} />
     </>
   );
 }

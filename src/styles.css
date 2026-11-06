@@ -439,18 +439,18 @@ html[data-auth-hero="true"] body {
 
   .auth-page[data-auth-view="welcome"] {
     touch-action: pinch-zoom;
-    --auth-brand-top: clamp(60px, calc(var(--auth-screen-height, 100svh) * 0.11), 134px);
+    --auth-brand-top: clamp(60px, 11dvh, 134px);
     --auth-panel-bottom: max(12px, env(safe-area-inset-bottom, 0px));
     position: fixed;
     inset: 0;
-    height: var(--auth-screen-height, auto);
+    height: 100dvh;
     min-height: 0;
     overflow: hidden;
   }
 
   .auth-page[data-auth-view="welcome"] .auth-hero-background {
     inset: 0;
-    height: var(--auth-screen-height, auto);
+    height: 100dvh;
     min-height: 0;
   }
 

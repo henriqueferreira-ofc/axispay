@@ -1,46 +1,39 @@
-# Abertura móvel fixa e inicialização do atalho
+# Abertura móvel — estado atual e diagnóstico pendente
 
-## Problemas observados
+## Situação no aparelho
 
-Nas capturas do usuário, a fotografia permanece no mesmo lugar enquanto o box e a marca mudam de posição. A tela usava `min-height: 100dvh`, conteúdo alinhado por `margin-top: auto` e um documento com `min-height: 100lvh`. Isso permitia rolagem e mudanças de altura, embora a fotografia fosse fixa.
+O usuário informou iOS 27.2 e confirmou que abre pelo ícone da Tela de Início. Após reinstalar, a fotografia passou a aparecer atrás da barra de status, mas permaneceu uma faixa preta inferior. A tentativa de dimensionar o conteúdo por `screen.height` fez o último botão ultrapassar a área visível. Essa tentativa foi descartada.
 
-A faixa preta continuava no aplicativo aberto pelo ícone da Tela de Início. O manifesto iniciava em `/`, cujo HTML usa viewport normal e barra de status padrão, antes de a aplicação redirecionar para `/auth`. A configuração de foto até a área do relógio existe somente em `/auth`. Além disso, o iOS pode guardar configurações de apresentação quando instala o atalho; sua renderização nativa não é reproduzida pelo teste de navegador.
+O problema da faixa física **ainda não está confirmado como resolvido**. Há um relato compatível no WebKit (313800), descrevendo uma região inferior fora do viewport acessível ao documento. Isso precisa ser distinguido, no aparelho real, de um recorte criado por CSS. Testes de navegador não reproduzem o contêiner nativo de um PWA instalado.
 
-## Alterações
+## Correção atual
 
-- Somente a tela de boas-vindas abaixo de 768 px usa um palco fixo preso às quatro bordas, sem rolagem ou efeito elástico do documento.
-- A marca conserva a animação de entrada e fica ancorada após ela; o box é ancorado ao rodapé com margem segura.
-- Posições centralizadas em `--auth-brand-top` e `--auth-panel-bottom`, na regra móvel de `.auth-page[data-auth-view="welcome"]`. Essas variáveis permitem ajustar depois o local desejado sem alterar a lógica dos componentes.
-- A rolagem normal é liberada ao abrir login, cadastro ou recuperação, para não prender campos atrás do teclado. Ao retornar à tela de boas-vindas, as âncoras são retomadas.
-- O manifesto passa a iniciar diretamente em `/auth`, cujo HTML já contém `viewport-fit=cover` e `black-translucent`. A aplicação já exige a confirmação de acesso ao iniciar; não foram alterados handlers, permissões ou definições de rota.
-- Nenhuma página interna, imagem, cor de botão ou layout de tablet/computador foi alterado nesta correção.
+- Palco da tela de boas-vindas abaixo de 768 px dimensionado por `100dvh`, correspondente ao viewport disponível, sem usar `screen.height`.
+- Fundo e foto usam essa mesma área. A imagem não recebe o aumento anterior de 105% no modo de boas-vindas do celular.
+- Box e marca ancorados; rolagem e arraste bloqueados na tela de boas-vindas. Formulários continuam com rolagem normal.
+- Não foram alterados manifesto, metadados da barra de status, páginas internas, dados ou autenticação nesta correção.
 
-## Validação
+## Medição no iPhone real
 
-- Chromium e WebKit com viewport móvel, toque e larguras 375, 390 e 430 px.
-- Marca e painel apresentaram coordenadas idênticas antes/depois das tentativas de rolagem e após abrir/fechar formulário. Documento permaneceu em `scrollY=0`.
-- Animação normal de entrada testada em 430×932; transformação final estabiliza em identidade.
-- Cadastro, login por senha e Acessar conta abriram os formulários esperados. Formulário libera a rolagem e campos continuam focáveis em altura reduzida.
-- Confirmados manifesto com `start_url=/auth`, metadados da abertura e retorno à configuração padrão no dashboard, com sessão e dados simulados.
-- Build, TypeScript e os 24 testes existentes passaram.
-- Evidências em `artifacts/responsive/fixed-opening-{chromium,webkit}-checks.json` e capturas `fixed-opening-*.png`.
+Foi acrescentada uma ferramenta temporária e somente de leitura, oculta atrás de cinco toques consecutivos na marca AxisPay da abertura. O diálogo “Informações da tela” contém um botão para copiar:
 
-O WebKit automatizado não inclui a barra de status de um PWA instalado em iPhone. Portanto, a ausência final da faixa precisa ser conferida no aparelho. Após atualizar o site, o atalho antigo pode precisar ser removido e adicionado novamente a partir da abertura no Safari, para atualizar a configuração de instalação; isso pode pedir login novamente.
+- Dimensões de `screen`, `innerHeight`, `visualViewport` e altura do documento.
+- Medidas reais de `vh`, `svh`, `lvh`, `dvh`, elemento fixo e áreas seguras.
+- Limites da página, foto, marca, painel e último botão.
+- Configuração da barra de status e versão do navegador.
+
+Não lê nome, e-mail, sessão, senha, biometria, saldos ou registros financeiros. Não transmite os dados pela rede. O usuário escolhe copiar e compartilhar o texto. O comportamento normal da marca continua igual; o diálogo só abre após a sequência de cinco toques.
+
+Após publicar a atualização, solicitar ao usuário: abrir o ícone instalado, tocar cinco vezes na marca, tocar em **Copiar informações** e colar o texto na conversa. Remover a ferramenta temporária quando a investigação terminar.
+
+## Verificação
+
+- Chromium e WebKit com viewport móvel de 430×873 e tela simulada de 430×932: todos os botões dentro do viewport; diálogo oculto nos quatro primeiros toques; abre no quinto; cópia correta; não inclui dados de conta; fechar o diálogo não move o painel; Criar conta funciona.
+- Outras verificações em 430×932 e viewport reduzido confirmaram contenção da foto e controles na área disponível.
+- Build, TypeScript e lint dos componentes atualizados passaram.
+- A faixa externa continua dependendo da medição no iPhone real; não foi validada por estas simulações.
 
 Referências primárias:
 
-- [Apple: configuração de status bar em web apps](https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariHTMLRef/Articles/MetaTags.html)
-- [WebKit: configurações de instalação e geometria de viewport](https://bugs.webkit.org/show_bug.cgi?id=316008)
-
-
-## Correção do recorte inferior após reinstalar no iPhone
-
-A captura posterior à reinstalação mostrou uma faixa preta inferior e o painel deslocado para cima. O palco ainda tinha `height: 100svh`, que prevalecia sobre o `bottom: 0` e podia limitar a área desenhada. Esse limite foi retirado.
-
-No navegador comum, o palco e a fotografia usam as quatro bordas do viewport. No iPhone instalado (`navigator.standalone`), somente em largura de celular e tela física curta abaixo de 768 px, `AuthHeroBackground` informa a altura da tela em pixels CSS através de `--auth-screen-height`. A marca, o painel e a fotografia usam a mesma referência. A altura fica estável em mudanças apenas de altura da janela/teclado e é recalculada quando a largura/orientação muda. A propriedade e os listeners são removidos ao sair da abertura.
-
-A foto agora usa 100% da altura dessa área, sem o aumento anterior de 105%. Não foram alterados os metadados da barra de status, o manifesto, a área interna ou layouts de tablet/computador nesta correção.
-
-Testes em Chromium e WebKit incluem tela de 430×932 com viewport integral e cenário simulado de viewport de 430×873. Em modo instalado simulado, palco, fundo e imagem chegam a 932 px; não há deslocamento após rolagem, retorno do formulário ou mudança apenas da altura da janela. A simulação não reproduz o contêiner nativo do iPhone; o resultado final no aparelho continua dependendo de conferência.
-
-Resultados: `artifacts/responsive/full-photo-{chromium,webkit}-checks.json`. Build, TypeScript e lint do componente passaram.
+- [WebKit 313800: faixa inferior fora do viewport em aplicativo web instalado](https://bugs.webkit.org/show_bug.cgi?id=313800)
+- [WebKit 301994: regressão de tela cheia em Home Screen web apps](https://bugs.webkit.org/show_bug.cgi?id=301994)
